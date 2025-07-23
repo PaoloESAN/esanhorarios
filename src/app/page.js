@@ -106,7 +106,7 @@ const generarColorCurso = (nombreCurso) => {
 
   const cursoNormalizado = nombreCurso.toString().toUpperCase().trim();
 
-  if (coloresPorCurso[cursoNormalizado]) {
+  if (coloresPorCategoria[cursoNormalizado]) {
     return coloresPorCategoria[cursoNormalizado];
   }
 
