@@ -667,36 +667,37 @@ export default function Home() {
       }
     }, 'image/png');
   }; return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-2 md:p-4">
       <div className="max-w-[1800px] mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-lg shadow-md p-3 md:p-6 mb-3 md:mb-6">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2">
                 Creador de Horarios - Ingeniería de Software
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm md:text-base text-gray-600">
                 Arrastra los cursos desde el panel lateral hacia la tabla de horarios
               </p>
             </div>
-            <div className="flex gap-3 items-center">
+            <div className="flex flex-wrap gap-2 md:gap-3 items-center">
               {/* Mostrar nombre del archivo si existe */}
               {nombreArchivo && (
-                <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg">
-                  <svg className="w-4 h-4 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center bg-gray-100 px-2 md:px-3 py-1 md:py-2 rounded-lg">
+                  <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-600 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <span className="text-sm text-gray-700 font-medium">{nombreArchivo}</span>
+                  <span className="text-xs md:text-sm text-gray-700 font-medium truncate max-w-20 md:max-w-none">{nombreArchivo}</span>
                 </div>
               )}
 
               {/* Botón para cargar Excel */}
-              <label className={`cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2 ${cargandoArchivo ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <label className={`cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium inline-flex items-center gap-1 md:gap-2 text-xs md:text-sm ${cargandoArchivo ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
-                {cargandoArchivo ? 'Cargando...' : 'Cargar Excel'}
+                <span className="hidden sm:inline">{cargandoArchivo ? 'Cargando...' : 'Cargar Excel'}</span>
+                <span className="sm:hidden">Excel</span>
                 <input
                   type="file"
                   accept=".xlsx,.xls"
@@ -708,38 +709,136 @@ export default function Home() {
 
               <button
                 onClick={limpiarHorario}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium"
+                className="bg-red-500 hover:bg-red-600 text-white px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium text-xs md:text-sm"
               >
-                Limpiar Horario
+                <span className="hidden sm:inline">Limpiar Horario</span>
+                <span className="sm:hidden">Limpiar</span>
               </button>
 
               <button
                 onClick={compartirHorario}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2"
+                className="bg-green-500 hover:bg-green-600 text-white px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium inline-flex items-center gap-1 md:gap-2 text-xs md:text-sm"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                 </svg>
-                Compartir
+                <span className="hidden sm:inline">Compartir</span>
+                <span className="sm:hidden">IMG</span>
               </button>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-6">
+        {/* Layout Principal - Responsive */}
+        <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
+          {/* Tabla de Horarios - Primera en Mobile */}
+          <div className="order-1 lg:order-2 flex-1 bg-white rounded-lg shadow-md p-3 md:p-6">
+            <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Mi Horario Personal</h2>
+
+            <div className="overflow-x-auto">
+              <table id="tabla-horario" className="w-full border-collapse text-xs md:text-sm">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 p-1 md:p-2 bg-gray-50 w-16 md:w-20 text-xs">Hora</th>
+                    {diasSemana.map((dia) => (
+                      <th key={dia} className="border border-gray-300 p-1 md:p-2 bg-gray-50 min-w-20 md:min-w-32 text-xs">
+                        <span className="block md:hidden">{dia.substring(0, 3)}</span>
+                        <span className="hidden md:block">{dia}</span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {horariosDelDia.map((horario) => (
+                    <tr key={horario}>
+                      <td className="border border-gray-300 p-1 bg-gray-50 text-xs font-medium text-center">
+                        <span className="block md:hidden text-xs">{horario.split('-')[0]}</span>
+                        <span className="hidden md:block">{horario}</span>
+                      </td>
+                      {diasSemana.map((dia) => {
+                        const key = `${dia}-${horario}`;
+                        const claseAsignada = horarioPersonal[key];
+
+                        return (
+                          <td
+                            key={key}
+                            className="border border-gray-300 p-0.5 md:p-1 h-8 md:h-12 relative"
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, dia, horario)}
+                          >
+                            {claseAsignada ? (
+                              (() => {
+                                const colorCurso = generarColorCurso(claseAsignada.curso);
+                                return (
+                                  <div
+                                    className={`${colorCurso.bg} ${colorCurso.border} border rounded p-0.5 md:p-1 h-full flex flex-col justify-between text-xs group relative cursor-pointer`}
+                                    onClick={() => removerDelHorario(dia, horario)}
+                                    title="Click para remover todo el curso"
+                                  >
+                                    <div className={`font-medium ${colorCurso.text} leading-tight text-xs`}>
+                                      <span className="block md:hidden">
+                                        {claseAsignada.curso.length > 8
+                                          ? claseAsignada.curso.substring(0, 8) + '...'
+                                          : claseAsignada.curso
+                                        }
+                                      </span>
+                                      <span className="hidden md:block">
+                                        {claseAsignada.curso.length > 25
+                                          ? claseAsignada.curso.substring(0, 25) + '...'
+                                          : claseAsignada.curso
+                                        }
+                                      </span>
+                                    </div>
+                                    <div className={`${colorCurso.textSecondary} text-xs hidden md:block`}>
+                                      {claseAsignada.seccion}
+                                    </div>
+                                    <div className={`${colorCurso.textSecondary} text-xs hidden md:block`}>
+                                      {claseAsignada.profesor.length > 20
+                                        ? claseAsignada.profesor.substring(0, 20) + '...'
+                                        : claseAsignada.profesor
+                                      }
+                                    </div>
+                                    {claseAsignada.aula && (
+                                      <div className={`${colorCurso.textSecondary} text-xs hidden md:block`}>
+                                        {claseAsignada.aula}
+                                      </div>
+                                    )}
+                                    <div
+                                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-3 h-3 md:w-4 md:h-4 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                      style={{ fontSize: '8px' }}
+                                    >
+                                      ×
+                                    </div>
+                                  </div>
+                                );
+                              })()
+                            ) : (
+                              <div className="h-full bg-gray-50 hover:bg-blue-50 transition-colors rounded border-2 border-dashed border-transparent hover:border-blue-300">
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           {/* Panel Lateral - Cursos Disponibles */}
-          <div className="w-80 bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Cursos Disponibles</h2>
+          <div className="order-2 lg:order-1 w-full lg:w-80 bg-white rounded-lg shadow-md p-3 md:p-6">
+            <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Cursos Disponibles</h2>
 
             {/* Selector de Ciclo */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mb-4 md:mb-6">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                 Seleccionar Ciclo:
               </label>
               <select
                 value={cicloSeleccionado}
                 onChange={(e) => setCicloSeleccionado(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {Object.keys(cursosIngenieriaSoftware).map((ciclo) => (
                   <option key={ciclo} value={ciclo}>
@@ -750,13 +849,13 @@ export default function Home() {
             </div>
 
             {/* Lista de Cursos por Categorías */}
-            <div className="space-y-4 max-h-[calc(100vh-500px)] overflow-y-auto">
+            <div className="space-y-3 max-h-[300px] lg:max-h-[calc(100vh-500px)] overflow-y-auto">
               {cursosIngenieriaSoftware[cicloSeleccionado]?.map((curso, index) => {
                 const horariosDisponiblesDelCurso = obtenerHorariosPorCurso(curso);
 
                 return (
-                  <div key={index} className="border border-gray-200 rounded-lg p-3">
-                    <h4 className="font-semibold text-gray-800 text-sm mb-3 border-b border-gray-200 pb-2">
+                  <div key={index} className="border border-gray-200 rounded-lg p-2 md:p-3">
+                    <h4 className="font-semibold text-gray-800 text-xs md:text-sm mb-2 md:mb-3 border-b border-gray-200 pb-2">
                       {curso}
                     </h4>
 
@@ -825,121 +924,36 @@ export default function Home() {
               })}
             </div>
           </div>
-
-          {/* Tabla de Horarios */}
-          <div className="flex-1 bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Mi Horario Personal</h2>
-
-            <div className="overflow-x-auto">
-              <table id="tabla-horario" className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="border border-gray-300 p-2 bg-gray-50 w-20">Hora</th>
-                    {diasSemana.map((dia) => (
-                      <th key={dia} className="border border-gray-300 p-2 bg-gray-50 min-w-32">
-                        {dia}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {horariosDelDia.map((horario) => (
-                    <tr key={horario}>
-                      <td className="border border-gray-300 p-1 bg-gray-50 text-xs font-medium text-center">
-                        {horario}
-                      </td>
-                      {diasSemana.map((dia) => {
-                        const key = `${dia}-${horario}`;
-                        const claseAsignada = horarioPersonal[key];
-
-                        return (
-                          <td
-                            key={key}
-                            className="border border-gray-300 p-1 h-12 relative"
-                            onDragOver={handleDragOver}
-                            onDrop={(e) => handleDrop(e, dia, horario)}
-                          >
-                            {claseAsignada ? (
-                              (() => {
-                                const colorCurso = generarColorCurso(claseAsignada.curso);
-                                return (
-                                  <div
-                                    className={`${colorCurso.bg} ${colorCurso.border} border rounded p-1 h-full flex flex-col justify-between text-xs group relative cursor-pointer`}
-                                    onClick={() => removerDelHorario(dia, horario)}
-                                    title="Click para remover todo el curso"
-                                  >
-                                    <div className={`font-medium ${colorCurso.text} leading-tight`}>
-                                      {claseAsignada.curso.length > 25
-                                        ? claseAsignada.curso.substring(0, 25) + '...'
-                                        : claseAsignada.curso
-                                      }
-                                    </div>
-                                    <div className={`${colorCurso.textSecondary} text-xs`}>
-                                      {claseAsignada.seccion}
-                                    </div>
-                                    <div className={`${colorCurso.textSecondary} text-xs`}>
-                                      {claseAsignada.profesor.length > 20
-                                        ? claseAsignada.profesor.substring(0, 20) + '...'
-                                        : claseAsignada.profesor
-                                      }
-                                    </div>
-                                    {claseAsignada.aula && (
-                                      <div className={`${colorCurso.textSecondary} text-xs`}>
-                                        {claseAsignada.aula}
-                                      </div>
-                                    )}
-                                    <div
-                                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                      style={{ fontSize: '10px' }}
-                                    >
-                                      ×
-                                    </div>
-                                  </div>
-                                );
-                              })()
-                            ) : (
-                              <div className="h-full bg-gray-50 hover:bg-blue-50 transition-colors rounded border-2 border-dashed border-transparent hover:border-blue-300">
-                              </div>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
         {/* Modal de Conflicto */}
         {mostrarModalConflicto && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+          <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
+            <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center mb-4">
                 <div className="bg-red-100 rounded-full p-2 mr-3">
-                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.862-.833-2.632 0L4.182 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Conflicto de Horarios</h3>
+                <h3 className="text-base md:text-lg font-semibold text-gray-900">Conflicto de Horarios</h3>
               </div>
 
               <div className="mb-4">
-                <p className="text-gray-700 mb-2">
+                <p className="text-sm md:text-base text-gray-700 mb-2">
                   No se puede agregar <span className="font-semibold text-blue-600">{conflictoInfo.cursoNuevo}</span>
                   porque tiene conflicto de horarios con:
                 </p>
-                <p className="font-semibold text-red-600">
+                <p className="text-sm md:text-base font-semibold text-red-600">
                   {conflictoInfo.cursoExistente}
                 </p>
               </div>
 
               {conflictoInfo.detallesConflicto && (
                 <div className="mb-4 p-3 bg-red-50 rounded-lg">
-                  <p className="text-sm font-medium text-red-800 mb-2">Horarios en conflicto:</p>
+                  <p className="text-xs md:text-sm font-medium text-red-800 mb-2">Horarios en conflicto:</p>
                   {conflictoInfo.detallesConflicto.map((conflicto, index) => (
-                    <div key={index} className="text-sm text-red-700">
+                    <div key={index} className="text-xs md:text-sm text-red-700">
                       • {conflicto.dia} {conflicto.horario}
                     </div>
                   ))}
@@ -949,7 +963,7 @@ export default function Home() {
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setMostrarModalConflicto(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base text-gray-600 hover:text-gray-800 font-medium"
                 >
                   Entendido
                 </button>
@@ -960,19 +974,19 @@ export default function Home() {
 
         {/* Modal de Éxito */}
         {mostrarModalExito && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+          <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
+            <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center mb-4">
                 <div className="bg-green-100 rounded-full p-2 mr-3">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">¡Éxito!</h3>
+                <h3 className="text-base md:text-lg font-semibold text-gray-900">¡Éxito!</h3>
               </div>
 
               <div className="mb-6">
-                <p className="text-gray-700">
+                <p className="text-sm md:text-base text-gray-700">
                   {mensajeModal}
                 </p>
               </div>
@@ -980,7 +994,7 @@ export default function Home() {
               <div className="flex justify-end">
                 <button
                   onClick={() => setMostrarModalExito(false)}
-                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium"
                 >
                   Aceptar
                 </button>
@@ -991,19 +1005,19 @@ export default function Home() {
 
         {/* Modal de Error */}
         {mostrarModalError && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+          <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
+            <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center mb-4">
                 <div className="bg-red-100 rounded-full p-2 mr-3">
-                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Error</h3>
+                <h3 className="text-base md:text-lg font-semibold text-gray-900">Error</h3>
               </div>
 
               <div className="mb-6">
-                <p className="text-gray-700">
+                <p className="text-sm md:text-base text-gray-700">
                   {mensajeModal}
                 </p>
               </div>
@@ -1011,7 +1025,7 @@ export default function Home() {
               <div className="flex justify-end">
                 <button
                   onClick={() => setMostrarModalError(false)}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium"
+                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium"
                 >
                   Cerrar
                 </button>
