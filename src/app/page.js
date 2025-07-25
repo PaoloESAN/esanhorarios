@@ -3,6 +3,10 @@
 import { useState } from "react";
 import * as XLSX from 'xlsx';
 import domtoimage from 'dom-to-image';
+import { Button } from "@heroui/button";
+import { Select, SelectItem } from "@heroui/select";
+import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
+import { useDisclosure } from "@heroui/use-disclosure";
 
 const cursosIngenieriaSoftware = {
   "Primer Ciclo": [
@@ -133,15 +137,17 @@ export default function Home() {
   const [cicloSeleccionado, setCicloSeleccionado] = useState("Cuarto Ciclo");
   const [horarioPersonal, setHorarioPersonal] = useState({});
   const [draggedItem, setDraggedItem] = useState(null);
-  const [mostrarModalConflicto, setMostrarModalConflicto] = useState(false);
   const [conflictoInfo, setConflictoInfo] = useState({ cursoExistente: '', cursoNuevo: '' });
   const [cursosSeleccionados, setCursosSeleccionados] = useState(new Set());
   const [horariosDisponibles, setHorariosDisponibles] = useState(horariosIniciales);
   const [cargandoArchivo, setCargandoArchivo] = useState(false);
-  const [mostrarModalExito, setMostrarModalExito] = useState(false);
-  const [mostrarModalError, setMostrarModalError] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
   const [nombreArchivo, setNombreArchivo] = useState('');
+
+  // HeroUI Modal hooks
+  const { isOpen: isConflictModalOpen, onOpen: onConflictModalOpen, onClose: onConflictModalClose } = useDisclosure();
+  const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
+  const { isOpen: isErrorModalOpen, onOpen: onErrorModalOpen, onClose: onErrorModalClose } = useDisclosure();
 
   const procesarArchivoExcel = async (archivo) => {
     setCargandoArchivo(true);
@@ -159,11 +165,11 @@ export default function Home() {
       setHorariosDisponibles(nuevosHorarios);
 
       setMensajeModal('¡Archivo Excel cargado exitosamente!');
-      setMostrarModalExito(true);
+      onSuccessModalOpen();
     } catch (error) {
       console.error('Error al procesar archivo Excel:', error);
       setMensajeModal('Error al cargar el archivo Excel. Por favor, verifica el formato.');
-      setMostrarModalError(true);
+      onErrorModalOpen();
     } finally {
       setCargandoArchivo(false);
     }
@@ -454,7 +460,7 @@ export default function Home() {
           cursoExistente: `${conflictos[0].cursoExistente} (${conflictos[0].seccionExistente})`,
           detallesConflicto: conflictos
         });
-        setMostrarModalConflicto(true);
+        onConflictModalOpen();
         return;
       }
 
@@ -569,7 +575,7 @@ export default function Home() {
       document.body.removeChild(link);
 
       setMensajeModal('¡Horario guardado como imagen exitosamente!');
-      setMostrarModalExito(true);
+      onSuccessModalOpen();
 
     } catch (error) {
       console.error('Error al capturar la tabla:', error);
@@ -579,7 +585,7 @@ export default function Home() {
       } catch (errorFallback) {
         console.error('Error en método alternativo:', errorFallback);
         setMensajeModal('Error al guardar la imagen. Por favor, intenta de nuevo.');
-        setMostrarModalError(true);
+        onErrorModalOpen();
       }
     }
   };
@@ -663,7 +669,7 @@ export default function Home() {
         URL.revokeObjectURL(url);
 
         setMensajeModal('¡Horario guardado como imagen simple exitosamente!');
-        setMostrarModalExito(true);
+        onSuccessModalOpen();
       }
     }, 'image/png');
   }; return (
@@ -674,7 +680,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
             <div>
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2">
-                Creador de Horarios - Ingeniería de Software
+                Creador de Horarios - Software y TI
               </h1>
               <p className="text-sm md:text-base text-gray-600">
                 Arrastra los cursos desde el panel lateral hacia la tabla de horarios
@@ -692,10 +698,18 @@ export default function Home() {
               )}
 
               {/* Botón para cargar Excel */}
-              <label className={`cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium inline-flex items-center gap-1 md:gap-2 text-xs md:text-sm ${cargandoArchivo ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
+              <Button
+                as="label"
+                color="primary"
+                size="sm"
+                className="cursor-pointer"
+                isLoading={cargandoArchivo}
+                startContent={
+                  <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                }
+              >
                 <span className="hidden sm:inline">{cargandoArchivo ? 'Cargando...' : 'Cargar Excel'}</span>
                 <span className="sm:hidden">Excel</span>
                 <input
@@ -705,34 +719,38 @@ export default function Home() {
                   className="hidden"
                   disabled={cargandoArchivo}
                 />
-              </label>
+              </Button>
 
-              <button
+              <Button
                 onClick={limpiarHorario}
-                className="bg-red-500 hover:bg-red-600 text-white px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium text-xs md:text-sm"
+                color="danger"
+                size="sm"
               >
                 <span className="hidden sm:inline">Limpiar Horario</span>
                 <span className="sm:hidden">Limpiar</span>
-              </button>
+              </Button>
 
-              <button
+              <Button
                 onClick={compartirHorario}
-                className="bg-green-500 hover:bg-green-600 text-white px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium inline-flex items-center gap-1 md:gap-2 text-xs md:text-sm"
+                color="success"
+                size="sm"
+                startContent={
+                  <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                  </svg>
+                }
               >
-                <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                </svg>
                 <span className="hidden sm:inline">Compartir</span>
                 <span className="sm:hidden">IMG</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Layout Principal - Responsive */}
         <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
-          {/* Tabla de Horarios - Primera en Mobile */}
-          <div className="order-1 lg:order-2 flex-1 bg-white rounded-lg shadow-md p-3 md:p-6">
+          {/* Tabla de Horarios - Segunda en Mobile */}
+          <div className="order-2 lg:order-2 flex-1 bg-white rounded-lg shadow-md p-3 md:p-6">
             <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Mi Horario Personal</h2>
 
             <div className="overflow-x-auto">
@@ -827,25 +845,26 @@ export default function Home() {
           </div>
 
           {/* Panel Lateral - Cursos Disponibles */}
-          <div className="order-2 lg:order-1 w-full lg:w-80 bg-white rounded-lg shadow-md p-3 md:p-6">
+          <div className="order-1 lg:order-1 w-full lg:w-80 bg-white rounded-lg shadow-md p-3 md:p-6">
             <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Cursos Disponibles</h2>
 
             {/* Selector de Ciclo */}
             <div className="mb-4 md:mb-6">
-              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
-                Seleccionar Ciclo:
-              </label>
-              <select
-                value={cicloSeleccionado}
-                onChange={(e) => setCicloSeleccionado(e.target.value)}
-                className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              <Select
+                label="Seleccionar Ciclo"
+                labelPlacement="outside"
+                placeholder="Selecciona un ciclo"
+                selectedKeys={[cicloSeleccionado]}
+                onSelectionChange={(keys) => setCicloSeleccionado(Array.from(keys)[0])}
+                size="sm"
+                variant="bordered"
               >
                 {Object.keys(cursosIngenieriaSoftware).map((ciclo) => (
-                  <option key={ciclo} value={ciclo}>
+                  <SelectItem key={ciclo} value={ciclo}>
                     {ciclo}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
+              </Select>
             </div>
 
             {/* Lista de Cursos por Categorías */}
@@ -856,7 +875,14 @@ export default function Home() {
                 return (
                   <div key={index} className="border border-gray-200 rounded-lg p-2 md:p-3">
                     <h4 className="font-semibold text-gray-800 text-xs md:text-sm mb-2 md:mb-3 border-b border-gray-200 pb-2">
-                      {curso}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span>{curso}</span>
+                        {curso === "Administración de base de datos" && (
+                          <span className="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                            software
+                          </span>
+                        )}
+                      </div>
                     </h4>
 
                     {horariosDisponiblesDelCurso.length > 0 ? (
@@ -927,18 +953,17 @@ export default function Home() {
         </div>
 
         {/* Modal de Conflicto */}
-        {mostrarModalConflicto && (
-          <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center mb-4">
-                <div className="bg-red-100 rounded-full p-2 mr-3">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.862-.833-2.632 0L4.182 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                </div>
-                <h3 className="text-base md:text-lg font-semibold text-gray-900">Conflicto de Horarios</h3>
+        <Modal isOpen={isConflictModalOpen} onClose={onConflictModalClose} size="md">
+          <ModalContent>
+            <ModalHeader className="flex gap-1">
+              <div className="bg-red-100 rounded-full p-2 mr-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.862-.833-2.632 0L4.182 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
               </div>
-
+              Conflicto de Horarios
+            </ModalHeader>
+            <ModalBody>
               <div className="mb-4">
                 <p className="text-sm md:text-base text-gray-700 mb-2">
                   No se puede agregar <span className="font-semibold text-blue-600">{conflictoInfo.cursoNuevo}</span>
@@ -959,80 +984,62 @@ export default function Home() {
                   ))}
                 </div>
               )}
-
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setMostrarModalConflicto(false)}
-                  className="px-3 md:px-4 py-2 text-sm md:text-base text-gray-600 hover:text-gray-800 font-medium"
-                >
-                  Entendido
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onPress={onConflictModalClose}>
+                Entendido
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
 
         {/* Modal de Éxito */}
-        {mostrarModalExito && (
-          <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center mb-4">
-                <div className="bg-green-100 rounded-full p-2 mr-3">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="text-base md:text-lg font-semibold text-gray-900">¡Éxito!</h3>
+        <Modal isOpen={isSuccessModalOpen} onClose={onSuccessModalClose} size="md">
+          <ModalContent>
+            <ModalHeader className="flex gap-1">
+              <div className="bg-green-100 rounded-full p-2 mr-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
               </div>
-
-              <div className="mb-6">
-                <p className="text-sm md:text-base text-gray-700">
-                  {mensajeModal}
-                </p>
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setMostrarModalExito(false)}
-                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium"
-                >
-                  Aceptar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+              ¡Éxito!
+            </ModalHeader>
+            <ModalBody>
+              <p className="text-sm md:text-base text-gray-700">
+                {mensajeModal}
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="success" onPress={onSuccessModalClose}>
+                Aceptar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
 
         {/* Modal de Error */}
-        {mostrarModalError && (
-          <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center mb-4">
-                <div className="bg-red-100 rounded-full p-2 mr-3">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </div>
-                <h3 className="text-base md:text-lg font-semibold text-gray-900">Error</h3>
+        <Modal isOpen={isErrorModalOpen} onClose={onErrorModalClose} size="md">
+          <ModalContent>
+            <ModalHeader className="flex gap-1">
+              <div className="bg-red-100 rounded-full p-2 mr-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </div>
-
-              <div className="mb-6">
-                <p className="text-sm md:text-base text-gray-700">
-                  {mensajeModal}
-                </p>
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setMostrarModalError(false)}
-                  className="px-3 md:px-4 py-2 text-sm md:text-base bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+              Error
+            </ModalHeader>
+            <ModalBody>
+              <p className="text-sm md:text-base text-gray-700">
+                {mensajeModal}
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" onPress={onErrorModalClose}>
+                Cerrar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
     </div>
   );
