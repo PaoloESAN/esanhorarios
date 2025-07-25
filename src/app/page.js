@@ -144,7 +144,6 @@ export default function Home() {
   const [mensajeModal, setMensajeModal] = useState('');
   const [nombreArchivo, setNombreArchivo] = useState('');
 
-  // HeroUI Modal hooks
   const { isOpen: isConflictModalOpen, onOpen: onConflictModalOpen, onClose: onConflictModalClose } = useDisclosure();
   const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
   const { isOpen: isErrorModalOpen, onOpen: onErrorModalOpen, onClose: onErrorModalClose } = useDisclosure();
@@ -158,8 +157,6 @@ export default function Home() {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-      console.log('Datos del Excel:', jsonData);
 
       const nuevosHorarios = parsearDatosExcel(jsonData);
       setHorariosDisponibles(nuevosHorarios);
@@ -227,8 +224,6 @@ export default function Home() {
       }
     });
 
-    console.log('Índices de columnas encontrados:', indiceColumnas);
-
     for (let i = filaEncabezados + 1; i < datos.length; i++) {
       const fila = datos[i];
       if (!fila || fila.length === 0) continue;
@@ -245,8 +240,6 @@ export default function Home() {
         .replace(/[^\w\sáéíóúñü:]/gi, '')
         .replace(/\s+/g, ' ')
         .trim();
-
-      console.log(`Procesando curso: "${curso}" -> normalizado: "${cursoNormalizado}"`);
 
       const horarios = [];
       const diasExcel = [
@@ -287,9 +280,6 @@ export default function Home() {
         });
       }
     }
-
-    console.log('Cursos procesados exitosamente:', Object.keys(horariosParseados));
-    console.log('Total de cursos encontrados:', Object.keys(horariosParseados).length);
 
     return horariosParseados;
   };
@@ -855,9 +845,15 @@ export default function Home() {
                 labelPlacement="outside"
                 placeholder="Selecciona un ciclo"
                 selectedKeys={[cicloSeleccionado]}
-                onSelectionChange={(keys) => setCicloSeleccionado(Array.from(keys)[0])}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  if (selectedKey && selectedKey !== cicloSeleccionado) {
+                    setCicloSeleccionado(selectedKey);
+                  }
+                }}
                 size="sm"
                 variant="bordered"
+                disallowEmptySelection={true}
               >
                 {Object.keys(cursosIngenieriaSoftware).map((ciclo) => (
                   <SelectItem key={ciclo} value={ciclo}>
@@ -924,11 +920,26 @@ export default function Home() {
                                 Sección: {seccionData.seccion} {estaSeleccionado ? '✓ Seleccionado' : ''}
                               </div>
                               <div className={`text-xs mb-1 ${estaSeleccionado ? 'text-gray-500' : 'text-blue-700'
-                                }`}>
-                                Prof: {seccionData.profesor.length > 25
-                                  ? seccionData.profesor.substring(0, 25) + '...'
-                                  : seccionData.profesor
-                                }
+                                } flex items-center gap-1`}>
+                                <span>
+                                  Prof: {seccionData.profesor.length > 25
+                                    ? seccionData.profesor.substring(0, 25) + '...'
+                                    : seccionData.profesor
+                                  }
+                                </span>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const searchQuery = encodeURIComponent(seccionData.profesor);
+                                    window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
+                                  }}
+                                  className="p-0.5 hover:bg-gray-200 rounded transition-colors bg-white border border-gray-300 shadow-sm"
+                                  title={`Buscar información sobre ${seccionData.profesor}`}
+                                >
+                                  <svg className="w-3 h-3 text-gray-600 hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                  </svg>
+                                </button>
                               </div>
                               <div className={`text-xs ${estaSeleccionado ? 'text-gray-500' : 'text-blue-600'
                                 }`}>
@@ -953,7 +964,7 @@ export default function Home() {
         </div>
 
         {/* Modal de Conflicto */}
-        <Modal isOpen={isConflictModalOpen} onClose={onConflictModalClose} size="md">
+        <Modal isOpen={isConflictModalOpen} onClose={onConflictModalClose} size="md" placement="center">
           <ModalContent>
             <ModalHeader className="flex gap-1">
               <div className="bg-red-100 rounded-full p-2 mr-3">
@@ -994,7 +1005,7 @@ export default function Home() {
         </Modal>
 
         {/* Modal de Éxito */}
-        <Modal isOpen={isSuccessModalOpen} onClose={onSuccessModalClose} size="md">
+        <Modal isOpen={isSuccessModalOpen} onClose={onSuccessModalClose} size="md" placement="center">
           <ModalContent>
             <ModalHeader className="flex gap-1">
               <div className="bg-green-100 rounded-full p-2 mr-3">
@@ -1018,7 +1029,7 @@ export default function Home() {
         </Modal>
 
         {/* Modal de Error */}
-        <Modal isOpen={isErrorModalOpen} onClose={onErrorModalClose} size="md">
+        <Modal isOpen={isErrorModalOpen} onClose={onErrorModalClose} size="md" placement="center">
           <ModalContent>
             <ModalHeader className="flex gap-1">
               <div className="bg-red-100 rounded-full p-2 mr-3">
