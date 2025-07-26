@@ -784,30 +784,24 @@ export default function Home() {
                                     title="Click para remover todo el curso"
                                   >
                                     <div className={`font-medium ${colorCurso.text} leading-tight text-xs`}>
-                                      <span className="block md:hidden">
-                                        {claseAsignada.curso.length > 8
-                                          ? claseAsignada.curso.substring(0, 8) + '...'
-                                          : claseAsignada.curso
-                                        }
-                                      </span>
-                                      <span className="hidden md:block">
-                                        {claseAsignada.curso.length > 25
-                                          ? claseAsignada.curso.substring(0, 25) + '...'
+                                      <span className="block">
+                                        {claseAsignada.curso.length > 12
+                                          ? claseAsignada.curso.substring(0, 12) + '...'
                                           : claseAsignada.curso
                                         }
                                       </span>
                                     </div>
-                                    <div className={`${colorCurso.textSecondary} text-xs hidden md:block`}>
+                                    <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs`}>
                                       {claseAsignada.seccion}
                                     </div>
-                                    <div className={`${colorCurso.textSecondary} text-xs hidden md:block`}>
-                                      {claseAsignada.profesor.length > 20
-                                        ? claseAsignada.profesor.substring(0, 20) + '...'
+                                    <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs`}>
+                                      {claseAsignada.profesor.length > 12
+                                        ? claseAsignada.profesor.substring(0, 12) + '...'
                                         : claseAsignada.profesor
                                       }
                                     </div>
                                     {claseAsignada.aula && (
-                                      <div className={`${colorCurso.textSecondary} text-xs hidden md:block`}>
+                                      <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs`}>
                                         {claseAsignada.aula}
                                       </div>
                                     )}
@@ -921,25 +915,27 @@ export default function Home() {
                               </div>
                               <div className={`text-xs mb-1 ${estaSeleccionado ? 'text-gray-500' : 'text-blue-700'
                                 } flex items-center gap-1`}>
-                                <span>
-                                  Prof: {seccionData.profesor.length > 25
-                                    ? seccionData.profesor.substring(0, 25) + '...'
-                                    : seccionData.profesor
-                                  }
-                                </span>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    const searchQuery = encodeURIComponent(seccionData.profesor);
-                                    window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
-                                  }}
-                                  className="p-0.5 hover:bg-gray-200 rounded transition-colors bg-white border border-gray-300 shadow-sm"
-                                  title={`Buscar información sobre ${seccionData.profesor}`}
-                                >
-                                  <svg className="w-3 h-3 text-gray-600 hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                  </svg>
-                                </button>
+                                <div className="flex items-center gap-1 flex-row-reverse">
+                                  <span>
+                                    Prof: {seccionData.profesor.length > 25
+                                      ? seccionData.profesor.substring(0, 25) + '...'
+                                      : seccionData.profesor
+                                    }
+                                  </span>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const searchQuery = encodeURIComponent(seccionData.profesor);
+                                      window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
+                                    }}
+                                    className="p-0.5 hover:bg-gray-200 rounded transition-colors bg-white border border-gray-300 shadow-sm"
+                                    title={`Buscar información sobre ${seccionData.profesor}`}
+                                  >
+                                    <svg className="w-3 h-3 text-gray-600 hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                  </button>
+                                </div>
                               </div>
                               <div className={`text-xs ${estaSeleccionado ? 'text-gray-500' : 'text-blue-600'
                                 }`}>
