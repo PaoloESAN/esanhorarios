@@ -7,6 +7,7 @@ import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { useDisclosure } from "@heroui/use-disclosure";
+import DiaMatricula from "@/components/diaMatricula.jsx";
 
 const cursosIngenieriaSoftware = {
   "Primer Ciclo": [
@@ -147,6 +148,22 @@ export default function Home() {
   const { isOpen: isConflictModalOpen, onOpen: onConflictModalOpen, onClose: onConflictModalClose } = useDisclosure();
   const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
   const { isOpen: isErrorModalOpen, onOpen: onErrorModalOpen, onClose: onErrorModalClose } = useDisclosure();
+  const { isOpen: isMatriculaModalOpen, onOpen: onMatriculaModalOpen, onClose: onMatriculaModalClose } = useDisclosure();
+
+  const [imagenMatricula, setImagenMatricula] = useState(1);
+
+  const textosMatricula = {
+    1: "Eres INCREIBLE.",
+    2: "Lo lograste, podrás matricularte a todo.",
+    3: "Tienes oportunidad.",
+    4: "La esperanza es lo último que se pierde.",
+    5: "Retírate de la Universidad."
+  };
+
+  const abrirModalMatricula = (numeroImagen) => {
+    setImagenMatricula(numeroImagen);
+    onMatriculaModalOpen();
+  };
 
   const procesarArchivoExcel = async (archivo) => {
     setCargandoArchivo(true);
@@ -359,6 +376,7 @@ export default function Home() {
     if (archivo) {
       setNombreArchivo(archivo.name);
       procesarArchivoExcel(archivo);
+      limpiarHorario();
     }
   };
 
@@ -673,7 +691,7 @@ export default function Home() {
                 Creador de Horarios - Software y TI
               </h1>
               <p className="text-sm md:text-base text-gray-600">
-                Arrastra los cursos desde el panel lateral hacia la tabla de horarios
+                Arrastra o selecciona los cursos desde el panel hacia la tabla de horarios.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 md:gap-3 items-center">
@@ -858,7 +876,7 @@ export default function Home() {
             </div>
 
             {/* Lista de Cursos por Categorías */}
-            <div className="space-y-3 max-h-[300px] lg:max-h-[calc(100vh-500px)] overflow-y-auto">
+            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[46.25rem] overflow-y-auto">
               {cursosIngenieriaSoftware[cicloSeleccionado]?.map((curso, index) => {
                 const horariosDisponiblesDelCurso = obtenerHorariosPorCurso(curso);
 
@@ -959,10 +977,13 @@ export default function Home() {
           </div>
         </div>
 
+        {/* DiaMatricula - Pasamos la función como prop */}
+        <DiaMatricula onAbrirModal={abrirModalMatricula} />
+
         {/* Modal de Conflicto */}
         <Modal isOpen={isConflictModalOpen} onClose={onConflictModalClose} size="md" placement="center">
           <ModalContent>
-            <ModalHeader className="flex gap-1">
+            <ModalHeader className="flex gap-1 items-center">
               <div className="bg-red-100 rounded-full p-2 mr-3">
                 <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.862-.833-2.632 0L4.182 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -1003,7 +1024,7 @@ export default function Home() {
         {/* Modal de Éxito */}
         <Modal isOpen={isSuccessModalOpen} onClose={onSuccessModalClose} size="md" placement="center">
           <ModalContent>
-            <ModalHeader className="flex gap-1">
+            <ModalHeader className="flex gap-1 items-center">
               <div className="bg-green-100 rounded-full p-2 mr-3">
                 <svg className="w-5 h-5 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -1024,10 +1045,52 @@ export default function Home() {
           </ModalContent>
         </Modal>
 
+        {/* Modal de Matrícula */}
+        <Modal isOpen={isMatriculaModalOpen} onClose={onMatriculaModalClose} size="xl" placement="center">
+          <ModalContent>
+            <ModalHeader className="flex gap-1 items-center">
+              <div className="bg-blue-100 rounded-full p-2 mr-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              Información de Matrícula
+            </ModalHeader>
+            <ModalBody>
+              <div className="flex flex-col items-center space-y-4">
+                <div className="w-full text-center">
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-4">
+                    {textosMatricula[imagenMatricula]}
+                  </h3>
+                </div>
+
+                <div className="w-full flex justify-center">
+                  <img
+                    src={`/increible${imagenMatricula}.png`}
+                    alt={`Información de matrícula ${imagenMatricula}`}
+                    className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
+                    onError={(e) => {
+                      e.target.src = `/increible${imagenMatricula}.jpg`;
+                      e.target.onerror = () => {
+                        e.target.src = '/increible1.png';
+                      };
+                    }}
+                  />
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onPress={onMatriculaModalClose}>
+                Cerrar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
         {/* Modal de Error */}
         <Modal isOpen={isErrorModalOpen} onClose={onErrorModalClose} size="md" placement="center">
           <ModalContent>
-            <ModalHeader className="flex gap-1">
+            <ModalHeader className="flex gap-1 items-center">
               <div className="bg-red-100 rounded-full p-2 mr-3">
                 <svg className="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1048,6 +1111,6 @@ export default function Home() {
           </ModalContent>
         </Modal>
       </div>
-    </div>
+    </div >
   );
 }
