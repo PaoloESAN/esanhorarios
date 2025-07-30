@@ -221,7 +221,7 @@ export default function Home() {
           indiceColumnas.curso = index;
         } else if (enc.includes('PROFESOR') || enc.includes('DOCENTE')) {
           indiceColumnas.profesor = index;
-        } else if (enc.includes('SECCION') || enc.includes('SECCIÓN')) {
+        } else if (enc.includes('SECCION') || enc.includes('SECCIÓN') || enc.includes('SECC')) {
           indiceColumnas.seccion = index;
         } else if (enc.includes('LUNES')) {
           indiceColumnas.lunes = index;
