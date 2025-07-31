@@ -38,7 +38,7 @@ export default function DiaMatricula({ onAbrirModal }) {
                 </div>
 
                 {/* CONTROLES */}
-                <div className="flex flex-row items-center gap-3">
+                <div className="flex flex-row flex-wrap items-center gap-3">
                     <p className="text-sm md:text-base text-gray-600 whitespace-nowrap">
                         Tu día de matrícula:
                     </p>
