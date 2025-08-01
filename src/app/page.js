@@ -8,6 +8,7 @@ import { Select, SelectItem } from "@heroui/select";
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { useDisclosure } from "@heroui/use-disclosure";
 import DiaMatricula from "@/components/diaMatricula.jsx";
+import ModalAgregarCurso from "@/components/ModalAgregarCurso.jsx";
 
 const cursosIngenieriaSoftware = {
   "Primer Ciclo": [
@@ -149,6 +150,7 @@ export default function Home() {
   const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
   const { isOpen: isErrorModalOpen, onOpen: onErrorModalOpen, onClose: onErrorModalClose } = useDisclosure();
   const { isOpen: isMatriculaModalOpen, onOpen: onMatriculaModalOpen, onClose: onMatriculaModalClose } = useDisclosure();
+  const { isOpen: isAddCourseModalOpen, onOpen: onAddCourseModalOpen, onClose: onAddCourseModalClose } = useDisclosure();
 
   const [imagenMatricula, setImagenMatricula] = useState(1);
 
@@ -532,6 +534,58 @@ export default function Home() {
     setCursosSeleccionados(new Set());
   };
 
+  const manejarAgregarCursoPersonalizado = (cursoData) => {
+    const conflictos = [];
+    cursoData.horarios.forEach(horarioItem => {
+      const key = `${horarioItem.dia}-${horarioItem.horario}`;
+      if (horarioPersonal[key]) {
+        conflictos.push({
+          horario: horarioItem.horario,
+          dia: horarioItem.dia,
+          cursoExistente: horarioPersonal[key].curso,
+          seccionExistente: horarioPersonal[key].seccion
+        });
+      }
+    });
+
+    if (conflictos.length > 0) {
+      setConflictoInfo({
+        cursoNuevo: `${cursoData.nombre} (${cursoData.seccion})`,
+        cursoExistente: `${conflictos[0].cursoExistente} (${conflictos[0].seccionExistente})`,
+        detallesConflicto: conflictos
+      });
+      onConflictModalOpen();
+      return { error: 'Conflicto de horarios' };
+    }
+
+    const cursoId = `personalizado-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const cursoItem = {
+      id: cursoId,
+      curso: cursoData.nombre,
+      profesor: cursoData.profesor,
+      seccion: cursoData.seccion
+    };
+
+    const nuevoHorario = { ...horarioPersonal };
+    cursoData.horarios.forEach(horarioItem => {
+      const key = `${horarioItem.dia}-${horarioItem.horario}`;
+      nuevoHorario[key] = {
+        ...cursoItem,
+        aula: cursoData.aula,
+        diaOriginal: horarioItem.dia,
+        horarioOriginal: horarioItem.horario
+      };
+    });
+
+    setHorarioPersonal(nuevoHorario);
+    setCursosSeleccionados(prev => new Set([...prev, cursoId]));
+
+    setMensajeModal('¡Curso personalizado agregado exitosamente!');
+    onSuccessModalOpen();
+
+    return { success: true };
+  };
+
   const compartirHorario = async () => {
     try {
       const tablaElement = document.getElementById('tabla-horario');
@@ -755,12 +809,14 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Layout Principal - Responsive */}
+        {/* Layout Principal */}
         <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
           {/* Tabla de Horarios - Segunda en Mobile */}
           <div className="order-2 lg:order-2 flex-1 bg-white rounded-lg shadow-md p-3 md:p-6">
-            <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Mi Horario Personal</h2>
-
+            <h2 className="text-lg md:text-xl font-semibold mb-2">Mi Horario Personal</h2>
+            <h3 className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">
+              Pulsa en el curso para removerlo del horario.
+            </h3>
             <div className="overflow-x-auto">
               <table id="tabla-horario" className="w-full border-collapse text-xs md:text-sm">
                 <thead>
@@ -848,7 +904,20 @@ export default function Home() {
 
           {/* Panel Lateral - Cursos Disponibles */}
           <div className="order-1 lg:order-1 w-full lg:w-80 bg-white rounded-lg shadow-md p-3 md:p-6">
-            <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Cursos Disponibles</h2>
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <h2 className="text-lg md:text-xl font-semibold">Cursos Disponibles</h2>
+              <Button
+                onClick={onAddCourseModalOpen}
+                color="primary"
+                size="sm"
+                isIconOnly
+                title="Agregar curso personalizado"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </Button>
+            </div>
 
             {/* Selector de Ciclo */}
             <div className="mb-4 md:mb-6">
@@ -876,7 +945,7 @@ export default function Home() {
             </div>
 
             {/* Lista de Cursos por Categorías */}
-            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[46.25rem] overflow-y-auto">
+            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[47.75rem] overflow-y-auto">
               {cursosIngenieriaSoftware[cicloSeleccionado]?.map((curso, index) => {
                 const horariosDisponiblesDelCurso = obtenerHorariosPorCurso(curso);
 
@@ -979,6 +1048,15 @@ export default function Home() {
 
         {/* DiaMatricula - Pasamos la función como prop */}
         <DiaMatricula onAbrirModal={abrirModalMatricula} />
+
+        <h3
+          className="text-xs md:text-sm text-gray-500 text-center mt-4 md:mt-6"
+        >
+          Creado por {' '}
+          <a className="hover:underline" target="_blank" rel="noopener noreferrer" href="https://finanfix.wordpress.com/">
+            Paolo
+          </a>
+        </h3>
 
         {/* Modal de Conflicto */}
         <Modal isOpen={isConflictModalOpen} onClose={onConflictModalClose} size="md" placement="center">
@@ -1110,6 +1188,19 @@ export default function Home() {
             </ModalFooter>
           </ModalContent>
         </Modal>
+
+        {/* Modal de Agregar Curso Personalizado */}
+        <ModalAgregarCurso
+          isOpen={isAddCourseModalOpen}
+          onClose={onAddCourseModalClose}
+          onAgregarCurso={manejarAgregarCursoPersonalizado}
+          onError={(mensaje) => {
+            setMensajeModal(mensaje);
+            onErrorModalOpen();
+          }}
+          diasSemana={diasSemana}
+          horariosDelDia={horariosDelDia}
+        />
       </div>
     </div >
   );
