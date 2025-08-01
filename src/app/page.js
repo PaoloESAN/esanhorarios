@@ -324,39 +324,16 @@ export default function Home() {
         const minutoFin = parseInt(match[4]);
         const aula = match[5] || null;
 
-        const inicioMinutos = horaInicio * 60 + minutoInicio;
-        const finMinutos = horaFin * 60 + minutoFin;
+        // Mapeo directo: tomamos la hora de inicio y la mapeamos al slot correspondiente
+        // Los slots son 07:30-08:15, 08:30-09:15, etc.
+        // Si el horario del Excel es 7:00-7:45, lo mapeamos a 07:30-08:15
+        const horarioFormateado = `${horaInicio.toString().padStart(2, '0')}:30-${(horaInicio + 1).toString().padStart(2, '0')}:15`;
 
-        let minutosActual = inicioMinutos;
-
-        while (minutosActual < finMinutos) {
-          const horaActual = Math.floor(minutosActual / 60);
-          const minutoActual = minutosActual % 60;
-
-          let horarioFormateado;
-
-          // Si el minuto es <= 30, pertenece al slot que empieza en esa hora a las :30
-          // Si el minuto es > 30, pertenece al slot que empieza en esa hora a las :30
-          if (minutoActual <= 15) {
-            // Si está entre :00 y :15, pertenece al slot anterior (hora-1):30-hora:15
-            if (horaActual > 0) {
-              const horaAnterior = horaActual - 1;
-              horarioFormateado = `${horaAnterior.toString().padStart(2, '0')}:30-${horaActual.toString().padStart(2, '0')}:15`;
-            }
-          } else {
-            // Si está entre :16 y :59, pertenece al slot hora:30-(hora+1):15
-            const horaSiguiente = horaActual + 1;
-            horarioFormateado = `${horaActual.toString().padStart(2, '0')}:30-${horaSiguiente.toString().padStart(2, '0')}:15`;
-          }
-
-          if (horarioFormateado && !horarios.some(h => h.horario === horarioFormateado)) {
-            horarios.push({
-              horario: horarioFormateado,
-              aula: aula || 'Por definir'
-            });
-          }
-
-          minutosActual += 45;
+        if (!horarios.some(h => h.horario === horarioFormateado)) {
+          horarios.push({
+            horario: horarioFormateado,
+            aula: aula || 'Por definir'
+          });
         }
       }
     }

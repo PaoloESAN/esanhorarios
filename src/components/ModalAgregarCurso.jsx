@@ -40,39 +40,17 @@ const ModalAgregarCurso = ({
         const [horaInicioHr, horaInicioMin] = horaInicio.split(':').map(Number);
         const [horaFinHr, horaFinMin] = horaFin.split(':').map(Number);
 
-        const inicioMinutos = horaInicioHr * 60 + horaInicioMin;
-        const finMinutos = horaFinHr * 60 + horaFinMin;
+        // Generamos slots desde la hora de inicio hasta la hora de fin
+        // Cada slot se mapea directamente: hora -> hora:30-(hora+1):15
+        for (let hora = horaInicioHr; hora < horaFinHr; hora++) {
+            const horarioFormateado = `${hora.toString().padStart(2, '0')}:30-${(hora + 1).toString().padStart(2, '0')}:15`;
 
-        let minutosActual = inicioMinutos;
-
-        while (minutosActual < finMinutos) {
-            const horaActual = Math.floor(minutosActual / 60);
-            const minutoActual = minutosActual % 60;
-
-            let horarioFormateado;
-
-            // Si el minuto está entre :00 y :15, pertenece al slot anterior (hora-1):30-hora:15
-            // Si el minuto está entre :16 y :59, pertenece al slot actual hora:30-(hora+1):15
-            if (minutoActual <= 15) {
-                // Si está entre :00 y :15, pertenece al slot anterior (hora-1):30-hora:15
-                if (horaActual > 0) {
-                    const horaAnterior = horaActual - 1;
-                    horarioFormateado = `${horaAnterior.toString().padStart(2, '0')}:30-${horaActual.toString().padStart(2, '0')}:15`;
-                }
-            } else {
-                // Si está entre :16 y :59, pertenece al slot hora:30-(hora+1):15
-                const horaSiguiente = horaActual + 1;
-                horarioFormateado = `${horaActual.toString().padStart(2, '0')}:30-${horaSiguiente.toString().padStart(2, '0')}:15`;
-            }
-
-            if (horarioFormateado && !horarios.some(h => h.horario === horarioFormateado)) {
+            if (!horarios.some(h => h.horario === horarioFormateado)) {
                 horarios.push({
                     dia: dia,
                     horario: horarioFormateado
                 });
             }
-
-            minutosActual += 45;
         }
 
         return horarios;
