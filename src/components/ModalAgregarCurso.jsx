@@ -51,12 +51,16 @@ const ModalAgregarCurso = ({
 
             let horarioFormateado;
 
-            if (minutoActual <= 30) {
+            // Si el minuto está entre :00 y :15, pertenece al slot anterior (hora-1):30-hora:15
+            // Si el minuto está entre :16 y :59, pertenece al slot actual hora:30-(hora+1):15
+            if (minutoActual <= 15) {
+                // Si está entre :00 y :15, pertenece al slot anterior (hora-1):30-hora:15
                 if (horaActual > 0) {
                     const horaAnterior = horaActual - 1;
                     horarioFormateado = `${horaAnterior.toString().padStart(2, '0')}:30-${horaActual.toString().padStart(2, '0')}:15`;
                 }
             } else {
+                // Si está entre :16 y :59, pertenece al slot hora:30-(hora+1):15
                 const horaSiguiente = horaActual + 1;
                 horarioFormateado = `${horaActual.toString().padStart(2, '0')}:30-${horaSiguiente.toString().padStart(2, '0')}:15`;
             }
