@@ -230,85 +230,94 @@ const ModalAgregarCurso = ({
                             <div className="space-y-3 max-h-60 overflow-y-auto">
                                 {cursoPersonalizado.horarios.map((horario, index) => (
                                     <div key={index} className="flex flex-col gap-3 p-3 bg-gray-50 rounded-lg">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex-1">
-                                                <Select
-                                                    label="Día"
-                                                    selectedKeys={[horario.dia]}
-                                                    onSelectionChange={(keys) => {
-                                                        const selectedDay = Array.from(keys)[0];
-                                                        if (selectedDay) {
-                                                            actualizarHorarioPersonalizado(index, 'dia', selectedDay);
-                                                        }
-                                                    }}
-                                                    size="sm"
-                                                    variant="bordered"
-                                                    disallowEmptySelection
-                                                >
-                                                    {diasSemana.map((dia) => (
-                                                        <SelectItem key={dia} value={dia}>
-                                                            {dia}
-                                                        </SelectItem>
-                                                    ))}
-                                                </Select>
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                            {/* Los tres selects */}
+                                            <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
+                                                <div className="flex-1 min-w-0">
+                                                    <Select
+                                                        label="Día"
+                                                        selectedKeys={[horario.dia]}
+                                                        onSelectionChange={(keys) => {
+                                                            const selectedDay = Array.from(keys)[0];
+                                                            if (selectedDay) {
+                                                                actualizarHorarioPersonalizado(index, 'dia', selectedDay);
+                                                            }
+                                                        }}
+                                                        size="sm"
+                                                        variant="bordered"
+                                                        disallowEmptySelection
+                                                    >
+                                                        {diasSemana.map((dia) => (
+                                                            <SelectItem key={dia} value={dia}>
+                                                                {dia}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <Select
+                                                        label="Hora Inicio"
+                                                        selectedKeys={[horario.horaInicio]}
+                                                        onSelectionChange={(keys) => {
+                                                            const selectedTime = Array.from(keys)[0];
+                                                            if (selectedTime) {
+                                                                actualizarHorarioPersonalizado(index, 'horaInicio', selectedTime);
+                                                            }
+                                                        }}
+                                                        size="sm"
+                                                        variant="bordered"
+                                                        disallowEmptySelection
+                                                    >
+                                                        {horasInicio.map((hora) => (
+                                                            <SelectItem key={hora} value={hora}>
+                                                                {hora}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <Select
+                                                        label="Hora Fin"
+                                                        selectedKeys={[horario.horaFin]}
+                                                        onSelectionChange={(keys) => {
+                                                            const selectedTime = Array.from(keys)[0];
+                                                            if (selectedTime) {
+                                                                actualizarHorarioPersonalizado(index, 'horaFin', selectedTime);
+                                                            }
+                                                        }}
+                                                        size="sm"
+                                                        variant="bordered"
+                                                        disallowEmptySelection
+                                                    >
+                                                        {horasFin.map((hora) => (
+                                                            <SelectItem key={hora} value={hora}>
+                                                                {hora}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Select>
+                                                </div>
                                             </div>
 
-                                            <div className="flex-1">
-                                                <Select
-                                                    label="Hora Inicio"
-                                                    selectedKeys={[horario.horaInicio]}
-                                                    onSelectionChange={(keys) => {
-                                                        const selectedTime = Array.from(keys)[0];
-                                                        if (selectedTime) {
-                                                            actualizarHorarioPersonalizado(index, 'horaInicio', selectedTime);
-                                                        }
-                                                    }}
-                                                    size="sm"
-                                                    variant="bordered"
-                                                    disallowEmptySelection
-                                                >
-                                                    {horasInicio.map((hora) => (
-                                                        <SelectItem key={hora} value={hora}>
-                                                            {hora}
-                                                        </SelectItem>
-                                                    ))}
-                                                </Select>
-                                            </div>
-
-                                            <div className="flex-1">
-                                                <Select
-                                                    label="Hora Fin"
-                                                    selectedKeys={[horario.horaFin]}
-                                                    onSelectionChange={(keys) => {
-                                                        const selectedTime = Array.from(keys)[0];
-                                                        if (selectedTime) {
-                                                            actualizarHorarioPersonalizado(index, 'horaFin', selectedTime);
-                                                        }
-                                                    }}
-                                                    size="sm"
-                                                    variant="bordered"
-                                                    disallowEmptySelection
-                                                >
-                                                    {horasFin.map((hora) => (
-                                                        <SelectItem key={hora} value={hora}>
-                                                            {hora}
-                                                        </SelectItem>
-                                                    ))}
-                                                </Select>
-                                            </div>
-
+                                            {/* Botón de eliminar */}
                                             {cursoPersonalizado.horarios.length > 1 && (
-                                                <Button
-                                                    onClick={() => eliminarHorarioPersonalizado(index)}
-                                                    color="danger"
-                                                    size="sm"
-                                                    isIconOnly
-                                                    variant="light"
-                                                >
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                </Button>
+                                                <div className="flex justify-center sm:justify-center w-full sm:w-auto mt-2 sm:mt-0">
+                                                    <Button
+                                                        onClick={() => eliminarHorarioPersonalizado(index)}
+                                                        color="danger"
+                                                        size="sm"
+                                                        variant="light"
+                                                        className="shrink-0 w-full sm:w-auto"
+                                                        startContent={
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        }
+                                                    >
+                                                        <span className="sm:hidden">Eliminar Horario</span>
+                                                    </Button>
+                                                </div>
                                             )}
                                         </div>
 
