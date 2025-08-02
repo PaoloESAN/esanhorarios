@@ -189,12 +189,7 @@ export default function Home() {
   const [mensajeModal, setMensajeModal] = useState('');
   const [nombreArchivo, setNombreArchivo] = useState('');
   const [coloresAsignados, setColoresAsignados] = useState(new Map());
-  const [paletaSeleccionada, setPaletaSeleccionada] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('paletaSeleccionada') || 'default';
-    }
-    return 'default';
-  }); // Nuevo estado para colores
+  const [paletaSeleccionada, setPaletaSeleccionada] = useState('default');
 
   const { isOpen: isConflictModalOpen, onOpen: onConflictModalOpen, onClose: onConflictModalClose } = useDisclosure();
   const { isOpen: isSuccessModalOpen, onOpen: onSuccessModalOpen, onClose: onSuccessModalClose } = useDisclosure();
@@ -208,9 +203,6 @@ export default function Home() {
 
   const cambiarPaleta = (nuevaPaleta) => {
     setPaletaSeleccionada(nuevaPaleta);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('paletaSeleccionada', nuevaPaleta);
-    }
 
     const nuevosColores = obtenerColoresActuales(nuevaPaleta);
     const coloresReasignados = reasignarColores(cursosSeleccionados, horarioPersonal, nuevosColores);
@@ -839,28 +831,7 @@ export default function Home() {
                 />
               </Button>
 
-              <Button
-                onClick={limpiarHorario}
-                color="danger"
-                size="sm"
-              >
-                <span className="hidden sm:inline">Limpiar Horario</span>
-                <span className="sm:hidden">Limpiar</span>
-              </Button>
 
-              <Button
-                onClick={compartirHorario}
-                color="success"
-                size="sm"
-                startContent={
-                  <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                  </svg>
-                }
-              >
-                <span className="hidden sm:inline">Compartir</span>
-                <span className="sm:hidden">IMG</span>
-              </Button>
             </div>
           </div>
         </div>
@@ -871,7 +842,8 @@ export default function Home() {
           <div className="order-2 lg:order-2 flex-1 bg-white rounded-lg shadow-md p-3 md:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
               <h2 className="text-lg md:text-xl font-semibold">Mi Horario Personal</h2>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Selector de paleta de colores */}
                 <Select
                   placeholder="Selecciona paleta"
                   selectedKeys={[paletaSeleccionada]}
@@ -884,7 +856,7 @@ export default function Home() {
                   aria-label="Selecciona paleta de colores"
                   size="sm"
                   variant="bordered"
-                  className="w-50 md:w-50"
+                  className="w-44 md:w-48"
                   classNames={{
                     trigger: "h-8 min-w-full",
                     value: "text-xs",
@@ -985,6 +957,39 @@ export default function Home() {
                     </div>
                   </SelectItem>
                 </Select>
+
+                {/* Botones de acción */}
+                <div className="flex items-center gap-1 md:gap-2">
+                  <Button
+                    onClick={limpiarHorario}
+                    color="danger"
+                    size="sm"
+                    variant="flat"
+                    startContent={
+                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    }
+                    className="min-w-unit-10 md:min-w-unit-16"
+                  >
+                    <span className="hidden md:inline">Limpiar</span>
+                  </Button>
+
+                  <Button
+                    onClick={compartirHorario}
+                    color="success"
+                    size="sm"
+                    variant="flat"
+                    startContent={
+                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                      </svg>
+                    }
+                    className="min-w-unit-10 md:min-w-unit-16"
+                  >
+                    <span className="hidden md:inline">Compartir</span>
+                  </Button>
+                </div>
               </div>
             </div>
             <h3 className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">
@@ -1082,6 +1087,7 @@ export default function Home() {
               <Button
                 onClick={onAddCourseModalOpen}
                 color="primary"
+                variant="flat"
                 size="sm"
                 isIconOnly
                 title="Agregar curso personalizado"
@@ -1118,7 +1124,7 @@ export default function Home() {
             </div>
 
             {/* Lista de Cursos por Categorías */}
-            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[47.75rem] overflow-y-auto">
+            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[47.75rem] overflow-y-auto" hidden={nombreArchivo ? false : true}>
               {cursosIngenieriaSoftware[cicloSeleccionado]?.map((curso, index) => {
                 const horariosDisponiblesDelCurso = obtenerHorariosPorCurso(curso);
 
@@ -1216,6 +1222,45 @@ export default function Home() {
                 );
               })}
             </div>
+
+            {/* Mensaje cuando no hay archivo Excel cargado */}
+            <div hidden={nombreArchivo ? true : false} className="flex flex-col items-center justify-center py-8 md:py-12 text-center">
+              <div className="bg-blue-50 rounded-full p-4 mb-4">
+                <svg className="w-8 h-8 md:w-12 md:h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
+                ¡Bienvenido!
+              </h3>
+              <p className="text-sm md:text-base text-gray-600 mb-6 max-w-xs">
+                Carga el archivo Excel con los horarios para ver los cursos disponibles.
+              </p>
+
+              <Button
+                as="label"
+                color="primary"
+                size="md"
+                className="cursor-pointer mb-4"
+                isLoading={cargandoArchivo}
+                startContent={
+                  !cargandoArchivo && (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  )
+                }
+              >
+                {cargandoArchivo ? 'Cargando Excel...' : 'Cargar Archivo Excel'}
+                <input
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={manejarCargaArchivo}
+                  className="hidden"
+                  disabled={cargandoArchivo}
+                />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -1246,7 +1291,7 @@ export default function Home() {
               <div className="mb-4">
                 <p className="text-sm md:text-base text-gray-700 mb-2">
                   No se puede agregar <span className="font-semibold text-blue-600">{conflictoInfo.cursoNuevo}</span>
-                  porque tiene conflicto de horarios con:
+                  {' '}porque tiene conflicto de horarios con:
                 </p>
                 <p className="text-sm md:text-base font-semibold text-red-600">
                   {conflictoInfo.cursoExistente}
