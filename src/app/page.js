@@ -50,6 +50,70 @@ const cursosIngenieriaSoftware = {
   ]
 };
 
+const creditosPorCurso = {
+  // Primer Ciclo
+  "COMUNICACIÓN Y LITERATURA I": 3,
+  "PRE CÁLCULO": 3,
+  "GLOBALIZACIÓN Y REALIDAD NACIONAL": 3,
+  "ESTADÍSTICA Y PROBABILIDADES": 3,
+  "SISTEMAS OPERATIVOS I": 3,
+  "FUNDAMENTOS DE PROGRAMACIÓN": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PERSONALES I": 1,
+
+  // Segundo Ciclo
+  "ALGORITMOS Y ESTRUCTURA DE DATOS": 3,
+  "CÁLCULO I": 4,
+  "INGENIERÍA DE REQUERIMIENTOS": 3,
+  "ANÁLISIS DE DATOS I": 3,
+  "ARQUITECTURA DEL COMPUTADOR I": 3,
+  "BASE DE DATOS": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES I": 1,
+
+  // Tercer Ciclo
+  "ALGEBRA LINEAL I": 3,
+  "ÁLGEBRA LINEAL I": 3,
+  "CÁLCULO II": 4,
+  "PROGRAMACIÓN ORIENTADA A OBJETOS": 3,
+  "ADMINISTRACIÓN DE BASE DE DATOS": 3,
+  "FÍSICA I": 4,
+  "INGENIERÍA DE PROCESOS DE NEGOCIO": 3,
+  "INGENIERÍA DE PROCESOS DE NEGOCIOS": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PERSONALES II": 1,
+
+  // Cuarto Ciclo
+  "MATEMÁTICA DISCRETA": 3,
+  "ESTADISTICA INFERENCIAL": 5,
+  "ESTADÍSTICA INFERENCIAL": 5,
+  "ANÁLISIS Y DISEÑO DE ALGORITMOS": 3,
+  "INTELIGENCIA DE NEGOCIOS": 3,
+  "INGENIERÍA DE SOFTWARE I": 3,
+  "ROBÓTICA": 3,
+  "REDES DE COMUNICACIONES": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES II": 1,
+};
+
+const obtenerCreditosCurso = (nombreCurso) => {
+  if (!nombreCurso) return 0;
+
+  const nombreNormalizado = nombreCurso
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+
+  if (creditosPorCurso[nombreNormalizado]) {
+    return creditosPorCurso[nombreNormalizado];
+  }
+
+  for (const [curso, creditos] of Object.entries(creditosPorCurso)) {
+    if (curso.includes(nombreNormalizado) || nombreNormalizado.includes(curso)) {
+      return creditos;
+    }
+  }
+
+  return 3;
+};
+
 const generarHorarios = () => {
   const horarios = [];
 
@@ -207,6 +271,22 @@ export default function Home() {
     const nuevosColores = obtenerColoresActuales(nuevaPaleta);
     const coloresReasignados = reasignarColores(cursosSeleccionados, horarioPersonal, nuevosColores);
     setColoresAsignados(coloresReasignados);
+  };
+
+  const calcularCreditosTotales = () => {
+    const cursosUnicos = new Set();
+    Object.values(horarioPersonal).forEach(clase => {
+      if (clase && clase.curso) {
+        cursosUnicos.add(clase.curso);
+      }
+    });
+
+    let totalCreditos = 0;
+    cursosUnicos.forEach(curso => {
+      totalCreditos += obtenerCreditosCurso(curso);
+    });
+
+    return totalCreditos;
   };
 
   const textosMatricula = {
@@ -961,36 +1041,45 @@ export default function Home() {
                 </Select>
 
                 {/* Botones de acción */}
-                <div className="flex items-center gap-1 md:gap-2">
-                  <Button
-                    onClick={limpiarHorario}
-                    color="danger"
-                    size="sm"
-                    variant="flat"
-                    startContent={
-                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    }
-                    className="min-w-unit-10 md:min-w-unit-16"
-                  >
-                    <span className="hidden md:inline">Limpiar</span>
-                  </Button>
+                <Button
+                  onClick={limpiarHorario}
+                  color="danger"
+                  size="sm"
+                  variant="flat"
+                  startContent={
+                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  }
+                  className="min-w-unit-10 md:min-w-unit-16"
+                >
+                  <span className="hidden md:inline">Limpiar</span>
+                </Button>
 
-                  <Button
-                    onClick={compartirHorario}
-                    color="success"
-                    size="sm"
-                    variant="flat"
-                    startContent={
-                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                      </svg>
-                    }
-                    className="min-w-unit-10 md:min-w-unit-16"
-                  >
-                    <span className="hidden md:inline">Compartir</span>
-                  </Button>
+                <Button
+                  onClick={compartirHorario}
+                  color="success"
+                  size="sm"
+                  variant="flat"
+                  startContent={
+                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    </svg>
+                  }
+                  className="min-w-unit-10 md:min-w-unit-16"
+                >
+                  <span className="hidden md:inline">Compartir</span>
+                </Button>
+
+                {/* Contador de créditos */}
+                <div className="flex items-center gap-1 md:gap-2 bg-blue-50 px-2 md:px-3 py-1 md:py-1 rounded-lg border border-blue-200 min-w-unit-10 md:min-w-unit-16 h-8 justify-center">
+                  <svg className="w-3 h-3 md:w-4 md:h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                  <span className="text-xs md:text-sm font-semibold text-blue-700">
+                    <span className="hidden md:inline">Créditos: </span>
+                    {calcularCreditosTotales()}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1133,13 +1222,21 @@ export default function Home() {
                 return (
                   <div key={index} className="border border-gray-200 rounded-lg p-2 md:p-3">
                     <h4 className="font-semibold text-gray-800 text-xs md:text-sm mb-2 md:mb-3 border-b border-gray-200 pb-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span>{curso}</span>
-                        {curso === "Administración de base de datos" && (
-                          <span className="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                            software
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="flex-1">{curso}</span>
+                        <div className="flex items-center gap-2">
+                          {curso === "Administración de base de datos" && (
+                            <span className="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                              software
+                            </span>
+                          )}
+                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold border border-emerald-200">
+                            <svg className="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            {obtenerCreditosCurso(curso)}
                           </span>
-                        )}
+                        </div>
                       </div>
                     </h4>
 
