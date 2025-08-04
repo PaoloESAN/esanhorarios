@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import * as XLSX from 'xlsx';
 import domtoimage from 'dom-to-image';
 import { Button } from "@heroui/button";
@@ -40,15 +40,263 @@ const cursosIngenieriaSoftware = {
   ],
   "Cuarto Ciclo": [
     "Matemática Discreta",
-    "Estadistica Inferencial",
+    "Estadística Inferencial",
     "Análisis y diseño de algoritmos",
     "Inteligencia de Negocios",
     "Ingeniería de software I",
     "Robótica",
     "Redes de comunicaciones",
     "Taller: Desarrollo de competencias profesionales II"
+  ],
+  "Quinto Ciclo": [
+    "Gerencia para ingeniería",
+    "Inteligencia Artificial",
+    "Prueba de software",
+    "Desarrollo de Aplicaciones web",
+    "Desarrollo de Aplicaciones móviles",
+    "Desarrollo de soluciones de IoT",
+    "Ingeniería de software II",
+    "Taller: Desarrollo de competencias personales III"
+  ],
+  "Sexto Ciclo": [
+    "Metodología de la Investigación",
+    "Ethical hacking y seguridad",
+    "Interacción humano computador",
+    "Machine learning",
+    "Desarrollo de videojuegos I",
+    "Finanzas para ingeniería",
+    "Taller: Desarrollo de competencias profesionales III",
+    "Electivo 1"
+  ],
+  "Séptimo Ciclo": [
+    "Ética y responsabilidad ambiental",
+    "Calidad de software",
+    "Desarrollo de videojuegos II",
+    "Diseño y desarrollo de productos digitales",
+    "Entrepreneurship",
+    "Arquitectura de software",
+    "Taller: Desarrollo de competencias personales IV",
+    "Electivo 2"
+  ],
+  "Octavo Ciclo": [
+    "Project Management",
+    "Computación en la nube",
+    "Diseño de patrones de software",
+    "Diseño y evaluación de proyectos",
+    "Proyecto StartUp",
+    "Despliegue de aplicaciones",
+    "Taller: Desarrollo de competencias profesionales IV",
+    "Electivo 3"
+  ],
+  "Noveno Ciclo": [
+    "Capstone Project I",
+    "Trabajo de Tesis I",
+    "Taller: Desarrollo de competencias personales V",
+    "Electivo Internacional 1",
+    "Electivo 4",
+    "Electivo 5",
+    "Electivo 6",
+    "Electivo 7"
+  ],
+  "Décimo Ciclo": [
+    "Trabajo de Tesis II",
+    "Deep learning",
+    "Taller: Desarrollo de competencias profesionales V",
+    "Electivo Internacional 2",
+    "Electivo 8",
+    "Electivo 9",
+    "Electivo 10",
+    "Electivo 11"
   ]
 };
+
+const cursosIngenieriaTI = {
+  "Primer Ciclo": [
+    "Comunicación y literatura I",
+    "Estadística y Probabilidades",
+    "Fundamentos de Programación",
+    "Globalización y Realidad Nacional",
+    "Pre Cálculo",
+    "Sistemas operativos I",
+    "Taller: Desarrollo de competencias personales I"
+  ],
+  "Segundo Ciclo": [
+    "Algoritmos y estructura de datos",
+    "Análisis de datos I",
+    "Arquitectura del computador I",
+    "Base de Datos",
+    "Cálculo I",
+    "Ingeniería de requerimientos",
+    "Taller: Desarrollo de competencias profesionales I"
+  ],
+  "Tercer Ciclo": [
+    "Algebra lineal I",
+    "Cálculo II",
+    "Física I",
+    "Ingeniería de procesos de negocio",
+    "Programación Orientada a Objetos",
+    "Taller: Desarrollo de Competencias Personales II"
+  ],
+  "Cuarto Ciclo": [
+    "Análisis y diseño de algoritmos",
+    "Estadística Inferencial",
+    "Ingeniería de software I",
+    "Inteligencia de Negocios",
+    "Matemática Discreta",
+    "Redes de comunicaciones",
+    "Robótica",
+    "Taller: Desarrollo de competencias profesionales II"
+  ],
+  "Quinto Ciclo": [
+    "Análisis Multivariado I",
+    "Desarrollo de Aplicaciones móviles",
+    "Desarrollo de Aplicaciones web",
+    "Desarrollo de soluciones de IoT",
+    "Gerencia para ingeniería",
+    "Inteligencia Artificial",
+    "Prueba de software",
+    "Taller: Desarrollo de competencias personales III"
+  ],
+  "Sexto Ciclo": [
+    "Análisis Multivariado II",
+    "Big Data Analytics",
+    "Finanzas para ingeniería",
+    "Investigación operativa I",
+    "Machine learning",
+    "Metodología de la Investigación",
+    "Taller: Desarrollo de competencias profesionales III",
+    "Electivo 1"
+  ],
+  "Séptimo Ciclo": [
+    "Analítica de la web",
+    "Calidad de software",
+    "Computación Gráfica",
+    "Diseño y desarrollo de productos digitales",
+    "Entrepreneurship",
+    "Ética y responsabilidad ambiental",
+    "Minería de datos",
+    "Taller: Desarrollo de competencias personales IV"
+  ],
+  "Octavo Ciclo": [
+    "Computación en la nube",
+    "Despliegue de aplicaciones",
+    "Diseño y evaluación de proyectos",
+    "Minería de datos avanzado",
+    "Project Management",
+    "Proyecto StartUp",
+    "Taller: Desarrollo de competencias profesionales IV",
+    "Electivo 2"
+  ],
+  "Noveno Ciclo": [
+    "Capstone Project I",
+    "Taller: Desarrollo de competencias personales V",
+    "Trabajo de Tesis I",
+    "Electivo Internacional 1",
+    "Electivo 3",
+    "Electivo 4",
+    "Electivo 5",
+    "Electivo 6"
+  ],
+  "Décimo Ciclo": [
+    "Taller: Desarrollo de competencias profesionales V",
+    "Trabajo de Tesis II",
+    "Electivo Internacional 2",
+    "Electivo 7",
+    "Electivo 8",
+    "Electivo 9",
+    "Electivo 10",
+    "Electivo 11"
+  ]
+};
+
+const cursosExclusivosSoftwareSet = new Set([
+  "administración de base de datos",
+  "ingeniería de software ii",
+  "ethical hacking y seguridad",
+  "interacción humano computador",
+  "desarrollo de videojuegos i",
+  "desarrollo de videojuegos ii",
+  "arquitectura de software",
+  "diseño de patrones de software",
+  "deep learning"
+]);
+
+const cursosExclusivosTISet = new Set([
+  "análisis multivariado i",
+  "análisis multivariado ii",
+  "big data analytics",
+  "investigación operativa i",
+  "analítica de la web",
+  "computación gráfica",
+  "minería de datos",
+  "minería de datos avanzado"
+]);
+
+const obtenerBadgeEspecialidad = (nombreCurso, ciclo) => {
+  const cursoNormalizado = nombreCurso.toLowerCase();
+
+  for (const curso of cursosExclusivosSoftwareSet) {
+    if (cursoNormalizado.includes(curso) || curso.includes(cursoNormalizado)) {
+      return "Software";
+    }
+  }
+
+  for (const curso of cursosExclusivosTISet) {
+    if (cursoNormalizado.includes(curso) || curso.includes(cursoNormalizado)) {
+      return "TI";
+    }
+  }
+
+  return null;
+};
+
+const obtenerCursosCombinados = () => {
+  const cursosCombinados = {};
+
+  const todosCiclos = new Set([
+    ...Object.keys(cursosIngenieriaSoftware),
+    ...Object.keys(cursosIngenieriaTI)
+  ]);
+
+  todosCiclos.forEach(ciclo => {
+    const cursosSoftware = cursosIngenieriaSoftware[ciclo] || [];
+    const cursosTI = cursosIngenieriaTI[ciclo] || [];
+
+    const todosLosCursos = [...cursosSoftware, ...cursosTI];
+    const cursosUnicos = [];
+    const vistos = new Set();
+
+    todosLosCursos.forEach(curso => {
+      if (!vistos.has(curso)) {
+        cursosUnicos.push(curso);
+        vistos.add(curso);
+      }
+    });
+
+    if (ciclo === "Quinto Ciclo" || ciclo === "Sexto Ciclo" || ciclo === "Séptimo Ciclo" || ciclo === "Octavo Ciclo" || ciclo === "Noveno Ciclo" || ciclo === "Décimo Ciclo") {
+      const talleres = cursosUnicos.filter(curso =>
+        curso.toLowerCase().includes('taller:') ||
+        curso.toLowerCase().includes('taller ')
+      );
+      const electivos = cursosUnicos.filter(curso =>
+        curso.toLowerCase().includes('electivo')
+      );
+      const otrosCursos = cursosUnicos.filter(curso =>
+        !curso.toLowerCase().includes('taller:') &&
+        !curso.toLowerCase().includes('taller ') &&
+        !curso.toLowerCase().includes('electivo')
+      );
+
+      cursosCombinados[ciclo] = [...otrosCursos, ...talleres, ...electivos];
+    } else {
+      cursosCombinados[ciclo] = cursosUnicos;
+    }
+  });
+
+  return cursosCombinados;
+};
+
+const cursosCombinados = obtenerCursosCombinados();
 
 const creditosPorCurso = {
   // Primer Ciclo
@@ -90,7 +338,79 @@ const creditosPorCurso = {
   "ROBÓTICA": 3,
   "REDES DE COMUNICACIONES": 3,
   "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES II": 1,
+
+  // Quinto Ciclo
+  "GERENCIA PARA INGENIERÍA": 3,
+  "INTELIGENCIA ARTIFICIAL": 3,
+  "PRUEBA DE SOFTWARE": 3,
+  "DESARROLLO DE APLICACIONES WEB": 3,
+  "DESARROLLO DE APLICACIONES MÓVILES": 3,
+  "DESARROLLO DE SOLUCIONES DE IOT": 3,
+  "INGENIERÍA DE SOFTWARE II": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PERSONALES III": 1,
+  "ANÁLISIS MULTIVARIADO I": 3,
+
+  // Sexto Ciclo
+  "METODOLOGÍA DE LA INVESTIGACIÓN": 3,
+  "ETHICAL HACKING Y SEGURIDAD": 3,
+  "INTERACCIÓN HUMANO COMPUTADOR": 3,
+  "MACHINE LEARNING": 3,
+  "DESARROLLO DE VIDEOJUEGOS I": 3,
+  "FINANZAS PARA INGENIERÍA": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES III": 1,
+  "ANÁLISIS MULTIVARIADO II": 3,
+  "BIG DATA ANALYTICS": 3,
+  "INVESTIGACIÓN OPERATIVA I": 4,
+
+  // Séptimo Ciclo
+  "ÉTICA Y RESPONSABILIDAD AMBIENTAL": 3,
+  "CALIDAD DE SOFTWARE": 3,
+  "DESARROLLO DE VIDEOJUEGOS II": 3,
+  "DISEÑO Y DESARROLLO DE PRODUCTOS DIGITALES": 3,
+  "ENTREPRENEURSHIP": 4,
+  "ARQUITECTURA DE SOFTWARE": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PERSONALES IV": 1,
+  "ANALÍTICA DE LA WEB": 3,
+  "COMPUTACIÓN GRÁFICA": 3,
+  "MINERÍA DE DATOS": 3,
+
+  // Octavo Ciclo
+  "PROJECT MANAGEMENT": 3,
+  "COMPUTACIÓN EN LA NUBE": 3,
+  "DISEÑO DE PATRONES DE SOFTWARE": 3,
+  "DISEÑO Y EVALUACIÓN DE PROYECTOS": 4,
+  "PROYECTO STARTUP": 3,
+  "DESPLIEGUE DE APLICACIONES": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES IV": 1,
+  "MINERÍA DE DATOS AVANZADO": 3,
+
+  // Noveno Ciclo
+  "CAPSTONE PROJECT I": 3,
+  "TRABAJO DE TESIS I": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PERSONALES V": 1,
+
+  // Décimo Ciclo
+  "TRABAJO DE TESIS II": 3,
+  "DEEP LEARNING": 3,
+  "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES V": 1,
+
+  // Electivos
+  "ELECTIVO 1": 3,
+  "ELECTIVO 2": 3,
+  "ELECTIVO 3": 3,
+  "ELECTIVO 4": 3,
+  "ELECTIVO 5": 3,
+  "ELECTIVO 6": 3,
+  "ELECTIVO 7": 3,
+  "ELECTIVO 8": 3,
+  "ELECTIVO 9": 3,
+  "ELECTIVO 10": 3,
+  "ELECTIVO 11": 3,
+  "ELECTIVO INTERNACIONAL 1": 1.5,
+  "ELECTIVO INTERNACIONAL 2": 1.5,
 };
+
+const creditosMap = new Map(Object.entries(creditosPorCurso));
 
 const obtenerCreditosCurso = (nombreCurso) => {
   if (!nombreCurso) return 0;
@@ -101,11 +421,11 @@ const obtenerCreditosCurso = (nombreCurso) => {
     .replace(/[\u0300-\u036f]/g, '')
     .trim();
 
-  if (creditosPorCurso[nombreNormalizado]) {
-    return creditosPorCurso[nombreNormalizado];
+  if (creditosMap.has(nombreNormalizado)) {
+    return creditosMap.get(nombreNormalizado);
   }
 
-  for (const [curso, creditos] of Object.entries(creditosPorCurso)) {
+  for (const [curso, creditos] of creditosMap) {
     if (curso.includes(nombreNormalizado) || nombreNormalizado.includes(curso)) {
       return creditos;
     }
@@ -263,17 +583,19 @@ export default function Home() {
 
   const [imagenMatricula, setImagenMatricula] = useState(1);
 
-  const coloresActuales = obtenerColoresActuales(paletaSeleccionada);
+  const coloresActuales = useMemo(() => {
+    return obtenerColoresActuales(paletaSeleccionada);
+  }, [paletaSeleccionada]);
 
-  const cambiarPaleta = (nuevaPaleta) => {
+  const cambiarPaleta = useCallback((nuevaPaleta) => {
     setPaletaSeleccionada(nuevaPaleta);
 
     const nuevosColores = obtenerColoresActuales(nuevaPaleta);
     const coloresReasignados = reasignarColores(cursosSeleccionados, horarioPersonal, nuevosColores);
     setColoresAsignados(coloresReasignados);
-  };
+  }, [cursosSeleccionados, horarioPersonal]);
 
-  const calcularCreditosTotales = () => {
+  const creditosTotales = useMemo(() => {
     const cursosUnicos = new Set();
     Object.values(horarioPersonal).forEach(clase => {
       if (clase && clase.curso) {
@@ -287,7 +609,7 @@ export default function Home() {
     });
 
     return totalCreditos;
-  };
+  }, [horarioPersonal]);
 
   const textosMatricula = {
     1: "Eres INCREIBLE.",
@@ -297,36 +619,63 @@ export default function Home() {
     5: "Retírate de la Universidad."
   };
 
-  const abrirModalMatricula = (numeroImagen) => {
+  const abrirModalMatricula = useCallback((numeroImagen) => {
     setImagenMatricula(numeroImagen);
     onMatriculaModalOpen();
-  };
+  }, [onMatriculaModalOpen]);
 
-  const procesarArchivoExcel = async (archivo) => {
-    setCargandoArchivo(true);
+  const extraerHorarios = useCallback((textoHorario) => {
+    const horarios = [];
 
-    try {
-      const data = await archivo.arrayBuffer();
-      const workbook = XLSX.read(data);
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    const patterns = [
+      /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})\s*\(([^)]+)\)/g,
+      /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/g,
+      /(\d{1,2})\.(\d{2})\s*-\s*(\d{1,2})\.(\d{2})\s*\(([^)]+)\)/g,
+      /(\d{1,2})\.(\d{2})\s*-\s*(\d{1,2})\.(\d{2})/g,
+      /(\d{1,2}):(\d{2})\s*a\s*(\d{1,2}):(\d{2})\s*\(([^)]+)\)/gi,
+      /(\d{1,2}):(\d{2})\s*a\s*(\d{1,2}):(\d{2})/gi,
+    ];
 
-      const nuevosHorarios = parsearDatosExcel(jsonData);
-      setHorariosDisponibles(nuevosHorarios);
+    for (const pattern of patterns) {
+      let match;
+      while ((match = pattern.exec(textoHorario)) !== null) {
+        const horaInicio = parseInt(match[1]);
+        const minutoInicio = parseInt(match[2]);
+        const horaFin = parseInt(match[3]);
+        const minutoFin = parseInt(match[4]);
+        const aula = match[5] || null;
 
-      setMensajeModal('¡Archivo Excel cargado exitosamente!');
-      onSuccessModalOpen();
-    } catch (error) {
-      console.error('Error al procesar archivo Excel:', error);
-      setMensajeModal('Error al cargar el archivo Excel. Por favor, verifica el formato.');
-      onErrorModalOpen();
-    } finally {
-      setCargandoArchivo(false);
+        // Mapeo directo: tomamos la hora de inicio y la mapeamos al slot correspondiente
+        // Los slots son 07:30-08:15, 08:30-09:15, etc.
+        // Si el horario del Excel es 7:00-7:45, lo mapeamos a 07:30-08:15
+        const horarioFormateado = `${horaInicio.toString().padStart(2, '0')}:30-${(horaInicio + 1).toString().padStart(2, '0')}:15`;
+
+        if (!horarios.some(h => h.horario === horarioFormateado)) {
+          horarios.push({
+            horario: horarioFormateado,
+            aula: aula || 'Por definir'
+          });
+        }
+      }
     }
-  };
 
-  const parsearDatosExcel = (datos) => {
+    if (horarios.length === 0) {
+      const horaSimple = textoHorario.match(/(\d{1,2})/);
+      if (horaSimple) {
+        const hora = parseInt(horaSimple[1]);
+        if (hora >= 7 && hora <= 22) {
+          horarios.push({
+            horario: `${hora.toString().padStart(2, '0')}:30-${(hora + 1).toString().padStart(2, '0')}:15`,
+            aula: 'Por definir'
+          });
+        }
+      }
+    }
+
+    return horarios;
+  }, []);
+
+  const parsearDatosExcel = useCallback((datos) => {
     const horariosParseados = {};
 
     let filaEncabezados = -1;
@@ -436,69 +785,78 @@ export default function Home() {
     }
 
     return horariosParseados;
-  };
+  }, [extraerHorarios]);
 
-  const extraerHorarios = (textoHorario) => {
-    const horarios = [];
+  const procesarArchivoExcel = useCallback(async (archivo) => {
+    setCargandoArchivo(true);
 
-    const patterns = [
-      /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})\s*\(([^)]+)\)/g,
-      /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/g,
-      /(\d{1,2})\.(\d{2})\s*-\s*(\d{1,2})\.(\d{2})\s*\(([^)]+)\)/g,
-      /(\d{1,2})\.(\d{2})\s*-\s*(\d{1,2})\.(\d{2})/g,
-      /(\d{1,2}):(\d{2})\s*a\s*(\d{1,2}):(\d{2})\s*\(([^)]+)\)/gi,
-      /(\d{1,2}):(\d{2})\s*a\s*(\d{1,2}):(\d{2})/gi,
-    ];
+    try {
+      const data = await archivo.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-    for (const pattern of patterns) {
-      let match;
-      while ((match = pattern.exec(textoHorario)) !== null) {
-        const horaInicio = parseInt(match[1]);
-        const minutoInicio = parseInt(match[2]);
-        const horaFin = parseInt(match[3]);
-        const minutoFin = parseInt(match[4]);
-        const aula = match[5] || null;
+      const nuevosHorarios = await parsearDatosExcel(jsonData);
+      setHorariosDisponibles(nuevosHorarios);
 
-        // Mapeo directo: tomamos la hora de inicio y la mapeamos al slot correspondiente
-        // Los slots son 07:30-08:15, 08:30-09:15, etc.
-        // Si el horario del Excel es 7:00-7:45, lo mapeamos a 07:30-08:15
-        const horarioFormateado = `${horaInicio.toString().padStart(2, '0')}:30-${(horaInicio + 1).toString().padStart(2, '0')}:15`;
-
-        if (!horarios.some(h => h.horario === horarioFormateado)) {
-          horarios.push({
-            horario: horarioFormateado,
-            aula: aula || 'Por definir'
-          });
-        }
-      }
+      setMensajeModal('¡Archivo Excel cargado exitosamente!');
+      onSuccessModalOpen();
+    } catch (error) {
+      console.error('Error al procesar archivo Excel:', error);
+      setMensajeModal('Error al cargar el archivo Excel. Por favor, verifica el formato.');
+      onErrorModalOpen();
+    } finally {
+      setCargandoArchivo(false);
     }
+  }, [onSuccessModalOpen, onErrorModalOpen, parsearDatosExcel]);
 
-    if (horarios.length === 0) {
-      const horaSimple = textoHorario.match(/(\d{1,2})/);
-      if (horaSimple) {
-        const hora = parseInt(horaSimple[1]);
-        if (hora >= 7 && hora <= 22) {
-          horarios.push({
-            horario: `${hora.toString().padStart(2, '0')}:30-${(hora + 1).toString().padStart(2, '0')}:15`,
-            aula: 'Por definir'
-          });
-        }
-      }
-    }
+  const limpiarHorario = useCallback(() => {
+    setHorarioPersonal({});
+    setCursosSeleccionados(new Set());
+    setColoresAsignados(new Map());
+  }, []);
 
-    return horarios;
-  };
-
-  const manejarCargaArchivo = (evento) => {
+  const manejarCargaArchivo = useCallback((evento) => {
     const archivo = evento.target.files[0];
     if (archivo) {
       setNombreArchivo(archivo.name);
       procesarArchivoExcel(archivo);
       limpiarHorario();
     }
-  };
+  }, [procesarArchivoExcel, limpiarHorario]);
 
-  const obtenerHorariosPorCurso = (nombreCurso) => {
+  const mapeoEspecial = useMemo(() => ({
+    "ANALISIS DE DATOS I": "ANÁLISIS DE DATOS I",
+    "TALLER DESARROLLO DE COMPETENCIAS PERSONALES I": "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES I",
+    "TALLER DESARROLLO DE COMPETENCIAS PROFESIONALES I": "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES I",
+    "ESTADISTICA Y PROBABILIDADES": "ESTADÍSTICA Y PROBABILIDADES",
+    "GLOBALIZACION Y REALIDAD NACIONAL": "GLOBALIZACIÓN Y REALIDAD NACIONAL",
+    "INGENIERIA DE REQUERIMIENTOS": "INGENIERÍA DE REQUERIMIENTOS",
+    "MATEMATICA DISCRETA": "MATEMÁTICA DISCRETA",
+    "ESTADISTICA INFERENCIAL": "ESTADÍSTICA INFERENCIAL",
+    "ANALISIS Y DISEÑO DE ALGORITMOS": "ANÁLISIS Y DISEÑO DE ALGORITMOS",
+    "INTELIGENCIA DE NEGOCIOS": "INTELIGENCIA DE NEGOCIOS",
+    "INGENIERIA DE SOFTWARE I": "INGENIERÍA DE SOFTWARE I",
+    "ROBOTICA": "ROBÓTICA",
+    "CALCULO I": "CÁLCULO I",
+    "CALCULO II": "CÁLCULO II",
+    "ALGEBRA LINEAL I": "ÁLGEBRA LINEAL I",
+    "PROGRAMACION ORIENTADA A OBJETOS": "PROGRAMACIÓN ORIENTADA A OBJETOS",
+    "ADMINISTRACION DE BASE DE DATOS": "ADMINISTRACIÓN DE BASE DE DATOS",
+    "FISICA I": "FÍSICA I",
+    "INGENIERÍA DE PROCESOS DE NEGOCIOS": "INGENIERÍA DE PROCESOS DE NEGOCIOS",
+    "INGENIERIA DE PROCESOS DE NEGOCIOS": "INGENIERÍA DE PROCESOS DE NEGOCIOS",
+    "INGENIERIA DE PROCESOS DE NEGOCIO": "INGENIERÍA DE PROCESOS DE NEGOCIOS",
+    "COMUNICACION Y LITERATURA I": "COMUNICACIÓN Y LITERATURA I",
+    "PRE CALCULO": "PRE CÁLCULO",
+    "FUNDAMENTOS DE PROGRAMACION": "FUNDAMENTOS DE PROGRAMACIÓN",
+    "DESARROLLO DE SOLUCIONES DE IoT": "DESARROLLO DE SOLUCIONES IoT",
+    "DESARROLLO DE SOLUCIONES IoT": "DESARROLLO DE SOLUCIONES IoT",
+    "DESARROLLO DE SOLUCIONES DE IOT": "DESARROLLO DE SOLUCIONES DE IoT"
+  }), []);
+
+  const obtenerHorariosPorCurso = useCallback((nombreCurso) => {
     const normalizar = (texto) => {
       return texto
         .toUpperCase()
@@ -520,33 +878,6 @@ export default function Home() {
       }
     }
 
-    const mapeoEspecial = {
-      "ANALISIS DE DATOS I": "ANÁLISIS DE DATOS I",
-      "TALLER DESARROLLO DE COMPETENCIAS PERSONALES I": "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES I",
-      "TALLER DESARROLLO DE COMPETENCIAS PROFESIONALES I": "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES I",
-      "ESTADISTICA Y PROBABILIDADES": "ESTADÍSTICA Y PROBABILIDADES",
-      "GLOBALIZACION Y REALIDAD NACIONAL": "GLOBALIZACIÓN Y REALIDAD NACIONAL",
-      "INGENIERIA DE REQUERIMIENTOS": "INGENIERÍA DE REQUERIMIENTOS",
-      "MATEMATICA DISCRETA": "MATEMÁTICA DISCRETA",
-      "ESTADISTICA INFERENCIAL": "ESTADÍSTICA INFERENCIAL",
-      "ANALISIS Y DISEÑO DE ALGORITMOS": "ANÁLISIS Y DISEÑO DE ALGORITMOS",
-      "INTELIGENCIA DE NEGOCIOS": "INTELIGENCIA DE NEGOCIOS",
-      "INGENIERIA DE SOFTWARE I": "INGENIERÍA DE SOFTWARE I",
-      "ROBOTICA": "ROBÓTICA",
-      "CALCULO I": "CÁLCULO I",
-      "CALCULO II": "CÁLCULO II",
-      "ALGEBRA LINEAL I": "ÁLGEBRA LINEAL I",
-      "PROGRAMACION ORIENTADA A OBJETOS": "PROGRAMACIÓN ORIENTADA A OBJETOS",
-      "ADMINISTRACION DE BASE DE DATOS": "ADMINISTRACIÓN DE BASE DE DATOS",
-      "FISICA I": "FÍSICA I",
-      "INGENIERÍA DE PROCESOS DE NEGOCIOS": "INGENIERÍA DE PROCESOS DE NEGOCIOS",
-      "INGENIERIA DE PROCESOS DE NEGOCIOS": "INGENIERÍA DE PROCESOS DE NEGOCIOS",
-      "INGENIERIA DE PROCESOS DE NEGOCIO": "INGENIERÍA DE PROCESOS DE NEGOCIOS",
-      "COMUNICACION Y LITERATURA I": "COMUNICACIÓN Y LITERATURA I",
-      "PRE CALCULO": "PRE CÁLCULO",
-      "FUNDAMENTOS DE PROGRAMACION": "FUNDAMENTOS DE PROGRAMACIÓN"
-    };
-
     for (const [claveMapeo, valorMapeo] of Object.entries(mapeoEspecial)) {
       if (normalizar(claveMapeo) === nombreNormalizado) {
         for (const [clave, valor] of Object.entries(horariosDisponibles)) {
@@ -558,9 +889,9 @@ export default function Home() {
     }
 
     return [];
-  };
+  }, [horariosDisponibles, mapeoEspecial]);
 
-  const agregarCursoAlHorario = (item) => {
+  const agregarCursoAlHorario = useCallback((item) => {
     if (cursosSeleccionados.has(item.id)) {
       return;
     }
@@ -609,27 +940,27 @@ export default function Home() {
       setHorarioPersonal(nuevoHorario);
       setCursosSeleccionados(prev => new Set([...prev, item.id]));
     }
-  };
+  }, [cursosSeleccionados, obtenerHorariosPorCurso, horarioPersonal, coloresAsignados, coloresActuales, onConflictModalOpen]);
 
-  const handleDragStart = (e, item) => {
+  const handleDragStart = useCallback((e, item) => {
     setDraggedItem(item);
     e.dataTransfer.effectAllowed = 'move';
-  };
+  }, []);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = useCallback((e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-  };
+  }, []);
 
-  const handleDrop = (e, dia, horario) => {
+  const handleDrop = useCallback((e, dia, horario) => {
     e.preventDefault();
     if (draggedItem) {
       agregarCursoAlHorario(draggedItem);
       setDraggedItem(null);
     }
-  };
+  }, [draggedItem, agregarCursoAlHorario]);
 
-  const removerDelHorario = (dia, horario) => {
+  const removerDelHorario = useCallback((dia, horario) => {
     const key = `${dia}-${horario}`;
     const claseARemover = horarioPersonal[key];
 
@@ -653,15 +984,9 @@ export default function Home() {
       const nuevosColores = reasignarColores(nuevosCursosSeleccionados, nuevoHorario, coloresActuales);
       setColoresAsignados(nuevosColores);
     }
-  };
+  }, [horarioPersonal, cursosSeleccionados, coloresActuales]);
 
-  const limpiarHorario = () => {
-    setHorarioPersonal({});
-    setCursosSeleccionados(new Set());
-    setColoresAsignados(new Map());
-  };
-
-  const manejarAgregarCursoPersonalizado = (cursoData) => {
+  const manejarAgregarCursoPersonalizado = useCallback((cursoData) => {
     const conflictos = [];
     cursoData.horarios.forEach(horarioItem => {
       const key = `${horarioItem.dia}-${horarioItem.horario}`;
@@ -714,7 +1039,7 @@ export default function Home() {
     onSuccessModalOpen();
 
     return { success: true };
-  };
+  }, [horarioPersonal, coloresAsignados, coloresActuales, onConflictModalOpen, onSuccessModalOpen]);
 
   const compartirHorario = async () => {
     try {
@@ -1078,7 +1403,7 @@ export default function Home() {
                   </svg>
                   <span className="text-xs md:text-sm font-semibold text-blue-700">
                     <span className="hidden md:inline">Créditos: </span>
-                    {calcularCreditosTotales()}
+                    {creditosTotales}
                   </span>
                 </div>
               </div>
@@ -1206,7 +1531,7 @@ export default function Home() {
                 variant="bordered"
                 disallowEmptySelection={true}
               >
-                {Object.keys(cursosIngenieriaSoftware).map((ciclo) => (
+                {Object.keys(cursosCombinados).map((ciclo) => (
                   <SelectItem key={ciclo} value={ciclo}>
                     {ciclo}
                   </SelectItem>
@@ -1216,8 +1541,9 @@ export default function Home() {
 
             {/* Lista de Cursos por Categorías */}
             <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[47.75rem] overflow-y-auto" hidden={nombreArchivo ? false : true}>
-              {cursosIngenieriaSoftware[cicloSeleccionado]?.map((curso, index) => {
+              {cursosCombinados[cicloSeleccionado]?.map((curso, index) => {
                 const horariosDisponiblesDelCurso = obtenerHorariosPorCurso(curso);
+                const badgeEspecialidad = obtenerBadgeEspecialidad(curso, cicloSeleccionado);
 
                 return (
                   <div key={index} className="border border-gray-200 rounded-lg p-2 md:p-3">
@@ -1225,9 +1551,10 @@ export default function Home() {
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="flex-1">{curso}</span>
                         <div className="flex items-center gap-2">
-                          {curso === "Administración de base de datos" && (
-                            <span className="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                              software
+                          {badgeEspecialidad && (
+                            <span className={`inline-block text-white text-xs px-2 py-1 rounded-full font-medium ${badgeEspecialidad === 'Software' ? 'bg-blue-500' : 'bg-blue-500'
+                              }`}>
+                              {badgeEspecialidad}
                             </span>
                           )}
                           <span className="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold border border-emerald-200">
@@ -1311,11 +1638,14 @@ export default function Home() {
                         })}
                       </div>
                     ) : (
-                      <div className="p-2 bg-gray-50 border border-gray-200 rounded text-center">
-                        <div className="text-xs text-gray-500">
-                          No hay horarios disponibles
+                      // Solo mostrar "No hay horarios disponibles" si NO es un electivo
+                      !curso.toLowerCase().includes('electivo') && (
+                        <div className="p-2 bg-gray-50 border border-gray-200 rounded text-center">
+                          <div className="text-xs text-gray-500">
+                            No hay horarios disponibles
+                          </div>
                         </div>
-                      </div>
+                      )
                     )}
                   </div>
                 );
