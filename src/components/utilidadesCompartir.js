@@ -2,7 +2,7 @@ import domtoimage from 'dom-to-image';
 
 export const compartirHorario = async () => {
     try {
-        const elemento = document.getElementById('horario-grid');
+        const elemento = document.getElementById('tabla-horario');
         if (!elemento) {
             console.error('No se encontró el elemento del horario');
             return;
