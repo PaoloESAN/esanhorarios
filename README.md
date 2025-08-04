@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ESAN Horarios
 
-## Getting Started
+Aplicación web interactiva para la gestión y creación de horarios académicos de la Universidad ESAN, desarrollada con Next.js y HeroUI.
 
-First, run the development server:
+## Características
 
+### Gestión de Cursos
+- **Cursos predefinidos** para Ingeniería de Software e Ingeniería de Sistemas
+- **10 ciclos académicos** completamente configurados
+- **Sistema de créditos** automático para cada curso
+- **Especialidades diferenciadas** con badges visuales distintivos
+
+### Personalización Visual
+- **7 paletas de colores** temáticas diferentes
+- **Interfaz drag & drop** intuitiva para organizar horarios
+- **Detección automática de conflictos** de horarios
+- **Cálculo de créditos totales** en tiempo real
+
+### Procesamiento de Archivos
+- **Importación de archivos Excel** con horarios disponibles
+- **Mapeo automático** de nombres de cursos
+- **Validación de formatos** y manejo de errores
+
+### Funciones de Compartir
+- **Exportación a imagen** del horario creado
+- **Función de compartir** integrada
+- **Múltiples métodos de exportación** con fallbacks
+
+## Inicio Rápido
+
+### Prerrequisitos
+- Node.js 18.17 o superior
+- npm, yarn, pnpm o bun
+
+### Instalación
+
+1. Clona el repositorio:
+```bash
+git clone https://github.com/PaoloESAN/esanhorarios.git
+cd esanhorarios
+```
+
+2. Instala las dependencias:
+```bash
+npm install
+# o
+yarn install
+# o
+pnpm install
+```
+
+3. Ejecuta el servidor de desarrollo:
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
+# o
 pnpm dev
-# or
+# o
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Tecnologías Utilizadas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **[Next.js 15](https://nextjs.org/)** - Framework de React con App Router
+- **[React 19](https://react.dev/)** - Biblioteca de interfaz de usuario
+- **[HeroUI](https://heroui.com/)** - Biblioteca de componentes UI moderna
+- **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework de CSS utility-first
+- **[Framer Motion](https://www.framer.com/motion/)** - Biblioteca de animaciones
+- **[XLSX](https://sheetjs.com/)** - Procesamiento de archivos Excel
+- **[dom-to-image](https://github.com/tsayen/dom-to-image)** - Exportación de DOM a imagen
 
-## Learn More
+## Estructura del Proyecto
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── page.js              # Componente principal de la aplicación
+│   ├── layout.js            # Layout base de Next.js
+│   └── globals.css          # Estilos globales
+└── components/
+    ├── diaMatricula.jsx     # Componente día de matrícula
+    ├── ModalAgregarCurso.jsx # Modal para agregar cursos
+    ├── paletasColores.js    # Paletas de colores disponibles
+    ├── datosCursos.js       # Datos de cursos por ciclo
+    ├── datosCreditos.js     # Sistema de créditos
+    ├── procesadorExcel.js   # Procesamiento de archivos Excel
+    ├── utilidadesHorario.js # Utilidades para horarios
+    ├── utilidadesCompartir.js # Funciones para compartir
+    └── modales.jsx          # Componentes de modales
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cómo Usar
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Importa el archivo Excel** con horarios disponibles
+2. **Selecciona tu ciclo académico** desde el menú desplegable
+3. **Arrastra o selecciona tus cursos** desde la lista hacia los slots de horario
+4. **Personaliza colores** seleccionando diferentes paletas
+5. **Comparte tu horario** exportándolo como imagen
 
-## Deploy on Vercel
+## Comandos Disponibles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run dev      # Inicia el servidor de desarrollo con Turbopack
+npm run build    # Construye la aplicación para producción
+npm run start    # Inicia el servidor de producción
+npm run lint     # Ejecuta el linter de ESLint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Paletas de Colores
+
+La aplicación incluye 7 paletas temáticas:
+- **Default**: Colores vibrantes y modernos
+- **Pastel**: Tonos suaves y relajantes
+- **Vibrante**: Tonos vibrantes y llamativos
+- **Monocromatico**: Tema gris elegante
+- **Neón**: Colores brillantes y llamativos
+- **Otoño**: Colores cálidos y otoñales
+- **Océano**: Azules y verdes marinos
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Haz fork del proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## Autor
+
+**Paolo** - [PaoloESAN](https://github.com/PaoloESAN)
+
+---
