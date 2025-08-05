@@ -344,7 +344,7 @@ export default function Home() {
                 Arrastra o selecciona los cursos desde el panel hacia la tabla de horarios.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 md:gap-3 items-center">
+            <div className="flex flex-wrap gap-2 md:gap-3 items-center justify-end">
               {/* Mostrar nombre del archivo si existe */}
               {nombreArchivo && (
                 <div className="flex items-center bg-content2 px-2 md:px-3 py-1 md:py-2 rounded-lg border border-divider">
@@ -384,7 +384,7 @@ export default function Home() {
                 onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
                 color="default"
                 size="sm"
-                variant="flat"
+                variant="ghost"
                 isIconOnly
                 title="Cambiar tema"
               >
