@@ -134,4 +134,3 @@ Las contribuciones son bienvenidas. Por favor:
 
 **Paolo** - [PaoloESAN](https://github.com/PaoloESAN)
 
----

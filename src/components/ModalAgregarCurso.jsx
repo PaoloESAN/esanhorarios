@@ -18,6 +18,7 @@ const ModalAgregarCurso = ({
         seccion: 'S-001',
         profesor: '',
         aula: '',
+        creditos: '3',
         horarios: [{ dia: 'Lunes', horaInicio: '07:30', horaFin: '09:15' }]
     });
 
@@ -62,6 +63,7 @@ const ModalAgregarCurso = ({
             seccion: 'S-001',
             profesor: '',
             aula: '',
+            creditos: '3',
             horarios: [{ dia: 'Lunes', horaInicio: '07:30', horaFin: '09:15' }]
         });
     };
@@ -122,6 +124,7 @@ const ModalAgregarCurso = ({
             seccion: cursoPersonalizado.seccion,
             profesor: cursoPersonalizado.profesor,
             aula: cursoPersonalizado.aula || 'Por definir',
+            creditos: parseInt(cursoPersonalizado.creditos),
             horarios: horariosGenerados
         };
 
@@ -191,7 +194,7 @@ const ModalAgregarCurso = ({
                             </Select>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Input
                                 label="Profesor"
                                 placeholder="Nombre del profesor"
@@ -207,6 +210,28 @@ const ModalAgregarCurso = ({
                                 onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, aula: value }))}
                                 variant="bordered"
                             />
+                            <Select
+                                label="Créditos"
+                                selectedKeys={[cursoPersonalizado.creditos]}
+                                onSelectionChange={(keys) => {
+                                    const selectedCredits = Array.from(keys)[0];
+                                    if (selectedCredits) {
+                                        setCursoPersonalizado(prev => ({ ...prev, creditos: selectedCredits }));
+                                    }
+                                }}
+                                variant="bordered"
+                                placeholder="Selecciona créditos"
+                                isRequired
+                            >
+                                {Array.from({ length: 5 }, (_, i) => {
+                                    const credito = String(i + 1);
+                                    return (
+                                        <SelectItem key={credito} value={credito}>
+                                            {credito}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </Select>
                         </div>
 
                         {/* Horarios */}
@@ -216,6 +241,7 @@ const ModalAgregarCurso = ({
                                 <Button
                                     onClick={agregarHorarioPersonalizado}
                                     color="success"
+                                    variant="flat"
                                     size="sm"
                                     startContent={
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

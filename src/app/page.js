@@ -55,17 +55,21 @@ export default function Home() {
   }, [cursosSeleccionados, horarioPersonal]);
 
   const creditosTotales = useMemo(() => {
-    const cursosUnicos = new Set();
+    const cursosUnicos = new Map();
     Object.values(horarioPersonal).forEach(clase => {
       if (clase && clase.curso) {
-        cursosUnicos.add(clase.curso);
+        const cursoKey = `${clase.curso}-${clase.seccion}`;
+        if (!cursosUnicos.has(cursoKey)) {
+          const creditos = clase.creditos || obtenerCreditosCurso(clase.curso);
+          cursosUnicos.set(cursoKey, creditos);
+        }
       }
     });
 
     let totalCreditos = 0;
-    cursosUnicos.forEach(curso => {
-      totalCreditos += obtenerCreditosCurso(curso);
-    });
+    for (const creditos of cursosUnicos.values()) {
+      totalCreditos += creditos;
+    }
 
     return totalCreditos;
   }, [horarioPersonal]);
@@ -287,6 +291,7 @@ export default function Home() {
       nuevoHorario[key] = {
         ...cursoItem,
         aula: cursoData.aula,
+        creditos: cursoData.creditos,
         diaOriginal: horarioItem.dia,
         horarioOriginal: horarioItem.horario
       };
