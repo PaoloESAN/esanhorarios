@@ -13,6 +13,8 @@ import { obtenerColoresActuales, obtenerColorPorOrden, reasignarColores } from "
 import { procesarArchivoExcel, mapeoEspecial } from "@/components/procesadorExcel.js";
 import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal } from "@/components/modales.jsx";
 import { compartirHorario, compartirHorarioAlternativo } from "@/components/utilidadesCompartir.js";
+import { useTheme } from "next-themes";
+
 
 const cursosCombinados = obtenerCursosCombinados();
 const horariosDelDia = generarHorarios();
@@ -22,6 +24,7 @@ const horariosIniciales = {
 };
 
 export default function Home() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [cicloSeleccionado, setCicloSeleccionado] = useState("Cuarto Ciclo");
   const [horarioPersonal, setHorarioPersonal] = useState({});
   const [draggedItem, setDraggedItem] = useState(null);
@@ -250,6 +253,27 @@ export default function Home() {
     }
   }, [horarioPersonal, cursosSeleccionados, coloresActuales]);
 
+  const removerCursoPorId = useCallback((cursoId) => {
+    const nuevoHorario = {};
+    Object.keys(horarioPersonal).forEach(clave => {
+      if (horarioPersonal[clave].id !== cursoId) {
+        nuevoHorario[clave] = horarioPersonal[clave];
+      }
+    });
+    setHorarioPersonal(nuevoHorario);
+
+    const nuevosCursosSeleccionados = new Set();
+    cursosSeleccionados.forEach(id => {
+      if (id !== cursoId) {
+        nuevosCursosSeleccionados.add(id);
+      }
+    });
+    setCursosSeleccionados(nuevosCursosSeleccionados);
+
+    const nuevosColores = reasignarColores(nuevosCursosSeleccionados, nuevoHorario, coloresActuales);
+    setColoresAsignados(nuevosColores);
+  }, [horarioPersonal, cursosSeleccionados, coloresActuales]);
+
   const manejarAgregarCursoPersonalizado = useCallback((cursoData) => {
     const conflictos = [];
     cursoData.horarios.forEach(horarioItem => {
@@ -307,27 +331,27 @@ export default function Home() {
   }, [horarioPersonal, coloresAsignados, coloresActuales, onConflictModalOpen, onSuccessModalOpen]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 md:p-4">
+    <div className={`min-h-screen ${resolvedTheme === 'dark' ? 'bg-background-dark' : 'bg-gray-50'}  p-2 md:p-4`}>
       <div className="max-w-[1800px] mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-3 md:p-6 mb-3 md:mb-6">
+        <div className="bg-content1 rounded-lg shadow-md p-3 md:p-6 mb-3 md:mb-6">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
             <div>
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
                 Creador de Horarios - Software y TI
               </h1>
-              <p className="text-sm md:text-base text-gray-600">
+              <p className="text-sm md:text-base text-foreground-500">
                 Arrastra o selecciona los cursos desde el panel hacia la tabla de horarios.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 md:gap-3 items-center">
               {/* Mostrar nombre del archivo si existe */}
               {nombreArchivo && (
-                <div className="flex items-center bg-gray-100 px-2 md:px-3 py-1 md:py-2 rounded-lg">
-                  <svg className="w-3 h-3 md:w-4 md:h-4 text-gray-600 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center bg-content2 px-2 md:px-3 py-1 md:py-2 rounded-lg border border-divider">
+                  <svg className="w-3 h-3 md:w-4 md:h-4 text-foreground-500 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <span className="text-xs md:text-sm text-gray-700 font-medium truncate max-w-20 md:max-w-none">{nombreArchivo}</span>
+                  <span className="text-xs md:text-sm text-foreground font-medium truncate max-w-20 md:max-w-none">{nombreArchivo}</span>
                 </div>
               )}
 
@@ -355,6 +379,26 @@ export default function Home() {
                 />
               </Button>
 
+              {/* Botón de cambio de tema */}
+              <Button
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                color="default"
+                size="sm"
+                variant="flat"
+                isIconOnly
+                title="Cambiar tema"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </Button>
+
 
             </div>
           </div>
@@ -363,9 +407,9 @@ export default function Home() {
         {/* Layout Principal */}
         <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
           {/* Tabla de Horarios - Segunda en Mobile */}
-          <div className="order-2 lg:order-2 flex-1 bg-white rounded-lg shadow-md p-3 md:p-6">
+          <div className="order-2 lg:order-2 flex-1 bg-content1 rounded-lg shadow-md p-3 md:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-              <h2 className="text-lg md:text-xl font-semibold">Mi Horario Personal</h2>
+              <h2 className="text-lg md:text-xl font-semibold text-foreground">Mi Horario Personal</h2>
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Selector de paleta de colores */}
                 <Select
@@ -499,7 +543,7 @@ export default function Home() {
                 </Button>
 
                 <Button
-                  onClick={compartirHorario}
+                  onClick={() => compartirHorario({ tema: resolvedTheme })}
                   color="success"
                   size="sm"
                   variant="flat"
@@ -514,27 +558,27 @@ export default function Home() {
                 </Button>
 
                 {/* Contador de créditos */}
-                <div className="flex items-center gap-1 md:gap-2 bg-blue-50 px-2 md:px-3 py-1 md:py-1 rounded-lg border border-blue-200 min-w-unit-10 md:min-w-unit-16 h-8 justify-center">
-                  <svg className="w-3 h-3 md:w-4 md:h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-1 md:gap-2 bg-primary-50 px-2 md:px-3 py-1 md:py-1 rounded-lg border border-primary-200 min-w-unit-10 md:min-w-unit-16 h-8 justify-center">
+                  <svg className="w-3 h-3 md:w-4 md:h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                   </svg>
-                  <span className="text-xs md:text-sm font-semibold text-blue-700">
+                  <span className="text-xs md:text-sm font-semibold text-primary">
                     <span className="hidden md:inline">Créditos: </span>
                     {creditosTotales}
                   </span>
                 </div>
               </div>
             </div>
-            <h3 className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">
+            <h3 className="text-sm md:text-base text-foreground-500 mb-3 md:mb-4">
               Pulsa en el curso para removerlo del horario.
             </h3>
             <div className="overflow-x-auto">
               <table id="tabla-horario" className="w-full border-collapse text-xs md:text-sm">
                 <thead>
                   <tr>
-                    <th className="border border-gray-300 p-1 md:p-2 bg-gray-50 w-16 md:w-20 text-xs">Hora</th>
+                    <th className="border border-divider p-1 md:p-2 bg-content2 w-16 md:w-20 text-xs text-foreground">Hora</th>
                     {diasSemana.map((dia) => (
-                      <th key={dia} className="border border-gray-300 p-1 md:p-2 bg-gray-50 min-w-20 md:min-w-32 text-xs">
+                      <th key={dia} className="border border-divider p-1 md:p-2 bg-content2 min-w-20 md:min-w-32 text-xs text-foreground">
                         <span className="block md:hidden">{dia.substring(0, 3)}</span>
                         <span className="hidden md:block">{dia}</span>
                       </th>
@@ -544,7 +588,7 @@ export default function Home() {
                 <tbody>
                   {horariosDelDia.map((horario) => (
                     <tr key={horario}>
-                      <td className="border border-gray-300 p-1 bg-gray-50 text-xs font-medium text-center">
+                      <td className="border border-divider p-1 bg-content2 text-xs font-medium text-center text-foreground">
                         <span className="block md:hidden text-xs">{horario.split('-')[0]}</span>
                         <span className="hidden md:block">{horario}</span>
                       </td>
@@ -555,7 +599,7 @@ export default function Home() {
                         return (
                           <td
                             key={key}
-                            className="border border-gray-300 p-0.5 md:p-1 h-8 md:h-12 relative"
+                            className="border border-divider p-0.5 md:p-1 h-8 md:h-12 relative"
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, dia, horario)}
                           >
@@ -600,7 +644,7 @@ export default function Home() {
                                 );
                               })()
                             ) : (
-                              <div className="h-full bg-gray-50 hover:bg-blue-50 transition-colors rounded border-2 border-dashed border-transparent hover:border-blue-300">
+                              <div className="h-full bg-content1 hover:bg-content2 transition-colors rounded border-2 border-dashed border-transparent hover:border-primary">
                               </div>
                             )}
                           </td>
@@ -614,9 +658,9 @@ export default function Home() {
           </div>
 
           {/* Panel Lateral - Cursos Disponibles */}
-          <div className="order-1 lg:order-1 w-full lg:w-80 bg-white rounded-lg shadow-md p-3 md:p-6">
+          <div className="order-1 lg:order-1 w-full lg:w-80 bg-content1 rounded-lg shadow-md p-3 md:p-6">
             <div className="flex items-center justify-between mb-3 md:mb-4">
-              <h2 className="text-lg md:text-xl font-semibold">Cursos Disponibles</h2>
+              <h2 className="text-lg md:text-xl font-semibold text-foreground">Cursos Disponibles</h2>
               <Button
                 onClick={onAddCourseModalOpen}
                 color="primary"
@@ -663,13 +707,13 @@ export default function Home() {
                 const badgeEspecialidad = obtenerBadgeEspecialidad(curso, cicloSeleccionado);
 
                 return (
-                  <div key={index} className="border border-gray-200 rounded-lg p-2 md:p-3">
-                    <h4 className="font-semibold text-gray-800 text-xs md:text-sm mb-2 md:mb-3 border-b border-gray-200 pb-2">
+                  <div key={index} className="border border-divider rounded-lg p-2 md:p-3 bg-content2">
+                    <h4 className="font-semibold text-foreground text-xs md:text-sm mb-2 md:mb-3 border-b border-divider pb-2">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="flex-1">{curso}</span>
                         <div className="flex items-center gap-2">
                           {badgeEspecialidad && (
-                            <span className={`inline-block text-white text-xs px-2 py-1 rounded-full font-medium ${badgeEspecialidad === 'Software' ? 'bg-blue-500' : 'bg-blue-500'
+                            <span className={`inline-block text-white text-xs px-2 py-1 rounded-full font-medium ${badgeEspecialidad === 'Software' ? 'bg-primary' : 'bg-primary'
                               }`}>
                               {badgeEspecialidad}
                             </span>
@@ -711,18 +755,20 @@ export default function Home() {
                                     seccion: seccionData.seccion,
                                     id: seccionData.id
                                   });
+                                } else {
+                                  removerCursoPorId(seccionData.id);
                                 }
                               }}
                               className={`p-2 border rounded transition-colors ${estaSeleccionado
-                                ? 'bg-gray-200 border-gray-300 cursor-not-allowed'
-                                : 'bg-blue-50 border-blue-200 cursor-move hover:bg-blue-100'
+                                ? 'bg-content2 border-divider cursor-pointer hover:bg-content3'
+                                : 'bg-primary-50 border-primary-200 cursor-move hover:bg-primary-100'
                                 }`}
                             >
-                              <div className={`text-xs font-medium mb-1 ${estaSeleccionado ? 'text-gray-600' : 'text-blue-900'
+                              <div className={`text-xs font-medium mb-1 ${estaSeleccionado ? 'text-foreground-600' : 'text-foreground'
                                 }`}>
-                                Sección: {seccionData.seccion} {estaSeleccionado ? '✓ Seleccionado' : ''}
+                                Sección: {seccionData.seccion} {estaSeleccionado ? '✓ Click para remover' : ''}
                               </div>
-                              <div className={`text-xs mb-1 ${estaSeleccionado ? 'text-gray-500' : 'text-blue-700'
+                              <div className={`text-xs mb-1 ${estaSeleccionado ? 'text-foreground-500' : 'text-foreground-600'
                                 } flex items-center gap-1`}>
                                 <div className="flex items-center gap-1 flex-row-reverse">
                                   <span>
@@ -737,16 +783,16 @@ export default function Home() {
                                       const searchQuery = encodeURIComponent(seccionData.profesor);
                                       window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
                                     }}
-                                    className="p-0.5 hover:bg-gray-200 rounded transition-colors bg-white border border-gray-300 shadow-sm"
+                                    className="p-0.5 hover:bg-content3 rounded transition-colors bg-content1 border border-divider shadow-sm"
                                     title={`Buscar información sobre ${seccionData.profesor}`}
                                   >
-                                    <svg className="w-3 h-3 text-gray-600 hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3 h-3 text-foreground-500 hover:text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                   </button>
                                 </div>
                               </div>
-                              <div className={`text-xs ${estaSeleccionado ? 'text-gray-500' : 'text-blue-600'
+                              <div className={`text-xs ${estaSeleccionado ? 'text-foreground-500' : 'text-primary'
                                 }`}>
                                 Horarios: {seccionData.horarios.length} clase{seccionData.horarios.length !== 1 ? 's' : ''}
                               </div>
@@ -757,8 +803,8 @@ export default function Home() {
                     ) : (
                       // Solo mostrar "No hay horarios disponibles" si NO es un electivo
                       !curso.toLowerCase().includes('electivo') && (
-                        <div className="p-2 bg-gray-50 border border-gray-200 rounded text-center">
-                          <div className="text-xs text-gray-500">
+                        <div className="p-2 bg-content3 border border-divider rounded text-center">
+                          <div className="text-xs text-foreground-500">
                             No hay horarios disponibles
                           </div>
                         </div>
@@ -771,15 +817,15 @@ export default function Home() {
 
             {/* Mensaje cuando no hay archivo Excel cargado */}
             <div hidden={nombreArchivo ? true : false} className="flex flex-col items-center justify-center py-8 md:py-12 text-center">
-              <div className="bg-blue-50 rounded-full p-4 mb-4">
-                <svg className="w-8 h-8 md:w-12 md:h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-primary-50 rounded-full p-4 mb-4">
+                <svg className="w-8 h-8 md:w-12 md:h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
+              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                 ¡Bienvenido!
               </h3>
-              <p className="text-sm md:text-base text-gray-600 mb-6 max-w-xs">
+              <p className="text-sm md:text-base text-foreground-500 mb-6 max-w-xs">
                 Carga el archivo Excel con los horarios para ver los cursos disponibles.
               </p>
 
@@ -814,7 +860,7 @@ export default function Home() {
         <DiaMatricula onAbrirModal={abrirModalMatricula} />
 
         <h3
-          className="text-xs md:text-sm text-gray-500 text-center mt-4 md:mt-6"
+          className="text-xs md:text-sm text-foreground-500 text-center mt-4 md:mt-6"
         >
           Creado por {' '}
           <a className="hover:underline" target="_blank" rel="noopener noreferrer" href="https://finanfix.wordpress.com/">

@@ -27,19 +27,19 @@ export default function DiaMatricula({ onAbrirModal }) {
     };
 
     return (
-        <div className="bg-white rounded-lg mt-6 shadow-md p-3 md:p-6 mb-6 md:mb-6">
+        <div className="bg-content1 rounded-lg mt-6 shadow-md p-3 md:p-6 mb-6 md:mb-6">
             <div className="flex flex-col gap-4">
 
                 {/* TÍTULO */}
                 <div className="flex-shrink-0">
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-800">
+                    <h2 className="text-xl md:text-2xl font-bold text-foreground">
                         ¿Podrás matricularte a los cursos que deseas?
                     </h2>
                 </div>
 
                 {/* CONTROLES */}
                 <div className="flex flex-row flex-wrap items-center gap-3">
-                    <p className="text-sm md:text-base text-gray-600 whitespace-nowrap">
+                    <p className="text-sm md:text-base text-foreground-500 whitespace-nowrap">
                         Tu día de matrícula:
                     </p>
 

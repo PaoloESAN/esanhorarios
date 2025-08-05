@@ -1,6 +1,5 @@
 import domtoimage from 'dom-to-image';
-
-export const compartirHorario = async () => {
+export const compartirHorario = async ({ tema }) => {
     try {
         const elemento = document.getElementById('tabla-horario');
         if (!elemento) {
@@ -10,7 +9,7 @@ export const compartirHorario = async () => {
 
         const dataUrl = await domtoimage.toPng(elemento, {
             quality: 0.95,
-            bgcolor: '#ffffff',
+            bgcolor: tema === 'dark' ? '#18181b' : '#ffffff',
             style: {
                 transform: 'scale(1)',
                 transformOrigin: 'top left'
