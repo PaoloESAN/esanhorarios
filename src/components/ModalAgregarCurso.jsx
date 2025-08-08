@@ -255,7 +255,7 @@ const ModalAgregarCurso = ({
 
                             <div className="space-y-3 max-h-60 overflow-y-auto">
                                 {cursoPersonalizado.horarios.map((horario, index) => (
-                                    <div key={index} className="flex flex-col gap-3 p-3 bg-content2 rounded-lg border border-divider">
+                                    <div key={index} className="flex flex-col gap-3 p-3 bg-content2 rounded-lg">
                                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                                             {/* Los tres selects */}
                                             <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">

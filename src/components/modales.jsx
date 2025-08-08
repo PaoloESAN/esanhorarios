@@ -43,6 +43,55 @@ export const ConflictModal = ({ isOpen, onClose, conflictoInfo }) => (
     </Modal>
 );
 
+export const ShareModal = ({ isOpen, onClose, dataUrl, onCopy, onDownload, filename = 'mi-horario.png' }) => (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl" placement="center">
+        <ModalContent>
+            <ModalHeader className="flex gap-1 items-center">
+                <div className="bg-primary-100 rounded-full p-2 mr-3">
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    </svg>
+                </div>
+                <span className="text-foreground">Compartir horario</span>
+            </ModalHeader>
+            <ModalBody>
+                <div className="space-y-4">
+                    <div className="text-sm text-foreground-600">Previsualización ({filename})</div>
+                    <div className="w-full max-h-[60vh] overflow-auto bg-content2 border border-divider rounded-lg p-2 flex justify-center">
+                        {dataUrl ? (
+                            <img src={dataUrl} alt="Previsualización del horario" className="max-w-full h-auto rounded-md shadow" />
+                        ) : (
+                            <div className="text-foreground-500 text-sm">Generando imagen…</div>
+                        )}
+                    </div>
+                </div>
+            </ModalBody>
+            <ModalFooter>
+                <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center">
+                    <Button className="w-full sm:w-auto" variant="flat" color="default" onPress={onClose}>Cerrar</Button>
+                    <div className="flex w-full sm:w-auto gap-2 sm:ml-auto">
+                        <Button className="w-full sm:w-auto" color="secondary" onPress={onCopy} isDisabled={!dataUrl}
+                            startContent={
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <rect x="3" y="3" width="12" height="12" rx="2" ry="2" strokeWidth="2" />
+                                    <rect x="9" y="9" width="12" height="12" rx="2" ry="2" strokeWidth="2" />
+                                </svg>
+                            }
+                        >Copiar imagen</Button>
+                        <Button className="w-full sm:w-auto" color="primary" onPress={onDownload} isDisabled={!dataUrl}
+                            startContent={
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+                                </svg>
+                            }
+                        >Descargar</Button>
+                    </div>
+                </div>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+);
+
 export const SuccessModal = ({ isOpen, onClose, mensaje }) => (
     <Modal isOpen={isOpen} onClose={onClose} size="md" placement="center">
         <ModalContent>

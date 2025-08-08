@@ -5,14 +5,15 @@ import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
 import { useDisclosure } from "@heroui/use-disclosure";
 import DiaMatricula from "@/components/diaMatricula.jsx";
+import EncabezadoHorario from "@/components/EncabezadoHorario.jsx";
 import ModalAgregarCurso from "@/components/ModalAgregarCurso.jsx";
 import { obtenerCursosCombinados, obtenerBadgeEspecialidad } from "@/components/datosCursos.js";
 import { obtenerCreditosCurso } from "@/components/datosCreditos.js";
 import { generarHorarios, diasSemana } from "@/components/utilidadesHorario.js";
 import { obtenerColoresActuales, obtenerColorPorOrden, reasignarColores } from "@/components/paletasColores.js";
 import { procesarArchivoExcel, mapeoEspecial } from "@/components/procesadorExcel.js";
-import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal } from "@/components/modales.jsx";
-import { compartirHorario, compartirHorarioAlternativo } from "@/components/utilidadesCompartir.js";
+import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal, ShareModal } from "@/components/modales.jsx";
+import { generarImagenHorario } from "@/components/utilidadesCompartir.js";
 import { useTheme } from "next-themes";
 
 
@@ -24,17 +25,42 @@ const horariosIniciales = {
 };
 
 export default function Home() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [cicloSeleccionado, setCicloSeleccionado] = useState("Cuarto Ciclo");
-  const [horarioPersonal, setHorarioPersonal] = useState({});
+
+  const [horarioActivo, setHorarioActivo] = useState(1);
+  const [horariosPersonales, setHorariosPersonales] = useState({
+    1: {},
+    2: {},
+    3: {},
+    4: {},
+    5: {}
+  });
+  const [cursosSeleccionadosPorHorario, setCursosSeleccionadosPorHorario] = useState({
+    1: new Set(),
+    2: new Set(),
+    3: new Set(),
+    4: new Set(),
+    5: new Set()
+  });
+  const [coloresAsignadosPorHorario, setColoresAsignadosPorHorario] = useState({
+    1: new Map(),
+    2: new Map(),
+    3: new Map(),
+    4: new Map(),
+    5: new Map()
+  });
+
+  const horarioPersonal = horariosPersonales[horarioActivo];
+  const cursosSeleccionados = cursosSeleccionadosPorHorario[horarioActivo] || new Set();
+  const coloresAsignados = coloresAsignadosPorHorario[horarioActivo] || new Map();
+
   const [draggedItem, setDraggedItem] = useState(null);
   const [conflictoInfo, setConflictoInfo] = useState({ cursoExistente: '', cursoNuevo: '' });
-  const [cursosSeleccionados, setCursosSeleccionados] = useState(new Set());
   const [horariosDisponibles, setHorariosDisponibles] = useState(horariosIniciales);
   const [cargandoArchivo, setCargandoArchivo] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
   const [nombreArchivo, setNombreArchivo] = useState('');
-  const [coloresAsignados, setColoresAsignados] = useState(new Map());
   const [paletaSeleccionada, setPaletaSeleccionada] = useState('default');
 
   const { isOpen: isConflictModalOpen, onOpen: onConflictModalOpen, onClose: onConflictModalClose } = useDisclosure();
@@ -42,12 +68,65 @@ export default function Home() {
   const { isOpen: isErrorModalOpen, onOpen: onErrorModalOpen, onClose: onErrorModalClose } = useDisclosure();
   const { isOpen: isMatriculaModalOpen, onOpen: onMatriculaModalOpen, onClose: onMatriculaModalClose } = useDisclosure();
   const { isOpen: isAddCourseModalOpen, onOpen: onAddCourseModalOpen, onClose: onAddCourseModalClose } = useDisclosure();
+  const { isOpen: isShareModalOpen, onOpen: onShareModalOpen, onClose: onShareModalClose } = useDisclosure();
 
   const [imagenMatricula, setImagenMatricula] = useState(1);
+  const [shareDataUrl, setShareDataUrl] = useState(null);
+  const [shareFilename, setShareFilename] = useState('mi-horario.png');
 
   const coloresActuales = useMemo(() => {
     return obtenerColoresActuales(paletaSeleccionada);
   }, [paletaSeleccionada]);
+
+  const normalizar = useCallback((texto) => (
+    texto
+      .toUpperCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w\s]/g, '')
+      .trim()
+  ), []);
+
+  const mapaHorariosNormalizados = useMemo(() => {
+    const map = new Map();
+    for (const [clave, valor] of Object.entries(horariosDisponibles)) {
+      map.set(normalizar(clave), valor);
+    }
+    return map;
+  }, [horariosDisponibles, normalizar]);
+
+  const mapaAliasNormalizados = useMemo(() => {
+    const map = new Map();
+    for (const [k, v] of Object.entries(mapeoEspecial)) {
+      map.set(normalizar(k), normalizar(v));
+    }
+    return map;
+  }, [normalizar]);
+
+  const cambiarHorario = useCallback((numeroHorario) => {
+    setHorarioActivo(numeroHorario);
+  }, []);
+
+  const setHorarioPersonal = useCallback((nuevoHorario) => {
+    setHorariosPersonales(prev => ({
+      ...prev,
+      [horarioActivo]: typeof nuevoHorario === 'function' ? nuevoHorario(prev[horarioActivo] || {}) : nuevoHorario
+    }));
+  }, [horarioActivo]);
+
+  const setCursosSeleccionados = useCallback((nuevosCursos) => {
+    setCursosSeleccionadosPorHorario(prev => ({
+      ...prev,
+      [horarioActivo]: typeof nuevosCursos === 'function' ? nuevosCursos(prev[horarioActivo] || new Set()) : nuevosCursos
+    }));
+  }, [horarioActivo]);
+
+  const setColoresAsignados = useCallback((nuevosColores) => {
+    setColoresAsignadosPorHorario(prev => ({
+      ...prev,
+      [horarioActivo]: typeof nuevosColores === 'function' ? nuevosColores(prev[horarioActivo] || new Map()) : nuevosColores
+    }));
+  }, [horarioActivo]);
 
   const cambiarPaleta = useCallback((nuevaPaleta) => {
     setPaletaSeleccionada(nuevaPaleta);
@@ -55,7 +134,7 @@ export default function Home() {
     const nuevosColores = obtenerColoresActuales(nuevaPaleta);
     const coloresReasignados = reasignarColores(cursosSeleccionados, horarioPersonal, nuevosColores);
     setColoresAsignados(coloresReasignados);
-  }, [cursosSeleccionados, horarioPersonal]);
+  }, [cursosSeleccionados, horarioPersonal, setColoresAsignados]);
 
   const creditosTotales = useMemo(() => {
     const cursosUnicos = new Map();
@@ -90,6 +169,48 @@ export default function Home() {
     onMatriculaModalOpen();
   }, [onMatriculaModalOpen]);
 
+  const abrirShareModal = useCallback(async () => {
+    setShareFilename(`horario-${horarioActivo}.png`);
+    setShareDataUrl(null);
+    onShareModalOpen();
+    const dataUrl = await generarImagenHorario({ tema: resolvedTheme });
+    setShareDataUrl(dataUrl);
+  }, [horarioActivo, resolvedTheme, onShareModalOpen]);
+
+  const manejarCopiarImagen = useCallback(async () => {
+    if (!shareDataUrl) return;
+    try {
+      const res = await fetch(shareDataUrl);
+      const blob = await res.blob();
+      const pngBlob = blob.type === 'image/png'
+        ? blob
+        : new Blob([await blob.arrayBuffer()], { type: 'image/png' });
+
+      if (navigator.clipboard && window.ClipboardItem) {
+        await navigator.clipboard.write([
+          new window.ClipboardItem({ 'image/png': pngBlob })
+        ]);
+        setMensajeModal('Imagen copiada al portapapeles.');
+        onSuccessModalOpen();
+      } else {
+        setMensajeModal('Tu navegador no permite copiar imágenes. Usa "Descargar".');
+        onErrorModalOpen();
+      }
+    } catch (e) {
+      console.error('Fallo al copiar la imagen', e);
+      setMensajeModal('No se pudo copiar la imagen.');
+      onErrorModalOpen();
+    }
+  }, [shareDataUrl, onSuccessModalOpen, onErrorModalOpen]);
+
+  const manejarDescargarImagen = useCallback(() => {
+    if (!shareDataUrl) return;
+    const link = document.createElement('a');
+    link.download = shareFilename || 'mi-horario.png';
+    link.href = shareDataUrl;
+    link.click();
+  }, [shareDataUrl, shareFilename]);
+
   const procesarArchivoExcelLocal = useCallback(async (archivo) => {
     setCargandoArchivo(true);
 
@@ -112,6 +233,30 @@ export default function Home() {
     setHorarioPersonal({});
     setCursosSeleccionados(new Set());
     setColoresAsignados(new Map());
+  }, [setHorarioPersonal, setCursosSeleccionados, setColoresAsignados]);
+
+  const limpiarTodosLosHorarios = useCallback(() => {
+    setHorariosPersonales({
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: {}
+    });
+    setCursosSeleccionadosPorHorario({
+      1: new Set(),
+      2: new Set(),
+      3: new Set(),
+      4: new Set(),
+      5: new Set()
+    });
+    setColoresAsignadosPorHorario({
+      1: new Map(),
+      2: new Map(),
+      3: new Map(),
+      4: new Map(),
+      5: new Map()
+    });
   }, []);
 
   const manejarCargaArchivo = useCallback((evento) => {
@@ -124,39 +269,12 @@ export default function Home() {
   }, [procesarArchivoExcelLocal, limpiarHorario]);
 
   const obtenerHorariosPorCurso = useCallback((nombreCurso) => {
-    const normalizar = (texto) => {
-      return texto
-        .toUpperCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^\w\s]/g, '')
-        .trim();
-    };
-
-    const nombreNormalizado = normalizar(nombreCurso);
-
-    if (horariosDisponibles[nombreCurso.toUpperCase()]) {
-      return horariosDisponibles[nombreCurso.toUpperCase()];
-    }
-
-    for (const [clave, valor] of Object.entries(horariosDisponibles)) {
-      if (normalizar(clave) === nombreNormalizado) {
-        return valor;
-      }
-    }
-
-    for (const [claveMapeo, valorMapeo] of Object.entries(mapeoEspecial)) {
-      if (normalizar(claveMapeo) === nombreNormalizado) {
-        for (const [clave, valor] of Object.entries(horariosDisponibles)) {
-          if (normalizar(clave) === normalizar(valorMapeo)) {
-            return valor;
-          }
-        }
-      }
-    }
-
+    const key = normalizar(nombreCurso);
+    if (mapaHorariosNormalizados.has(key)) return mapaHorariosNormalizados.get(key);
+    const alias = mapaAliasNormalizados.get(key);
+    if (alias && mapaHorariosNormalizados.has(alias)) return mapaHorariosNormalizados.get(alias);
     return [];
-  }, [horariosDisponibles]);
+  }, [mapaHorariosNormalizados, mapaAliasNormalizados, normalizar]);
 
   const agregarCursoAlHorario = useCallback((item) => {
     if (cursosSeleccionados.has(item.id)) {
@@ -379,24 +497,27 @@ export default function Home() {
                 />
               </Button>
 
-              {/* Botón de cambio de tema */}
+              {/* Botón de cambio de tema (siempre con texto) */}
               <Button
+                className="hidden lg:inline-flex"
                 onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
                 color="default"
                 size="sm"
                 variant="ghost"
-                isIconOnly
                 title="Cambiar tema"
+                startContent={
+                  resolvedTheme === 'dark' ? (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )
+                }
               >
-                {resolvedTheme === 'dark' ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                )}
+                {resolvedTheme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
               </Button>
 
 
@@ -407,173 +528,25 @@ export default function Home() {
         {/* Layout Principal */}
         <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
           {/* Tabla de Horarios - Segunda en Mobile */}
-          <div className="order-2 lg:order-2 flex-1 bg-content1 rounded-lg shadow-md p-3 md:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-              <h2 className="text-lg md:text-xl font-semibold text-foreground">Mi Horario Personal</h2>
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* Selector de paleta de colores */}
-                <Select
-                  placeholder="Selecciona paleta"
-                  selectedKeys={[paletaSeleccionada]}
-                  onSelectionChange={(keys) => {
-                    const selectedKey = Array.from(keys)[0];
-                    if (selectedKey && selectedKey !== paletaSeleccionada) {
-                      cambiarPaleta(selectedKey);
-                    }
-                  }}
-                  aria-label="Selecciona paleta de colores"
-                  size="sm"
-                  variant="bordered"
-                  className="w-44 md:w-48"
-                  classNames={{
-                    trigger: "h-8 min-w-full",
-                    value: "text-xs",
-                    listboxWrapper: "max-h-60"
-                  }}
-                  disallowEmptySelection={true}
-                  renderValue={(items) => {
-                    const nombresPaletas = {
-                      'default': 'Clásica',
-                      'pastel': 'Pastel',
-                      'vibrante': 'Vibrante',
-                      'monocromatico': 'Monocromático',
-                      'neon': 'Neón',
-                      'otono': 'Otoño',
-                      'oceanico': 'Oceánico'
-                    };
-
-                    return (
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                          <div className={`w-3 h-3 rounded-full ${coloresActuales[0]?.bg || 'bg-blue-200'}`}></div>
-                          <div className={`w-3 h-3 rounded-full ${coloresActuales[1]?.bg || 'bg-green-200'}`}></div>
-                          <div className={`w-3 h-3 rounded-full ${coloresActuales[2]?.bg || 'bg-red-200'}`}></div>
-                        </div>
-                        <span className="text-sm">{nombresPaletas[paletaSeleccionada] || 'Selecciona paleta'}</span>
-                      </div>
-                    );
-                  }}
-                >
-                  <SelectItem key="default" value="default" textValue="default">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-blue-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-red-200"></div>
-                      </div>
-                      <span>Clásica</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem key="pastel" value="pastel" textValue="pastel">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-rose-100"></div>
-                        <div className="w-3 h-3 rounded-full bg-sky-100"></div>
-                        <div className="w-3 h-3 rounded-full bg-emerald-100"></div>
-                      </div>
-                      <span>Pastel</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem key="vibrante" value="vibrante" textValue="vibrante">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-blue-400"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                        <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                      </div>
-                      <span>Vibrante</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem key="monocromatico" value="monocromatico" textValue="monocromatico">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-gray-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-                        <div className="w-3 h-3 rounded-full bg-slate-200"></div>
-                      </div>
-                      <span>Monocromático</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem key="neon" value="neon" textValue="neon">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-cyan-300"></div>
-                        <div className="w-3 h-3 rounded-full bg-lime-300"></div>
-                        <div className="w-3 h-3 rounded-full bg-pink-300"></div>
-                      </div>
-                      <span>Neón</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem key="otono" value="otono" textValue="otono">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-amber-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-orange-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-red-200"></div>
-                      </div>
-                      <span>Otoño</span>
-                    </div>
-                  </SelectItem>
-                  <SelectItem key="oceanico" value="oceanico" textValue="oceanico">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-blue-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-cyan-200"></div>
-                        <div className="w-3 h-3 rounded-full bg-teal-200"></div>
-                      </div>
-                      <span>Oceánico</span>
-                    </div>
-                  </SelectItem>
-                </Select>
-
-                {/* Botones de acción */}
-                <Button
-                  onClick={limpiarHorario}
-                  color="danger"
-                  size="sm"
-                  variant="flat"
-                  startContent={
-                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  }
-                  className="min-w-unit-10 md:min-w-unit-16"
-                >
-                  <span className="hidden md:inline">Limpiar</span>
-                </Button>
-
-                <Button
-                  onClick={() => compartirHorario({ tema: resolvedTheme })}
-                  color="success"
-                  size="sm"
-                  variant="flat"
-                  startContent={
-                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                    </svg>
-                  }
-                  className="min-w-unit-10 md:min-w-unit-16"
-                >
-                  <span className="hidden md:inline">Compartir</span>
-                </Button>
-
-                {/* Contador de créditos */}
-                <div className="flex items-center gap-1 md:gap-2 bg-primary-50 px-2 md:px-3 py-1 md:py-1 rounded-lg border border-primary-200 min-w-unit-10 md:min-w-unit-16 h-8 justify-center">
-                  <svg className="w-3 h-3 md:w-4 md:h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                  </svg>
-                  <span className="text-xs md:text-sm font-semibold text-primary">
-                    <span className="hidden md:inline">Créditos: </span>
-                    {creditosTotales}
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div className="order-2 lg:order-2 min-w-0 flex-1 bg-content1 rounded-lg shadow-md p-3 md:p-6">
+            <EncabezadoHorario
+              horarioActivo={horarioActivo}
+              creditosTotales={creditosTotales}
+              paletaSeleccionada={paletaSeleccionada}
+              coloresActuales={coloresActuales}
+              cambiarPaleta={cambiarPaleta}
+              cambiarHorario={cambiarHorario}
+              resolvedTheme={resolvedTheme}
+              setTheme={setTheme}
+              limpiarHorario={limpiarHorario}
+              limpiarTodosLosHorarios={limpiarTodosLosHorarios}
+              abrirShareModal={abrirShareModal}
+            />
             <h3 className="text-sm md:text-base text-foreground-500 mb-3 md:mb-4">
               Pulsa en el curso para removerlo del horario.
             </h3>
             <div className="overflow-x-auto">
-              <table id="tabla-horario" className="w-full border-collapse text-xs md:text-sm">
+              <table id="tabla-horario" className="w-full min-w-[900px] border-collapse text-xs md:text-sm">
                 <thead>
                   <tr>
                     <th className="border border-divider p-1 md:p-2 bg-content2 w-16 md:w-20 text-xs text-foreground">Hora</th>
@@ -701,7 +674,7 @@ export default function Home() {
             </div>
 
             {/* Lista de Cursos por Categorías */}
-            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[47.75rem] overflow-y-auto" hidden={nombreArchivo ? false : true}>
+            <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[56.75rem] overflow-y-auto" hidden={nombreArchivo ? false : true}>
               {cursosCombinados[cicloSeleccionado]?.map((curso, index) => {
                 const horariosDisponiblesDelCurso = obtenerHorariosPorCurso(curso);
                 const badgeEspecialidad = obtenerBadgeEspecialidad(curso, cicloSeleccionado);
@@ -893,6 +866,15 @@ export default function Home() {
           mensaje={mensajeModal}
         />
 
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={onShareModalClose}
+          dataUrl={shareDataUrl}
+          onCopy={manejarCopiarImagen}
+          onDownload={manejarDescargarImagen}
+          filename={shareFilename}
+        />
+
         {/* Modal de Agregar Curso Personalizado */}
         <ModalAgregarCurso
           isOpen={isAddCourseModalOpen}
@@ -906,6 +888,6 @@ export default function Home() {
           horariosDelDia={horariosDelDia}
         />
       </div>
-    </div >
+    </div>
   );
 }

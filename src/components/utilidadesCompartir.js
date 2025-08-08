@@ -1,10 +1,11 @@
 import domtoimage from 'dom-to-image';
-export const compartirHorario = async ({ tema }) => {
+
+export const generarImagenHorario = async ({ tema }) => {
     try {
         const elemento = document.getElementById('tabla-horario');
         if (!elemento) {
             console.error('No se encontró el elemento del horario');
-            return;
+            return null;
         }
 
         const dataUrl = await domtoimage.toPng(elemento, {
@@ -16,33 +17,18 @@ export const compartirHorario = async ({ tema }) => {
             }
         });
 
-        const link = document.createElement('a');
-        link.download = 'mi-horario.png';
-        link.href = dataUrl;
-        link.click();
+        return dataUrl;
     } catch (error) {
         console.error('Error al generar la imagen:', error);
+        return null;
     }
 };
 
-export const compartirHorarioAlternativo = async () => {
-    try {
-        const elemento = document.getElementById('horario-grid');
-        if (!elemento) {
-            console.error('No se encontró el elemento del horario');
-            return;
-        }
-
-        const canvas = await domtoimage.toCanvas(elemento);
-        canvas.toBlob((blob) => {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = 'mi-horario.png';
-            link.href = url;
-            link.click();
-            URL.revokeObjectURL(url);
-        });
-    } catch (error) {
-        console.error('Error al generar la imagen alternativa:', error);
-    }
+export const compartirHorario = async ({ tema, filename = 'mi-horario.png' }) => {
+    const dataUrl = await generarImagenHorario({ tema });
+    if (!dataUrl) return;
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
 };
