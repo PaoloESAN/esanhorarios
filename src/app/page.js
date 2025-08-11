@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useTransition } from "react";
+import dynamic from "next/dynamic";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
 import { useDisclosure } from "@heroui/use-disclosure";
-import DiaMatricula from "@/components/diaMatricula.jsx";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
 import EncabezadoHorario from "@/components/EncabezadoHorario.jsx";
 import ModalAgregarCurso from "@/components/ModalAgregarCurso.jsx";
+const ModalNota = dynamic(() => import("@/components/ModalNota.jsx"), { ssr: false });
 import { obtenerCursosCombinados, obtenerBadgeEspecialidad } from "@/components/datosCursos.js";
 import { obtenerCreditosCurso } from "@/components/datosCreditos.js";
 import { generarHorarios, diasSemana } from "@/components/utilidadesHorario.js";
@@ -15,7 +17,6 @@ import { procesarArchivoExcel, mapeoEspecial } from "@/components/procesadorExce
 import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal, ShareModal } from "@/components/modales.jsx";
 import { generarImagenHorario } from "@/components/utilidadesCompartir.js";
 import { useTheme } from "next-themes";
-
 
 const cursosCombinados = obtenerCursosCombinados();
 const horariosDelDia = generarHorarios();
@@ -73,6 +74,23 @@ export default function Home() {
   const [imagenMatricula, setImagenMatricula] = useState(1);
   const [shareDataUrl, setShareDataUrl] = useState(null);
   const [shareFilename, setShareFilename] = useState('mi-horario.png');
+  const [notasPorHorario, setNotasPorHorario] = useState({
+    1: {},
+    2: {},
+    3: {},
+    4: {},
+    5: {}
+  });
+  const notasCelda = notasPorHorario[horarioActivo] || {};
+  const setNotasCelda = useCallback((notasUpdater) => {
+    setNotasPorHorario(prev => ({
+      ...prev,
+      [horarioActivo]: typeof notasUpdater === 'function' ? notasUpdater(prev[horarioActivo] || {}) : notasUpdater
+    }));
+  }, [horarioActivo]);
+
+  const { isOpen: isNoteModalOpen, onOpen: onNoteModalOpen, onClose: onNoteModalClose } = useDisclosure();
+  const [celdaSeleccionada, setCeldaSeleccionada] = useState(null);
 
   const coloresActuales = useMemo(() => {
     return obtenerColoresActuales(paletaSeleccionada);
@@ -128,12 +146,35 @@ export default function Home() {
     }));
   }, [horarioActivo]);
 
+  const paletteDebounceRef = useRef(null);
+  const idleCallbackRef = useRef(null);
+  const [isPending, startTransition] = useTransition();
   const cambiarPaleta = useCallback((nuevaPaleta) => {
     setPaletaSeleccionada(nuevaPaleta);
-
-    const nuevosColores = obtenerColoresActuales(nuevaPaleta);
-    const coloresReasignados = reasignarColores(cursosSeleccionados, horarioPersonal, nuevosColores);
-    setColoresAsignados(coloresReasignados);
+    if (paletteDebounceRef.current) {
+      clearTimeout(paletteDebounceRef.current);
+    }
+    if (idleCallbackRef.current) {
+      // @ts-ignore
+      (window.cancelIdleCallback ? window.cancelIdleCallback : clearTimeout)(idleCallbackRef.current);
+    }
+    paletteDebounceRef.current = setTimeout(() => {
+      const nuevosColores = obtenerColoresActuales(nuevaPaleta);
+      const scheduleIdle = (cb) => {
+        // @ts-ignore
+        const ric = window.requestIdleCallback;
+        if (typeof ric === 'function') {
+          return ric(cb, { timeout: 300 });
+        }
+        return setTimeout(() => cb({ didTimeout: true, timeRemaining: () => 0 }), 150);
+      };
+      idleCallbackRef.current = scheduleIdle(() => {
+        startTransition(() => {
+          const coloresReasignados = reasignarColores(cursosSeleccionados, horarioPersonal, nuevosColores);
+          setColoresAsignados(coloresReasignados);
+        });
+      });
+    }, 120);
   }, [cursosSeleccionados, horarioPersonal, setColoresAsignados]);
 
   const creditosTotales = useMemo(() => {
@@ -211,6 +252,28 @@ export default function Home() {
     link.click();
   }, [shareDataUrl, shareFilename]);
 
+  const abrirModalNotaParaCelda = useCallback((key) => {
+    setCeldaSeleccionada(key);
+    onNoteModalOpen();
+  }, [onNoteModalOpen]);
+
+  const guardarNotaEnCelda = useCallback((datos) => {
+    if (!celdaSeleccionada) return;
+    setNotasCelda(prev => ({
+      ...prev,
+      [celdaSeleccionada]: { texto: (datos?.texto || '').trim(), color: datos?.color || '#fde68a', textColor: datos?.textColor || '#111827' }
+    }));
+    onNoteModalClose();
+  }, [celdaSeleccionada, setNotasCelda, onNoteModalClose]);
+
+  const quitarNotaDeCelda = useCallback((key) => {
+    setNotasCelda(prev => {
+      const nuevo = { ...prev };
+      delete nuevo[key];
+      return nuevo;
+    });
+  }, [setNotasCelda]);
+
   const procesarArchivoExcelLocal = useCallback(async (archivo) => {
     setCargandoArchivo(true);
 
@@ -233,6 +296,7 @@ export default function Home() {
     setHorarioPersonal({});
     setCursosSeleccionados(new Set());
     setColoresAsignados(new Map());
+    setNotasCelda({});
   }, [setHorarioPersonal, setCursosSeleccionados, setColoresAsignados]);
 
   const limpiarTodosLosHorarios = useCallback(() => {
@@ -256,6 +320,13 @@ export default function Home() {
       3: new Map(),
       4: new Map(),
       5: new Map()
+    });
+    setNotasPorHorario({
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: {}
     });
   }, []);
 
@@ -463,7 +534,6 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 md:gap-3 items-center justify-end">
-              {/* Mostrar nombre del archivo si existe */}
               {nombreArchivo && (
                 <div className="flex items-center bg-content2 px-2 md:px-3 py-1 md:py-2 rounded-lg border border-divider">
                   <svg className="w-3 h-3 md:w-4 md:h-4 text-foreground-500 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -543,15 +613,15 @@ export default function Home() {
               abrirShareModal={abrirShareModal}
             />
             <h3 className="text-sm md:text-base text-foreground-500 mb-3 md:mb-4">
-              Pulsa en el curso para removerlo del horario.
+              Pulsa en un espacio en blanco para agregar un texto al horario.
             </h3>
             <div className="overflow-x-auto">
-              <table id="tabla-horario" className="w-full min-w-[900px] border-collapse text-xs md:text-sm">
+              <table id="tabla-horario" className="w-full min-w-[640px] md:min-w-[900px] table-fixed border-collapse text-xs md:text-sm">
                 <thead>
                   <tr>
-                    <th className="border border-divider p-1 md:p-2 bg-content2 w-16 md:w-20 text-xs text-foreground">Hora</th>
+                    <th className="border border-divider p-1 md:p-2 bg-content2 w-14 md:w-20 text-xs text-foreground">Hora</th>
                     {diasSemana.map((dia) => (
-                      <th key={dia} className="border border-divider p-1 md:p-2 bg-content2 min-w-20 md:min-w-32 text-xs text-foreground">
+                      <th key={dia} className="border border-divider p-1 md:p-2 bg-content2 min-w-16 md:min-w-32 text-xs text-foreground">
                         <span className="block md:hidden">{dia.substring(0, 3)}</span>
                         <span className="hidden md:block">{dia}</span>
                       </th>
@@ -568,11 +638,12 @@ export default function Home() {
                       {diasSemana.map((dia) => {
                         const key = `${dia}-${horario}`;
                         const claseAsignada = horarioPersonal[key];
+                        const nota = notasCelda[key];
 
                         return (
                           <td
                             key={key}
-                            className="border border-divider p-0.5 md:p-1 h-8 md:h-12 relative"
+                            className="border border-divider p-0.5 md:p-1 h-7 md:h-12 relative"
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, dia, horario)}
                           >
@@ -581,29 +652,21 @@ export default function Home() {
                                 const colorCurso = coloresAsignados.get(claseAsignada.id) || coloresActuales[0];
                                 return (
                                   <div
-                                    className={`${colorCurso.bg} ${colorCurso.border} border rounded p-0.5 md:p-1 h-full flex flex-col justify-between text-xs group relative cursor-pointer`}
+                                    className={`${colorCurso.bg} ${colorCurso.border} border rounded p-0.5 md:p-1 h-full flex flex-col justify-between text-xs group relative cursor-pointer overflow-visible min-w-0`}
                                     onClick={() => removerDelHorario(dia, horario)}
                                     title="Click para remover todo el curso"
                                   >
                                     <div className={`font-medium ${colorCurso.text} leading-tight text-xs`}>
-                                      <span className="block">
-                                        {claseAsignada.curso.length > 12
-                                          ? claseAsignada.curso.substring(0, 12) + '...'
-                                          : claseAsignada.curso
-                                        }
-                                      </span>
+                                      <span className="line-clamp-2">{claseAsignada.curso}</span>
                                     </div>
-                                    <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs`}>
+                                    <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs w-full truncate`}>
                                       {claseAsignada.seccion}
                                     </div>
-                                    <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs`}>
-                                      {claseAsignada.profesor.length > 12
-                                        ? claseAsignada.profesor.substring(0, 12) + '...'
-                                        : claseAsignada.profesor
-                                      }
+                                    <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs w-full truncate`}>
+                                      {claseAsignada.profesor}
                                     </div>
                                     {claseAsignada.aula && (
-                                      <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs`}>
+                                      <div className={`${colorCurso.textSecondary} text-[10px] md:text-xs w-full truncate`}>
                                         {claseAsignada.aula}
                                       </div>
                                     )}
@@ -617,7 +680,30 @@ export default function Home() {
                                 );
                               })()
                             ) : (
-                              <div className="h-full bg-content1 hover:bg-content2 transition-colors rounded border-2 border-dashed border-transparent hover:border-primary">
+                              <div className="h-full bg-content1 hover:bg-content2 transition-colors rounded border-2 border-dashed border-transparent hover:border-primary relative">
+                                {nota ? (
+                                  <Dropdown>
+                                    <DropdownTrigger>
+                                      <div
+                                        className="w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0"
+                                        style={{ backgroundColor: nota.color, color: (nota.textColor || '#111827') }}
+                                        title={nota.texto}
+                                      >
+                                        <div className={`text-xs md:text-sm leading-tight px-2 w-full max-w-full whitespace-normal break-words text-center`}>{nota.texto}</div>
+                                      </div>
+                                    </DropdownTrigger>
+                                    <DropdownMenu aria-label="Opciones de nota">
+                                      <DropdownItem key="editar" onPress={() => abrirModalNotaParaCelda(key)}>Editar texto</DropdownItem>
+                                      <DropdownItem key="quitar" className="text-danger" color="danger" onPress={() => quitarNotaDeCelda(key)}>Quitar texto</DropdownItem>
+                                    </DropdownMenu>
+                                  </Dropdown>
+                                ) : (
+                                  <div
+                                    className="absolute inset-0"
+                                    onClick={() => abrirModalNotaParaCelda(key)}
+                                    title="Click para agregar texto"
+                                  />
+                                )}
                               </div>
                             )}
                           </td>
@@ -829,9 +915,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* DiaMatricula - Pasamos la función como prop */}
-        <DiaMatricula onAbrirModal={abrirModalMatricula} />
-
         <h3
           className="text-xs md:text-sm text-foreground-500 text-center mt-4 md:mt-6"
         >
@@ -873,6 +956,17 @@ export default function Home() {
           onCopy={manejarCopiarImagen}
           onDownload={manejarDescargarImagen}
           filename={shareFilename}
+        />
+
+        {/* Modal para agregar/editar texto en celda */}
+        <ModalNota
+          isOpen={isNoteModalOpen}
+          onClose={onNoteModalClose}
+          onSave={guardarNotaEnCelda}
+          instanceKey={celdaSeleccionada}
+          textoDefault={celdaSeleccionada ? (notasCelda[celdaSeleccionada]?.texto || '') : ''}
+          colorDefault={celdaSeleccionada ? (notasCelda[celdaSeleccionada]?.color || '#fde68a') : '#fde68a'}
+          textColorDefault={celdaSeleccionada ? (notasCelda[celdaSeleccionada]?.textColor || '#111827') : '#111827'}
         />
 
         {/* Modal de Agregar Curso Personalizado */}
