@@ -1,0 +1,9 @@
+- Arreglar el bug de la lista de cursos que no llega al final
+- Agregar todas las carreras
+- Mejoras en dispositivos pequeños
+- Mejoras en la tabla(mover cursos, mejores maneras de interaccion, etc)
+- Paleta de colores personalizada
+- Cursos seleccionados guardados en localstorage
+- Exportar a un Excel
+- EXTRA: notificacion cuando esté el horario disponible(al igual que sus versiones posteriores) y boton para descargarlo
+- EXTRA: apartado en el cual poder ver los cursos que te faltan para acabar la carrera
