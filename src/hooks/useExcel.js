@@ -39,8 +39,6 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         try {
             const nuevosHorarios = await procesarArchivoExcel(archivo);
             setHorariosDisponibles(nuevosHorarios);
-            setMensajeModal?.('¡Archivo Excel cargado exitosamente!');
-            onExito?.();
         } catch (error) {
             console.error('Error al procesar archivo Excel:', error);
             setMensajeModal?.('Error al cargar el archivo Excel. Por favor, verifica el formato.');

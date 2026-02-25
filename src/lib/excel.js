@@ -84,12 +84,20 @@ export const parsearDatosExcel = (datos) => {
     let filaEncabezados = -1;
     for (let i = 0; i < Math.min(10, datos.length); i++) {
         const fila = datos[i];
-        if (fila && fila.some(celda =>
-            celda && typeof celda === 'string' &&
-            (celda.toUpperCase().includes('CURSO') ||
-                celda.toUpperCase().includes('MATERIA') ||
-                celda.toUpperCase().includes('ASIGNATURA'))
-        )) {
+        if (!fila) continue;
+        const textos = fila
+            .filter(c => c && typeof c === 'string')
+            .map(c => c.toUpperCase());
+        const tieneCurso = textos.some(t =>
+            t.includes('CURSO') || t.includes('MATERIA') || t.includes('ASIGNATURA'));
+        const tieneDiaOSeccion = textos.some(t =>
+            t.includes('LUNES') || t.includes('MARTES') ||
+            t.includes('MIÉRCOLES') || t.includes('MIERCOLES') ||
+            t.includes('JUEVES') || t.includes('VIERNES') ||
+            t.includes('SÁBADO') || t.includes('SABADO') ||
+            t.includes('SECCION') || t.includes('SECCIÓN') ||
+            t.includes('PROFESOR') || t.includes('DOCENTE'));
+        if (tieneCurso && tieneDiaOSeccion) {
             filaEncabezados = i;
             break;
         }
