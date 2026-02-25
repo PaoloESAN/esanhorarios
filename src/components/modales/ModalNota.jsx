@@ -70,7 +70,6 @@ function ModalNota({
     const [color, setColor] = useState(colorDefault || "#fde68a");
     const [textColor, setTextColor] = useState(textColorDefault || "#111827");
 
-    // Reinicia el estado al abrir o al cambiar de celda
     useEffect(() => {
         if (isOpen) {
             setTexto(textoDefault || "");

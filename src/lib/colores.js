@@ -78,29 +78,18 @@ export const paletasDisponibles = {
     ]
 };
 
-export const obtenerColoresActuales = (paletaSeleccionada) => {
-    return paletasDisponibles[paletaSeleccionada] || paletasDisponibles.default;
+export const obtenerColoresActuales = (paletaSeleccionada) =>
+    paletasDisponibles[paletaSeleccionada] ?? paletasDisponibles.default;
+
+export const obtenerColorPorOrden = (id, coloresAsignados, coloresDisponibles) => {
+    if (coloresAsignados.has(id)) return coloresAsignados.get(id);
+    return coloresDisponibles[coloresAsignados.size % coloresDisponibles.length];
 };
 
-export const obtenerColorPorOrden = (ordenSeleccion, coloresAsignados, coloresDisponibles) => {
-    if (coloresAsignados.has(ordenSeleccion)) {
-        return coloresAsignados.get(ordenSeleccion);
-    }
-
-    const indiceColor = (coloresAsignados.size) % coloresDisponibles.length;
-    const colorAsignado = coloresDisponibles[indiceColor];
-
-    return colorAsignado;
-};
-
-export const reasignarColores = (cursosSeleccionados, horarioPersonal, coloresDisponibles) => {
-    const nuevosColoresAsignados = new Map();
-    const cursosOrdenados = Array.from(cursosSeleccionados);
-
-    cursosOrdenados.forEach((cursoId, indice) => {
-        const colorIndex = indice % coloresDisponibles.length;
-        nuevosColoresAsignados.set(cursoId, coloresDisponibles[colorIndex]);
+export const reasignarColores = (cursosSeleccionados, _horario, coloresDisponibles) => {
+    const mapa = new Map();
+    Array.from(cursosSeleccionados).forEach((id, i) => {
+        mapa.set(id, coloresDisponibles[i % coloresDisponibles.length]);
     });
-
-    return nuevosColoresAsignados;
+    return mapa;
 };
