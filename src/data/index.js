@@ -19,7 +19,21 @@ export const getSlugs = () => Object.keys(carreras);
 
 /** Obtiene la lista de carreras para navegación */
 export const getCarrerasNav = () =>
-    Object.values(carreras).map(({ nombre, slug }) => ({ nombre, slug }));
+    Object.values(carreras).map(({ nombre, slug, facultad }) => ({ nombre, slug, facultad }));
+
+/**
+ * Agrupa las carreras por facultad para la página de inicio.
+ * Retorna [{ facultad: "Ingeniería", carreras: [{ nombre, slug }, ...] }, ...]
+ */
+export const getCarrerasPorFacultad = () => {
+    const mapa = {};
+    for (const c of Object.values(carreras)) {
+        const f = c.facultad ?? 'Otros';
+        if (!mapa[f]) mapa[f] = [];
+        mapa[f].push({ nombre: c.nombre, slug: c.slug });
+    }
+    return Object.entries(mapa).map(([facultad, items]) => ({ facultad, carreras: items }));
+};
 
 /**
  * Dado un objeto de carrera, extrae las listas de cursos por ciclo.

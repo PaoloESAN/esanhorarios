@@ -1,6 +1,7 @@
 export const ti = {
     nombre: "Ingeniería de TI",
     slug: "ti",
+    facultad: "Ingeniería",
     cursos: {
         "Primer Ciclo": {
             "Comunicación y literatura I": 3,

@@ -1,6 +1,7 @@
 export const software = {
     nombre: "Ingeniería de Software",
     slug: "software",
+    facultad: "Ingeniería",
     cursos: {
         "Primer Ciclo": {
             "Comunicación y literatura I": 3,
