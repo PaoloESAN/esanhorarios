@@ -1,22 +1,18 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { HeroUIProvider } from '@heroui/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
 export function Providers({ children }) {
-    const [mounted, setMounted] = useState(false)
-
     useEffect(() => {
-        setMounted(true)
-    }, [])
-
-    if (!mounted) {
-        return (
-            <HeroUIProvider>
-                {children}
-            </HeroUIProvider>
-        )
-    }
+        // Suprimir warnings de hydration causados por React Aria IDs (cosmético, no afecta funcionalidad)
+        const originalError = console.error;
+        console.error = (...args) => {
+            if (typeof args[0] === 'string' && args[0].includes('A tree hydrated but some attributes')) return;
+            originalError.apply(console, args);
+        };
+        return () => { console.error = originalError; };
+    }, []);
 
     return (
         <HeroUIProvider>

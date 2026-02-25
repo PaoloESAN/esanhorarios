@@ -1,12 +1,13 @@
 import { useState, useCallback, useMemo } from 'react';
 import { crearHorariosVacios, crearSetsVacios, crearMapasVacios } from '@/constants';
-import { obtenerCreditosCurso } from '@/lib/creditos';
+import { useCarrera } from '@/app/[slug]/CarreraContext';
 
 /**
  * Centraliza el estado multi-horario (5 opciones de horario).
  * Expone accesores del horario activo y operaciones de limpieza.
  */
 export function useHorarios() {
+    const { obtenerCreditos } = useCarrera();
     const [horarioActivo, setHorarioActivo] = useState(1);
     const [horariosPersonales, setHorariosPersonales] = useState(crearHorariosVacios);
     const [cursosSeleccionadosPorHorario, setCursosSeleccionadosPorHorario] = useState(crearSetsVacios);
@@ -57,11 +58,11 @@ export function useHorarios() {
             if (!clase?.curso) return;
             const key = `${clase.curso}-${clase.seccion}`;
             if (!vistos.has(key)) {
-                vistos.set(key, clase.creditos ?? obtenerCreditosCurso(clase.curso));
+                vistos.set(key, clase.creditos ?? obtenerCreditos(clase.curso));
             }
         });
         return Array.from(vistos.values()).reduce((s, c) => s + c, 0);
-    }, [horarioPersonal]);
+    }, [horarioPersonal, obtenerCreditos]);
 
     return {
         horarioActivo, cambiarHorario,

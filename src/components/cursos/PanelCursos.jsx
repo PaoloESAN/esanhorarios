@@ -1,13 +1,10 @@
 import { memo } from 'react';
 import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
-import { obtenerCursosCombinados, obtenerBadgeEspecialidad } from '@/lib/cursos';
-import { obtenerCreditosCurso } from '@/lib/creditos';
+import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { IconMas, IconCreditoBadge } from '@/constants/icons';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';
-
-const cursosCombinados = obtenerCursosCombinados();
 
 function PanelCursos({
     cicloSeleccionado, setCicloSeleccionado,
@@ -20,6 +17,7 @@ function PanelCursos({
     onAbrirModalCursoPersonalizado,
     onCargaArchivo,
 }) {
+    const { cursosPorCiclo, obtenerCreditos } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
 
     return (
@@ -54,7 +52,7 @@ function PanelCursos({
                     variant="bordered"
                     disallowEmptySelection
                 >
-                    {Object.keys(cursosCombinados).map((ciclo) => (
+                    {Object.keys(cursosPorCiclo).map((ciclo) => (
                         <SelectItem key={ciclo} value={ciclo}>{ciclo}</SelectItem>
                     ))}
                 </Select>
@@ -63,10 +61,9 @@ function PanelCursos({
             {/* Lista de cursos o pantalla de bienvenida */}
             {hayArchivo ? (
                 <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[56.75rem] overflow-y-auto">
-                    {cursosCombinados[cicloSeleccionado]?.map((curso, idx) => {
+                    {cursosPorCiclo[cicloSeleccionado]?.map((curso, idx) => {
                         const secciones = obtenerHorariosPorCurso(curso);
-                        const badge = obtenerBadgeEspecialidad(curso, cicloSeleccionado);
-                        const creditos = obtenerCreditosCurso(curso);
+                        const creditos = obtenerCreditos(curso);
                         const esElectivo = curso.toLowerCase().includes('electivo');
 
                         return (
@@ -76,11 +73,6 @@ function PanelCursos({
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <span className="flex-1">{curso}</span>
                                         <div className="flex items-center gap-2">
-                                            {badge && (
-                                                <span className="inline-block text-white text-xs px-2 py-1 rounded-full font-medium bg-primary">
-                                                    {badge}
-                                                </span>
-                                            )}
                                             <span className="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold border border-emerald-200">
                                                 <IconCreditoBadge className="w-3 h-3 text-emerald-600" />
                                                 {creditos}

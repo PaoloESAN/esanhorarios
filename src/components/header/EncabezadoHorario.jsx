@@ -1,6 +1,7 @@
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Tabs, Tab } from '@heroui/tabs';
+import { useTheme } from 'next-themes';
 import PaletaSelector from '@/components/ui/PaletaSelector';
 import {
     IconSol, IconLuna, IconTrash, IconTrashAll, IconShare, IconCreditos,
@@ -41,8 +42,12 @@ function BotonesLimpiar({ onLimpiarActual, onLimpiarTodos, variant = 'flat' }) {
     );
 }
 
-function BotonTema({ resolvedTheme, setTheme, className = '' }) {
-    const esDark = resolvedTheme === 'dark';
+function BotonTema({ className = '' }) {
+    const { setTheme, resolvedTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+
+    const esDark = mounted && resolvedTheme === 'dark';
     return (
         <Button
             className={className}
@@ -76,8 +81,6 @@ function EncabezadoHorario({
     coloresActuales,
     cambiarPaleta,
     cambiarHorario,
-    resolvedTheme,
-    setTheme,
     limpiarHorario,
     limpiarTodosLosHorarios,
     abrirShareModal,
@@ -94,7 +97,7 @@ function EncabezadoHorario({
                 </div>
                 <ContadorCreditos total={creditosTotales} />
                 <FilaMobile label="Modo:">
-                    <BotonTema resolvedTheme={resolvedTheme} setTheme={setTheme} className="w-full justify-start" />
+                    <BotonTema className="w-full justify-start" />
                 </FilaMobile>
                 <FilaMobile label="Tema:">
                     <PaletaSelector
@@ -165,7 +168,7 @@ function EncabezadoHorario({
                         />
                     </div>
                     <div className="flex justify-end gap-3">
-                        <BotonTema resolvedTheme={resolvedTheme} setTheme={setTheme} className="lg:hidden" />
+                        <BotonTema className="lg:hidden" />
                         <Button
                             onClick={abrirShareModal}
                             color="success"
