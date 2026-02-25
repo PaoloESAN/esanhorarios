@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@heroui/button';
 import { useTheme } from 'next-themes';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
@@ -53,4 +53,4 @@ function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
     );
 }
 
-export default memo(AppHeader);
+export default AppHeader;

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { generarImagenHorario } from '@/lib/compartir';
 
 /**
@@ -8,16 +8,16 @@ export function useCompartir({ horarioActivo, resolvedTheme, onAbrirModal, setMe
     const [shareDataUrl, setShareDataUrl] = useState(null);
     const [shareFilename, setShareFilename] = useState('mi-horario.png');
 
-    const abrirShareModal = useCallback(async () => {
+    const abrirShareModal = async () => {
         const filename = `horario-${horarioActivo}.png`;
         setShareFilename(filename);
         setShareDataUrl(null);
         onAbrirModal?.();
         const dataUrl = await generarImagenHorario({ tema: resolvedTheme });
         setShareDataUrl(dataUrl);
-    }, [horarioActivo, resolvedTheme, onAbrirModal]);
+    };
 
-    const copiarImagen = useCallback(async () => {
+    const copiarImagen = async () => {
         if (!shareDataUrl) return;
         try {
             const res = await fetch(shareDataUrl);
@@ -39,15 +39,15 @@ export function useCompartir({ horarioActivo, resolvedTheme, onAbrirModal, setMe
             setMensajeModal?.('No se pudo copiar la imagen.');
             onError?.();
         }
-    }, [shareDataUrl, setMensajeModal, onExito, onError]);
+    };
 
-    const descargarImagen = useCallback(() => {
+    const descargarImagen = () => {
         if (!shareDataUrl) return;
         const link = document.createElement('a');
         link.download = shareFilename;
         link.href = shareDataUrl;
         link.click();
-    }, [shareDataUrl, shareFilename]);
+    };
 
     return { shareDataUrl, shareFilename, abrirShareModal, copiarImagen, descargarImagen };
 }

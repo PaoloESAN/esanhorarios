@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState } from 'react';
 import { crearHorariosVacios, crearSetsVacios, crearMapasVacios } from '@/constants';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 
@@ -17,42 +17,42 @@ export function useHorarios() {
     const cursosSeleccionados = cursosSeleccionadosPorHorario[horarioActivo] ?? new Set();
     const coloresAsignados = coloresAsignadosPorHorario[horarioActivo] ?? new Map();
 
-    const cambiarHorario = useCallback((n) => setHorarioActivo(n), []);
+    const cambiarHorario = (n) => setHorarioActivo(n);
 
-    const setHorarioPersonal = useCallback((updater) => {
+    const setHorarioPersonal = (updater) => {
         setHorariosPersonales(prev => ({
             ...prev,
             [horarioActivo]: typeof updater === 'function' ? updater(prev[horarioActivo] ?? {}) : updater
         }));
-    }, [horarioActivo]);
+    };
 
-    const setCursosSeleccionados = useCallback((updater) => {
+    const setCursosSeleccionados = (updater) => {
         setCursosSeleccionadosPorHorario(prev => ({
             ...prev,
             [horarioActivo]: typeof updater === 'function' ? updater(prev[horarioActivo] ?? new Set()) : updater
         }));
-    }, [horarioActivo]);
+    };
 
-    const setColoresAsignados = useCallback((updater) => {
+    const setColoresAsignados = (updater) => {
         setColoresAsignadosPorHorario(prev => ({
             ...prev,
             [horarioActivo]: typeof updater === 'function' ? updater(prev[horarioActivo] ?? new Map()) : updater
         }));
-    }, [horarioActivo]);
+    };
 
-    const limpiarHorarioActual = useCallback(() => {
+    const limpiarHorarioActual = () => {
         setHorarioPersonal({});
         setCursosSeleccionados(new Set());
         setColoresAsignados(new Map());
-    }, [setHorarioPersonal, setCursosSeleccionados, setColoresAsignados]);
+    };
 
-    const limpiarTodosLosHorarios = useCallback(() => {
+    const limpiarTodosLosHorarios = () => {
         setHorariosPersonales(crearHorariosVacios());
         setCursosSeleccionadosPorHorario(crearSetsVacios());
         setColoresAsignadosPorHorario(crearMapasVacios());
-    }, []);
+    };
 
-    const creditosTotales = useMemo(() => {
+    const creditosTotales = (() => {
         const vistos = new Map();
         Object.values(horarioPersonal).forEach(clase => {
             if (!clase?.curso) return;
@@ -62,7 +62,7 @@ export function useHorarios() {
             }
         });
         return Array.from(vistos.values()).reduce((s, c) => s + c, 0);
-    }, [horarioPersonal, obtenerCreditos]);
+    })();
 
     return {
         horarioActivo, cambiarHorario,

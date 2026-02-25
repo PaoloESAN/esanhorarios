@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { IconBuscar } from '@/constants/icons';
 
 /**
@@ -47,4 +46,4 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
     );
 }
 
-export default memo(TarjetaSeccion);
+export default TarjetaSeccion;

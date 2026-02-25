@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/dropdown';
 
 /**
@@ -39,4 +38,4 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
     );
 }
 
-export default memo(CeldaVacia);
+export default CeldaVacia;

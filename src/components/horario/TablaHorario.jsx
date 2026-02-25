@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { diasSemana, generarHorarios } from '@/lib/horario';
 import CeldaAsignada from './CeldaAsignada';
 import CeldaVacia from './CeldaVacia';
@@ -87,4 +86,4 @@ function TablaHorario({
     );
 }
 
-export default memo(TablaHorario);
+export default TablaHorario;

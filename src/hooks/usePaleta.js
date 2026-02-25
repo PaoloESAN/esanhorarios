@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useTransition } from 'react';
+import { useState, useRef, useTransition } from 'react';
 import { obtenerColoresActuales, reasignarColores } from '@/lib/colores';
 
 /**
@@ -10,9 +10,9 @@ export function usePaleta({ cursosSeleccionados, horarioPersonal, setColoresAsig
     const idleRef = useRef(null);
     const [, startTransition] = useTransition();
 
-    const coloresActuales = useMemo(() => obtenerColoresActuales(paletaSeleccionada), [paletaSeleccionada]);
+    const coloresActuales = obtenerColoresActuales(paletaSeleccionada);
 
-    const cambiarPaleta = useCallback((nuevaPaleta) => {
+    const cambiarPaleta = (nuevaPaleta) => {
         setPaletaSeleccionada(nuevaPaleta);
 
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -32,7 +32,7 @@ export function usePaleta({ cursosSeleccionados, horarioPersonal, setColoresAsig
                 });
             });
         }, 120);
-    }, [cursosSeleccionados, horarioPersonal, setColoresAsignados]);
+    };
 
     return { paletaSeleccionada, coloresActuales, cambiarPaleta };
 }

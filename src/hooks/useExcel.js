@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState } from 'react';
 import { procesarArchivoExcel, mapeoEspecial } from '@/lib/excel';
 import { normalizar } from '@/lib/horario';
 
@@ -10,31 +10,31 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
     const [cargandoArchivo, setCargandoArchivo] = useState(false);
     const [nombreArchivo, setNombreArchivo] = useState('');
 
-    const mapaHorariosNormalizados = useMemo(() => {
+    const mapaHorariosNormalizados = (() => {
         const map = new Map();
         for (const [clave, valor] of Object.entries(horariosDisponibles)) {
             map.set(normalizar(clave), valor);
         }
         return map;
-    }, [horariosDisponibles]);
+    })();
 
-    const mapaAliasNormalizados = useMemo(() => {
+    const mapaAliasNormalizados = (() => {
         const map = new Map();
         for (const [k, v] of Object.entries(mapeoEspecial)) {
             map.set(normalizar(k), normalizar(v));
         }
         return map;
-    }, []);
+    })();
 
-    const obtenerHorariosPorCurso = useCallback((nombreCurso) => {
+    const obtenerHorariosPorCurso = (nombreCurso) => {
         const key = normalizar(nombreCurso);
         if (mapaHorariosNormalizados.has(key)) return mapaHorariosNormalizados.get(key);
         const alias = mapaAliasNormalizados.get(key);
         if (alias && mapaHorariosNormalizados.has(alias)) return mapaHorariosNormalizados.get(alias);
         return [];
-    }, [mapaHorariosNormalizados, mapaAliasNormalizados]);
+    };
 
-    const procesarArchivo = useCallback(async (archivo) => {
+    const procesarArchivo = async (archivo) => {
         setCargandoArchivo(true);
         try {
             const nuevosHorarios = await procesarArchivoExcel(archivo);
@@ -46,15 +46,15 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         } finally {
             setCargandoArchivo(false);
         }
-    }, [setMensajeModal, onExito, onError]);
+    };
 
-    const manejarCargaArchivo = useCallback((evento) => {
+    const manejarCargaArchivo = (evento) => {
         const archivo = evento.target.files[0];
         if (!archivo) return;
         setNombreArchivo(archivo.name);
         limpiarHorarioActual?.();
         procesarArchivo(archivo);
-    }, [limpiarHorarioActual, procesarArchivo]);
+    };
 
     return { nombreArchivo, cargandoArchivo, horariosDisponibles, obtenerHorariosPorCurso, manejarCargaArchivo };
 }

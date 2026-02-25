@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
@@ -114,4 +113,4 @@ function PanelCursos({
     );
 }
 
-export default memo(PanelCursos);
+export default PanelCursos;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useDisclosure } from "@heroui/use-disclosure";
 import { useTheme } from "next-themes";
@@ -56,15 +56,15 @@ function HorarioAppInner() {
     const shareModal = useDisclosure();
     const noteModal = useDisclosure();
 
-    const limpiarHorario = useCallback(() => {
+    const limpiarHorario = () => {
         horarios.limpiarHorarioActual();
         notas.limpiarNotasActivas();
-    }, [horarios.limpiarHorarioActual, notas.limpiarNotasActivas]);
+    };
 
-    const limpiarTodosLosHorarios = useCallback(() => {
+    const limpiarTodosLosHorarios = () => {
         horarios.limpiarTodosLosHorarios();
         notas.limpiarTodasLasNotas();
-    }, [horarios.limpiarTodosLosHorarios, notas.limpiarTodasLasNotas]);
+    };
 
     const excel = useExcel({
         limpiarHorarioActual: limpiarHorario,
@@ -96,14 +96,14 @@ function HorarioAppInner() {
         onError: errorModal.onOpen,
     });
 
-    const abrirModalNota = useCallback((key) => {
+    const abrirModalNota = (key) => {
         setCeldaSeleccionada(key);
         noteModal.onOpen();
-    }, [noteModal]);
+    };
 
-    const guardarNota = useCallback((datos) => {
+    const guardarNota = (datos) => {
         notas.guardarNota(celdaSeleccionada, datos, noteModal.onClose);
-    }, [notas, celdaSeleccionada, noteModal.onClose]);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-background p-2 md:p-4">

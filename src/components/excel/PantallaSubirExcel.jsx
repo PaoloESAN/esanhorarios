@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Button } from '@heroui/button';
 import { IconArchivo, IconUpload } from '@/constants/icons';
 
@@ -37,4 +36,4 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
     );
 }
 
-export default memo(PantallaSubirExcel);
+export default PantallaSubirExcel;

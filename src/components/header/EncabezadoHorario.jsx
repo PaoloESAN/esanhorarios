@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Tabs, Tab } from '@heroui/tabs';
 import { useTheme } from 'next-themes';
@@ -186,4 +186,4 @@ function EncabezadoHorario({
     );
 }
 
-export default memo(EncabezadoHorario);
+export default EncabezadoHorario;

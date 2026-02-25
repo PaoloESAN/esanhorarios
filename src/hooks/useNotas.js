@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { crearHorariosVacios } from '@/constants';
 
 const NOTA_DEFAULT = { texto: '', color: '#fde68a', textColor: '#111827' };
@@ -12,14 +12,14 @@ export function useNotas(horarioActivo) {
 
     const notasCelda = notasPorHorario[horarioActivo] ?? {};
 
-    const setNotasCelda = useCallback((updater) => {
+    const setNotasCelda = (updater) => {
         setNotasPorHorario(prev => ({
             ...prev,
             [horarioActivo]: typeof updater === 'function' ? updater(prev[horarioActivo] ?? {}) : updater
         }));
-    }, [horarioActivo]);
+    };
 
-    const guardarNota = useCallback((key, datos, onClose) => {
+    const guardarNota = (key, datos, onClose) => {
         if (!key) return;
         setNotasCelda(prev => ({
             ...prev,
@@ -30,23 +30,23 @@ export function useNotas(horarioActivo) {
             }
         }));
         onClose?.();
-    }, [setNotasCelda]);
+    };
 
-    const quitarNota = useCallback((key) => {
+    const quitarNota = (key) => {
         setNotasCelda(prev => {
             const copia = { ...prev };
             delete copia[key];
             return copia;
         });
-    }, [setNotasCelda]);
+    };
 
     /** Limpia las notas del horario activo */
-    const limpiarNotasActivas = useCallback(() => setNotasCelda({}), [setNotasCelda]);
+    const limpiarNotasActivas = () => setNotasCelda({});
 
     /** Limpia TODAS las notas de todos los horarios */
-    const limpiarTodasLasNotas = useCallback(() => {
+    const limpiarTodasLasNotas = () => {
         setNotasPorHorario(crearHorariosVacios());
-    }, []);
+    };
 
     return { notasCelda, guardarNota, quitarNota, limpiarNotasActivas, limpiarTodasLasNotas };
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { memo } from 'react';
 import { Select, SelectItem } from '@heroui/select';
 import { PALETAS_NOMBRES, PALETA_PREVIEW_COLORS } from '@/constants';
 
@@ -58,4 +57,4 @@ function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 
     );
 }
 
-export default memo(PaletaSelector);
+export default PaletaSelector;

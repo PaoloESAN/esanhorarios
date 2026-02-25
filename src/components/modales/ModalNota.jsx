@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
-const NoteColorPicker = memo(function NoteColorPicker({ initialColor, onChange, textColorChoice, onTextColorChange, previewText }) {
+function NoteColorPicker({ initialColor, onChange, textColorChoice, onTextColorChange, previewText }) {
     const [color, setColor] = useState(initialColor || "#fde68a");
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const NoteColorPicker = memo(function NoteColorPicker({ initialColor, onChange, 
             </div>
         </div>
     );
-});
+}
 
 function ModalNota({
     isOpen,
@@ -119,4 +119,4 @@ function ModalNota({
     );
 }
 
-export default memo(ModalNota);
+export default ModalNota;

@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Button } from '@heroui/button';
 import { IconUpload, IconArchivo } from '@/constants/icons';
 
@@ -42,4 +41,4 @@ function ExcelUploader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
     );
 }
 
-export default memo(ExcelUploader);
+export default ExcelUploader;

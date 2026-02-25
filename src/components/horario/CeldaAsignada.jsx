@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 /**
  * Celda del horario que ya tiene un curso asignado.
  * Al hacer click se remueve el curso completo.
@@ -29,4 +27,4 @@ function CeldaAsignada({ clase, color, onRemover }) {
     );
 }
 
-export default memo(CeldaAsignada);
+export default CeldaAsignada;

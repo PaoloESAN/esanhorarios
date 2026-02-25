@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { obtenerColorPorOrden, reasignarColores } from '@/lib/colores';
 
 /**
@@ -19,7 +19,7 @@ export function useCursos({
     const [draggedItem, setDraggedItem] = useState(null);
     const [conflictoInfo, setConflictoInfo] = useState({ cursoExistente: '', cursoNuevo: '' });
 
-    const detectarConflictos = useCallback((horarioItems) => {
+    const detectarConflictos = (horarioItems) => {
         return horarioItems
             .filter(({ dia, horario }) => Boolean(horarioPersonal[`${dia}-${horario}`]))
             .map(({ dia, horario }) => ({
@@ -27,18 +27,18 @@ export function useCursos({
                 cursoExistente: horarioPersonal[`${dia}-${horario}`].curso,
                 seccionExistente: horarioPersonal[`${dia}-${horario}`].seccion,
             }));
-    }, [horarioPersonal]);
+    };
 
-    const abrirConflicto = useCallback((cursoNuevo, conflictos) => {
+    const abrirConflicto = (cursoNuevo, conflictos) => {
         setConflictoInfo({
             cursoNuevo,
             cursoExistente: `${conflictos[0].cursoExistente} (${conflictos[0].seccionExistente})`,
             detallesConflicto: conflictos,
         });
         onConflicto?.();
-    }, [onConflicto]);
+    };
 
-    const agregarCursoAlHorario = useCallback((item) => {
+    const agregarCursoAlHorario = (item) => {
         if (cursosSeleccionados.has(item.id)) return;
 
         const cursosData = obtenerHorariosPorCurso(item.curso);
@@ -60,10 +60,9 @@ export function useCursos({
         });
         setHorarioPersonal(nuevoHorario);
         setCursosSeleccionados(prev => new Set([...prev, item.id]));
-    }, [cursosSeleccionados, obtenerHorariosPorCurso, horarioPersonal, coloresAsignados, coloresActuales,
-        detectarConflictos, abrirConflicto, setColoresAsignados, setHorarioPersonal, setCursosSeleccionados]);
+    };
 
-    const removerDelHorario = useCallback((dia, horario) => {
+    const removerDelHorario = (dia, horario) => {
         const clase = horarioPersonal[`${dia}-${horario}`];
         if (!clase?.id) return;
 
@@ -75,10 +74,9 @@ export function useCursos({
         setHorarioPersonal(nuevoHorario);
         setCursosSeleccionados(nuevosCursos);
         setColoresAsignados(reasignarColores(nuevosCursos, nuevoHorario, coloresActuales));
-    }, [horarioPersonal, cursosSeleccionados, coloresActuales,
-        setHorarioPersonal, setCursosSeleccionados, setColoresAsignados]);
+    };
 
-    const removerCursoPorId = useCallback((id) => {
+    const removerCursoPorId = (id) => {
         const nuevoHorario = Object.fromEntries(
             Object.entries(horarioPersonal).filter(([, v]) => v.id !== id)
         );
@@ -87,10 +85,9 @@ export function useCursos({
         setHorarioPersonal(nuevoHorario);
         setCursosSeleccionados(nuevosCursos);
         setColoresAsignados(reasignarColores(nuevosCursos, nuevoHorario, coloresActuales));
-    }, [horarioPersonal, cursosSeleccionados, coloresActuales,
-        setHorarioPersonal, setCursosSeleccionados, setColoresAsignados]);
+    };
 
-    const manejarAgregarPersonalizado = useCallback((cursoData) => {
+    const manejarAgregarPersonalizado = (cursoData) => {
         const conflictos = detectarConflictos(cursoData.horarios);
         if (conflictos.length > 0) {
             abrirConflicto(`${cursoData.nombre} (${cursoData.seccion})`, conflictos);
@@ -116,26 +113,25 @@ export function useCursos({
         setMensajeModal?.('¡Curso personalizado agregado exitosamente!');
         onExito?.();
         return { success: true };
-    }, [horarioPersonal, coloresAsignados, coloresActuales, detectarConflictos, abrirConflicto,
-        setColoresAsignados, setHorarioPersonal, setCursosSeleccionados, setMensajeModal, onExito]);
+    };
 
-    const handleDragStart = useCallback((e, item) => {
+    const handleDragStart = (e, item) => {
         setDraggedItem(item);
         e.dataTransfer.effectAllowed = 'move';
-    }, []);
+    };
 
-    const handleDragOver = useCallback((e) => {
+    const handleDragOver = (e) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-    }, []);
+    };
 
-    const handleDrop = useCallback((e) => {
+    const handleDrop = (e) => {
         e.preventDefault();
         if (draggedItem) {
             agregarCursoAlHorario(draggedItem);
             setDraggedItem(null);
         }
-    }, [draggedItem, agregarCursoAlHorario]);
+    };
 
     return {
         cicloSeleccionado, setCicloSeleccionado,
