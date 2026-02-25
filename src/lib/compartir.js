@@ -1,4 +1,4 @@
-import domtoimage from 'dom-to-image';
+import html2canvas from 'html2canvas-pro';
 
 export const generarImagenHorario = async ({ tema }) => {
     try {
@@ -8,16 +8,14 @@ export const generarImagenHorario = async ({ tema }) => {
             return null;
         }
 
-        const dataUrl = await domtoimage.toPng(elemento, {
-            quality: 0.95,
-            bgcolor: tema === 'dark' ? '#18181b' : '#ffffff',
-            style: {
-                transform: 'scale(1)',
-                transformOrigin: 'top left'
-            }
+        const canvas = await html2canvas(elemento, {
+            backgroundColor: tema === 'dark' ? '#18181b' : '#ffffff',
+            scale: 2,
+            useCORS: true,
+            logging: false,
         });
 
-        return dataUrl;
+        return canvas.toDataURL('image/png');
     } catch (error) {
         console.error('Error al generar la imagen:', error);
         return null;

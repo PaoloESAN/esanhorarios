@@ -70,7 +70,7 @@ bun dev
 - **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework de CSS utility-first
 - **[Framer Motion](https://www.framer.com/motion/)** - Biblioteca de animaciones
 - **[XLSX](https://sheetjs.com/)** - Procesamiento de archivos Excel
-- **[dom-to-image](https://github.com/tsayen/dom-to-image)** - Exportación de DOM a imagen
+- **[html2canvas-pro](https://github.com/yorickshan/html2canvas-pro)** - Exportación de DOM a imagen
 
 ## Estructura del Proyecto
 
