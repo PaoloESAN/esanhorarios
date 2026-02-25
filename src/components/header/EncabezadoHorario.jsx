@@ -42,6 +42,14 @@ function BotonesLimpiar({ onLimpiarActual, onLimpiarTodos, variant = 'flat' }) {
     );
 }
 
+function BotonLimpiar({ onLimpiarActual }) {
+    return (
+        <Button isIconOnly onClick={onLimpiarActual} color="danger" variant="flat" aria-label='limpiar actual' >
+            <IconTrash className='w-5 h-5' />
+        </Button>
+    );
+}
+
 function BotonTema({ className = '' }) {
     const { setTheme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
@@ -89,12 +97,6 @@ function EncabezadoHorario({
         <>
             {/* ── MOBILE ──────────────────────────────────────────────────── */}
             <div className="flex flex-col gap-6 mb-4 md:hidden items-center">
-                <div className="flex items-center gap-3">
-                    <h2 className="text-lg font-semibold text-foreground">Mi Horario Personal</h2>
-                    <span className="bg-primary-100 text-primary-600 px-3 py-1 rounded-full text-xs font-medium">
-                        Opción {horarioActivo}
-                    </span>
-                </div>
                 <ContadorCreditos total={creditosTotales} />
                 <FilaMobile label="Modo:">
                     <BotonTema className="w-full justify-start" />
@@ -129,55 +131,33 @@ function EncabezadoHorario({
 
             {/* ── DESKTOP ─────────────────────────────────────────────────── */}
             <div className="md:flex flex-col gap-4 mb-4 hidden">
-                {/* Fila 1: Título | Créditos | Opción */}
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-                    <h2 className="text-lg font-semibold text-foreground justify-self-start">Mi Horario Personal</h2>
-                    <ContadorCreditos total={creditosTotales} />
-                    <span className="bg-primary-100 text-primary-600 px-3 py-1 rounded-full text-xs font-medium justify-self-end">
-                        Opción {horarioActivo}
-                    </span>
-                </div>
 
-                {/* Fila 2: Horarios | Tema */}
-                <div className="grid grid-cols-2 gap-4 mt-5">
-                    <div className="flex items-center gap-3">
+
+                {/* Fila 2: Horarios | Boton Limpiar | Tema | Compartir Horario */}
+                <div className="flex flex-row items-center justify-between gap-4 ">
+                    <div className="flex items-center gap-3 shrink-0">
                         <span className="text-sm font-medium text-foreground-600 whitespace-nowrap">Horarios:</span>
                         <SelectorHorarios activo={horarioActivo} onChange={cambiarHorario} />
+                        <BotonLimpiar onLimpiarActual={limpiarHorario} />
                     </div>
-                    <div className="flex items-center gap-3 justify-end">
+                    <ContadorCreditos total={creditosTotales} />
+                    <div className="flex items-center gap-3 shrink-0">
                         <span className="text-sm font-medium text-foreground-600 whitespace-nowrap">Tema:</span>
-                        <div className="w-full max-w-[214px]">
-                            <PaletaSelector
-                                paletaSeleccionada={paletaSeleccionada}
-                                coloresActuales={coloresActuales}
-                                onChange={cambiarPaleta}
-                                className="w-full"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Fila 3: Limpiar | Modo + Compartir */}
-                <div className="grid grid-cols-2 gap-4 items-center">
-                    <div className="flex items-center gap-3">
-                        <span className="text-sm font-medium text-foreground-600 whitespace-nowrap">Limpiar:</span>
-                        <BotonesLimpiar
-                            onLimpiarActual={limpiarHorario}
-                            onLimpiarTodos={limpiarTodosLosHorarios}
-                            variant="bordered"
+                        <PaletaSelector
+                            paletaSeleccionada={paletaSeleccionada}
+                            coloresActuales={coloresActuales}
+                            onChange={cambiarPaleta}
+                            className="min-w-[160px]"
                         />
-                    </div>
-                    <div className="flex justify-end gap-3">
-                        <BotonTema className="lg:hidden" />
                         <Button
                             onClick={abrirShareModal}
                             color="success"
                             size="sm"
                             variant="flat"
                             startContent={<IconShare />}
-                            className="px-6 shadow-sm border border-success-200"
+                            className="px-6 shadow-sm border border-success-200 whitespace-nowrap min-w-fit"
                         >
-                            <span className="font-medium">Compartir Horario</span>
+                            <span className="font-medium whitespace-nowrap">Compartir Horario</span>
                         </Button>
                     </div>
                 </div>

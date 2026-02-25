@@ -5,9 +5,6 @@ import { IconBuscar } from '@/constants/icons';
  * Permite agregar/remover la sección y drag&drop.
  */
 function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRemover, onDragStart }) {
-    const profesorCorto = seccionData.profesor.length > 25
-        ? seccionData.profesor.substring(0, 25) + '...'
-        : seccionData.profesor;
 
     return (
         <div
@@ -26,8 +23,8 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
             <div className={`text-xs font-medium mb-1 ${estaSeleccionado ? 'text-foreground-600' : 'text-foreground'}`}>
                 Sección: {seccionData.seccion} {estaSeleccionado ? '✓ Click para remover' : ''}
             </div>
-            <div className={`text-xs mb-1 flex items-center gap-1 flex-row-reverse ${estaSeleccionado ? 'text-foreground-500' : 'text-foreground-600'}`}>
-                <span>Prof: {profesorCorto}</span>
+            <div className={`text-xs mb-1 flex items-center gap-1 flex-row ${estaSeleccionado ? 'text-foreground-500' : 'text-foreground-600'}`}>
+                <span>Prof: {seccionData.profesor}</span>
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
