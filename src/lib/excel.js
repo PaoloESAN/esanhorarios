@@ -1,5 +1,9 @@
 import * as XLSX from 'xlsx';
 
+/** "GARCIA LOPEZ JUAN CARLOS" → "Garcia Lopez Juan Carlos" */
+const capitalizarNombre = (texto) =>
+    texto.replace(/\S+/g, (p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase());
+
 export const mapeoEspecial = {
     "ANALISIS DE DATOS I": "ANÁLISIS DE DATOS I",
     "TALLER DESARROLLO DE COMPETENCIAS PERSONALES I": "TALLER: DESARROLLO DE COMPETENCIAS PROFESIONALES I",
@@ -186,7 +190,7 @@ export const parsearDatosExcel = (datos) => {
 
             horariosParseados[cursoNormalizado].push({
                 id: `${cursoNormalizado.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                profesor: profesor.toString().trim(),
+                profesor: capitalizarNombre(profesor.toString().trim()),
                 seccion: seccion ? seccion.toString().trim() : 'S-001',
                 horarios: horarios
             });
