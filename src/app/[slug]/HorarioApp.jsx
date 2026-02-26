@@ -13,6 +13,7 @@ import TablaHorario from "@/components/horario/TablaHorario";
 import PanelCursos from "@/components/cursos/PanelCursos";
 
 import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal, ShareModal, ModalAgregarCurso } from "@/components/modales";
+import ConfigDrawer from "@/components/modales/ConfigDrawer";
 const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
 
 import { useHorarios } from "@/hooks/useHorarios";
@@ -21,6 +22,7 @@ import { usePaleta } from "@/hooks/usePaleta";
 import { useCursos } from "@/hooks/useCursos";
 import { useExcel } from "@/hooks/useExcel";
 import { useCompartir } from "@/hooks/useCompartir";
+import { ConfigHorarioProvider } from "@/hooks/useConfigHorario";
 
 import { TEXTOS_MATRICULA } from "@/constants";
 import { diasSemana } from "@/lib/horario";
@@ -28,7 +30,9 @@ import { diasSemana } from "@/lib/horario";
 export default function HorarioApp({ carrera }) {
     return (
         <CarreraProvider carrera={carrera}>
-            <HorarioAppInner />
+            <ConfigHorarioProvider>
+                <HorarioAppInner />
+            </ConfigHorarioProvider>
         </CarreraProvider>
     );
 }
@@ -55,6 +59,7 @@ function HorarioAppInner() {
     const addCourseModal = useDisclosure();
     const shareModal = useDisclosure();
     const noteModal = useDisclosure();
+    const configDrawer = useDisclosure();
 
     const limpiarHorario = () => {
         horarios.limpiarHorarioActual();
@@ -122,13 +127,11 @@ function HorarioAppInner() {
                         <EncabezadoHorario
                             horarioActivo={horarios.horarioActivo}
                             creditosTotales={horarios.creditosTotales}
-                            paletaSeleccionada={paleta.paletaSeleccionada}
-                            coloresActuales={paleta.coloresActuales}
-                            cambiarPaleta={paleta.cambiarPaleta}
                             cambiarHorario={horarios.cambiarHorario}
                             limpiarHorario={limpiarHorario}
                             limpiarTodosLosHorarios={limpiarTodosLosHorarios}
                             abrirShareModal={compartir.abrirShareModal}
+                            abrirConfigDrawer={configDrawer.onOpen}
                         />
                         <h3 className="text-sm md:text-base text-foreground-500 mb-3 md:mb-4">
                             Pulsa en un espacio en blanco para agregar un texto al horario.
@@ -214,6 +217,13 @@ function HorarioAppInner() {
                     onAgregarCurso={cursos.manejarAgregarPersonalizado}
                     onError={(msg) => { setMensajeModal(msg); errorModal.onOpen(); }}
                     diasSemana={diasSemana}
+                />
+                <ConfigDrawer
+                    isOpen={configDrawer.isOpen}
+                    onClose={configDrawer.onClose}
+                    paletaSeleccionada={paleta.paletaSeleccionada}
+                    coloresActuales={paleta.coloresActuales}
+                    cambiarPaleta={paleta.cambiarPaleta}
                 />
             </div>
         </div>

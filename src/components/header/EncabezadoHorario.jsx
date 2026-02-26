@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Tabs, Tab } from '@heroui/tabs';
 import { useTheme } from 'next-themes';
-import PaletaSelector from '@/components/ui/PaletaSelector';
 import {
-    IconSol, IconLuna, IconTrash, IconTrashAll, IconShare, IconCreditos,
+    IconSol, IconLuna, IconTrash, IconTrashAll, IconShare, IconCreditos, IconConfig,
 } from '@/constants/icons';
 
 function ContadorCreditos({ total }) {
@@ -85,13 +84,11 @@ function FilaMobile({ label, children }) {
 function EncabezadoHorario({
     horarioActivo,
     creditosTotales,
-    paletaSeleccionada,
-    coloresActuales,
-    cambiarPaleta,
     cambiarHorario,
     limpiarHorario,
     limpiarTodosLosHorarios,
     abrirShareModal,
+    abrirConfigDrawer,
 }) {
     return (
         <>
@@ -101,13 +98,17 @@ function EncabezadoHorario({
                 <FilaMobile label="Modo:">
                     <BotonTema className="w-full justify-start" />
                 </FilaMobile>
-                <FilaMobile label="Tema:">
-                    <PaletaSelector
-                        paletaSeleccionada={paletaSeleccionada}
-                        coloresActuales={coloresActuales}
-                        onChange={cambiarPaleta}
-                        className="w-full"
-                    />
+                <FilaMobile label="Ajustes:">
+                    <Button
+                        onClick={abrirConfigDrawer}
+                        color="default"
+                        size="sm"
+                        variant="bordered"
+                        startContent={<IconConfig className="w-4 h-4" />}
+                        className="w-full border border-divider shadow-sm"
+                    >
+                        Configuración
+                    </Button>
                 </FilaMobile>
                 <FilaMobile label="Horarios:">
                     <SelectorHorarios activo={horarioActivo} onChange={cambiarHorario} />
@@ -142,13 +143,16 @@ function EncabezadoHorario({
                     </div>
                     <ContadorCreditos total={creditosTotales} />
                     <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-sm font-medium text-foreground-600 whitespace-nowrap">Tema:</span>
-                        <PaletaSelector
-                            paletaSeleccionada={paletaSeleccionada}
-                            coloresActuales={coloresActuales}
-                            onChange={cambiarPaleta}
-                            className="min-w-[160px]"
-                        />
+                        <Button
+                            onClick={abrirConfigDrawer}
+                            color="default"
+                            size="sm"
+                            variant="bordered"
+                            startContent={<IconConfig className="w-4 h-4" />}
+                            className="border border-divider shadow-sm"
+                        >
+                            Configuración
+                        </Button>
                         <Button
                             onClick={abrirShareModal}
                             color="success"
