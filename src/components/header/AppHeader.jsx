@@ -1,21 +1,13 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@heroui/button';
-import { useTheme } from 'next-themes';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { Sun, Moon } from 'lucide-react';
 import ExcelUploader from '@/components/excel/ExcelUploader';
 
 /**
  * Encabezado superior de la aplicación: título, zona de carga de Excel y toggle de tema.
  */
 function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
-    const { setTheme, resolvedTheme } = useTheme();
     const { nombre } = useCarrera();
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
-
-    const esDark = mounted && resolvedTheme === 'dark';
 
     return (
         <div className="bg-content1 rounded-lg shadow-md p-3 md:p-6 mb-3 md:mb-6">
@@ -50,19 +42,6 @@ function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
                         cargandoArchivo={cargandoArchivo}
                         onCargaArchivo={onCargaArchivo}
                     />
-
-                    {/* Toggle de tema (sólo en desktop, en mobile lo maneja EncabezadoHorario) */}
-                    <Button
-                        className="hidden lg:inline-flex"
-                        onClick={() => setTheme(esDark ? 'light' : 'dark')}
-                        color="default"
-                        size="sm"
-                        variant="ghost"
-                        title="Cambiar tema"
-                        startContent={esDark ? <Sun size={18} /> : <Moon size={18} />}
-                    >
-                        {esDark ? 'Modo claro' : 'Modo oscuro'}
-                    </Button>
                 </div>
             </div>
         </div >
