@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
-import { IconWarning } from '@/constants/icons';
+import { TriangleAlert } from 'lucide-react';
 
 export default function ConflictModal({ isOpen, onClose, conflictoInfo }) {
     return (
@@ -8,7 +8,7 @@ export default function ConflictModal({ isOpen, onClose, conflictoInfo }) {
             <ModalContent>
                 <ModalHeader className="flex gap-1 items-center">
                     <div className="bg-danger-100 rounded-full p-2 mr-3">
-                        <IconWarning className="w-5 h-5 md:w-6 md:h-6 text-danger" />
+                        <TriangleAlert className="w-5 h-5 md:w-6 md:h-6 text-danger" />
                     </div>
                     <span className="text-foreground">Conflicto de Horarios</span>
                 </ModalHeader>

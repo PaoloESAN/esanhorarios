@@ -129,7 +129,6 @@ function HorarioAppInner() {
                             creditosTotales={horarios.creditosTotales}
                             cambiarHorario={horarios.cambiarHorario}
                             limpiarHorario={limpiarHorario}
-                            limpiarTodosLosHorarios={limpiarTodosLosHorarios}
                             abrirShareModal={compartir.abrirShareModal}
                             abrirConfigDrawer={configDrawer.onOpen}
                         />

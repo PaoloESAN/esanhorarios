@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
-import { IconShare, IconCopiar, IconDescargar } from '@/constants/icons';
+import { Share2, Copy, Download } from 'lucide-react';
 
 export default function ShareModal({ isOpen, onClose, dataUrl, onCopy, onDownload, filename = 'mi-horario.png' }) {
     return (
@@ -8,7 +8,7 @@ export default function ShareModal({ isOpen, onClose, dataUrl, onCopy, onDownloa
             <ModalContent>
                 <ModalHeader className="flex gap-1 items-center">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
-                        <IconShare className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                        <Share2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                     </div>
                     <span className="text-foreground">Compartir horario</span>
                 </ModalHeader>
@@ -33,7 +33,7 @@ export default function ShareModal({ isOpen, onClose, dataUrl, onCopy, onDownloa
                                 color="secondary"
                                 onPress={onCopy}
                                 isDisabled={!dataUrl}
-                                startContent={<IconCopiar />}
+                                startContent={<Copy size={18} />}
                             >
                                 Copiar imagen
                             </Button>
@@ -42,7 +42,7 @@ export default function ShareModal({ isOpen, onClose, dataUrl, onCopy, onDownloa
                                 color="primary"
                                 onPress={onDownload}
                                 isDisabled={!dataUrl}
-                                startContent={<IconDescargar />}
+                                startContent={<Download size={18} />}
                             >
                                 Descargar
                             </Button>

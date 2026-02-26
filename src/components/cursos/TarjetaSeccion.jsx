@@ -1,4 +1,4 @@
-import { IconBuscar } from '@/constants/icons';
+import { Search } from 'lucide-react';
 
 /**
  * Tarjeta individual de una sección de curso.
@@ -24,7 +24,6 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
                 Sección: {seccionData.seccion} {estaSeleccionado ? '✓ Click para remover' : ''}
             </div>
             <div className={`text-xs mb-1 flex items-center gap-1 flex-row ${estaSeleccionado ? 'text-foreground-500' : 'text-foreground-600'}`}>
-                <span>Prof: {seccionData.profesor}</span>
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
@@ -33,8 +32,9 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
                     className="p-0.5 hover:bg-content3 rounded transition-colors bg-content1 border border-divider shadow-sm"
                     title={`Buscar información sobre ${seccionData.profesor}`}
                 >
-                    <IconBuscar className="w-3 h-3 text-foreground-500 hover:text-primary" />
+                    <Search className="w-3 h-3 text-foreground-500 hover:text-primary" />
                 </button>
+                <span>Prof: {seccionData.profesor}</span>
             </div>
             <div className={`text-xs ${estaSeleccionado ? 'text-foreground-500' : 'text-primary'}`}>
                 Horarios: {seccionData.horarios.length} clase{seccionData.horarios.length !== 1 ? 's' : ''}

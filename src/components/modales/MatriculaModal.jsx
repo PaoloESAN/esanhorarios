@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
-import { IconCircleCheck } from '@/constants/icons';
+import { CircleCheck } from 'lucide-react';
 
 export default function MatriculaModal({ isOpen, onClose, imagenMatricula, textosMatricula }) {
     return (
@@ -8,7 +8,7 @@ export default function MatriculaModal({ isOpen, onClose, imagenMatricula, texto
             <ModalContent>
                 <ModalHeader className="flex gap-1 items-center">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
-                        <IconCircleCheck className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                        <CircleCheck className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                     </div>
                     <span className="text-foreground">Información de Matrícula</span>
                 </ModalHeader>

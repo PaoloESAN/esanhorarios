@@ -69,6 +69,7 @@ bun dev
 - **[HeroUI](https://heroui.com/)** - Biblioteca de componentes UI moderna
 - **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework de CSS utility-first
 - **[Framer Motion](https://www.framer.com/motion/)** - Biblioteca de animaciones
+- **[Lucide React](https://lucide.dev/)** - Biblioteca de íconos SVG
 - **[XLSX](https://sheetjs.com/)** - Procesamiento de archivos Excel
 - **[html2canvas-pro](https://github.com/yorickshan/html2canvas-pro)** - Exportación de DOM a imagen
 

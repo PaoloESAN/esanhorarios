@@ -5,7 +5,6 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerBody,
-    DrawerFooter,
 } from "@heroui/drawer";
 import { Switch } from "@heroui/switch";
 import { Checkbox, CheckboxGroup } from "@heroui/checkbox";
@@ -15,7 +14,8 @@ import { Button, ButtonGroup } from "@heroui/button";
 
 import PaletaSelector from "@/components/ui/PaletaSelector";
 import { useConfigHorario } from "@/hooks/useConfigHorario";
-import { IconConfig } from "@/constants/icons";
+import { Brush } from 'lucide-react';
+
 
 const CAMPOS_LABELS = {
     curso: "Nombre del curso",
@@ -31,7 +31,7 @@ function ConfigDrawer({
     coloresActuales,
     cambiarPaleta,
 }) {
-    const { config, actualizarConfig, toggleCampo } = useConfigHorario();
+    const { config, actualizarConfig } = useConfigHorario();
 
     const camposActivos = Object.entries(config.camposVisibles)
         .filter(([, v]) => v)
@@ -50,8 +50,8 @@ function ConfigDrawer({
         <Drawer isOpen={isOpen} onClose={onClose} placement="right" size="sm" hideCloseButton>
             <DrawerContent>
                 <DrawerHeader className="flex items-center gap-2">
-                    <IconConfig className="w-5 h-5 text-primary" />
-                    <span>Configuración del Horario</span>
+                    <Brush size={18} className="text-primary" />
+                    <span>Personalización del Horario</span>
                 </DrawerHeader>
                 <DrawerBody className="flex flex-col gap-6 pb-4">
                     {/* ── Paleta de colores ─────────────────────────── */}

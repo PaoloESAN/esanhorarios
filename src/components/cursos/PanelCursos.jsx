@@ -1,7 +1,7 @@
 import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { IconMas, IconCreditoBadge } from '@/constants/icons';
+import { Plus, BadgeCheck } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';
 
@@ -32,7 +32,7 @@ function PanelCursos({
                     isIconOnly
                     title="Agregar curso personalizado"
                 >
-                    <IconMas />
+                    <Plus />
                 </Button>
             </div>
 
@@ -73,7 +73,7 @@ function PanelCursos({
                                         <span className="flex-1">{curso}</span>
                                         <div className="flex items-center gap-2">
                                             <span className="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold border border-emerald-200">
-                                                <IconCreditoBadge className="w-3 h-3 text-emerald-600" />
+                                                <BadgeCheck className="w-3 h-3 text-emerald-600" />
                                                 {creditos}
                                             </span>
                                         </div>

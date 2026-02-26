@@ -1,5 +1,5 @@
 import { Button } from '@heroui/button';
-import { IconArchivo, IconUpload } from '@/constants/icons';
+import { FileText, CloudUpload } from 'lucide-react';
 
 /**
  * Pantalla de bienvenida que se muestra cuando no hay archivo Excel cargado.
@@ -9,7 +9,7 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
     return (
         <div className="flex flex-col items-center justify-center py-8 md:py-12 text-center">
             <div className="bg-primary-50 rounded-full p-4 mb-4">
-                <IconArchivo className="w-8 h-8 md:w-12 md:h-12 text-primary" />
+                <FileText className="w-8 h-8 md:w-12 md:h-12 text-primary" />
             </div>
             <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">¡Bienvenido!</h3>
             <p className="text-sm md:text-base text-foreground-500 mb-6 max-w-xs">
@@ -21,7 +21,7 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
                 size="md"
                 className="cursor-pointer mb-4"
                 isLoading={cargandoArchivo}
-                startContent={!cargandoArchivo && <IconUpload className="w-5 h-5" />}
+                startContent={!cargandoArchivo && <CloudUpload className="w-5 h-5" />}
             >
                 {cargandoArchivo ? 'Cargando Excel...' : 'Cargar Archivo Excel'}
                 <input

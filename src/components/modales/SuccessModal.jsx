@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
-import { IconCheck } from '@/constants/icons';
+import { Check } from 'lucide-react';
 
 export default function SuccessModal({ isOpen, onClose, mensaje }) {
     return (
@@ -8,7 +8,7 @@ export default function SuccessModal({ isOpen, onClose, mensaje }) {
             <ModalContent>
                 <ModalHeader className="flex gap-1 items-center">
                     <div className="bg-success-100 rounded-full p-2 mr-3">
-                        <IconCheck className="w-5 h-5 md:w-6 md:h-6 text-success" />
+                        <Check className="w-5 h-5 md:w-6 md:h-6 text-success" />
                     </div>
                     <span className="text-foreground">¡Éxito!</span>
                 </ModalHeader>

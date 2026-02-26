@@ -5,7 +5,7 @@ import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { Input } from "@heroui/input";
-import { IconMas, IconTrash } from '@/constants/icons';
+import { Plus, Trash2 } from 'lucide-react';
 
 export default function ModalAgregarCurso({
     isOpen,
@@ -129,7 +129,7 @@ export default function ModalAgregarCurso({
             <ModalContent>
                 <ModalHeader className="flex gap-1 items-center">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
-                        <IconMas className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                        <Plus className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                     </div>
                     <span className="text-foreground">Agregar Curso Personalizado</span>
                 </ModalHeader>
@@ -206,7 +206,7 @@ export default function ModalAgregarCurso({
                                     color="success"
                                     variant="flat"
                                     size="sm"
-                                    startContent={<IconMas />}
+                                    startContent={<Plus />}
                                 >
                                     Agregar Horario
                                 </Button>
@@ -278,7 +278,7 @@ export default function ModalAgregarCurso({
                                                         size="sm"
                                                         variant="light"
                                                         className="shrink-0 w-full sm:w-auto"
-                                                        startContent={<IconTrash />}
+                                                        startContent={<Trash2 />}
                                                     >
                                                         <span className="sm:hidden">Eliminar Horario</span>
                                                     </Button>

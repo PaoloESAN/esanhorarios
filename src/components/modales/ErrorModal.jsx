@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
-import { IconCerrar } from '@/constants/icons';
+import { X } from 'lucide-react';
 
 export default function ErrorModal({ isOpen, onClose, mensaje }) {
     return (
@@ -8,7 +8,7 @@ export default function ErrorModal({ isOpen, onClose, mensaje }) {
             <ModalContent>
                 <ModalHeader className="flex gap-1 items-center">
                     <div className="bg-danger-100 rounded-full p-2 mr-3">
-                        <IconCerrar className="w-5 h-5 md:w-6 md:h-6 text-danger" />
+                        <X className="w-5 h-5 md:w-6 md:h-6 text-danger" />
                     </div>
                     <span className="text-foreground">Error</span>
                 </ModalHeader>

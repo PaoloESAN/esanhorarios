@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Button } from '@heroui/button';
 import { useTheme } from 'next-themes';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { IconSol, IconLuna } from '@/constants/icons';
+import { Sun, Moon } from 'lucide-react';
 import ExcelUploader from '@/components/excel/ExcelUploader';
 
 /**
@@ -59,13 +59,13 @@ function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
                         size="sm"
                         variant="ghost"
                         title="Cambiar tema"
-                        startContent={esDark ? <IconSol /> : <IconLuna />}
+                        startContent={esDark ? <Sun size={18} /> : <Moon size={18} />}
                     >
                         {esDark ? 'Modo claro' : 'Modo oscuro'}
                     </Button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
