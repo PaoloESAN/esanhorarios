@@ -18,6 +18,7 @@ const DEFAULTS = {
     nombrePrimero: false,
     tamanoLetra: 14,
     alineacion: 'left',
+    ocultarFilasVacias: false,
 };
 
 const ConfigHorarioContext = createContext(null);

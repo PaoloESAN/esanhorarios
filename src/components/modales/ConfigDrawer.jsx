@@ -82,7 +82,7 @@ function ConfigDrawer({
                                 startContent={<Moon size={14} />}
                                 endContent={<Sun size={14} />}
                             >
-                                <span className="text-sm">{esDark ? "Modo claro" : "Modo oscuro"}</span>
+                                <span className="text-sm">{esDark ? "Modo oscuro" : "Modo claro"}</span>
                             </Switch>
 
                             <Divider />
@@ -126,6 +126,17 @@ function ConfigDrawer({
                                     ]}
                                 />
                             </section>
+
+                            <Divider />
+
+                            {/* Ocultar filas vacías */}
+                            <Switch
+                                isSelected={config.ocultarFilasVacias}
+                                onValueChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
+                                size="sm"
+                            >
+                                <span className="text-sm">Ocultar filas vacías al final</span>
+                            </Switch>
 
                             <Divider />
 

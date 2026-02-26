@@ -1,4 +1,5 @@
 import { diasSemana, generarHorarios } from '@/lib/horario';
+import { useConfigHorario } from '@/hooks/useConfigHorario';
 import CeldaAsignada from './CeldaAsignada';
 import CeldaVacia from './CeldaVacia';
 
@@ -20,6 +21,29 @@ function TablaHorario({
     onAbrirNota,
     onQuitarNota,
 }) {
+    const { config } = useConfigHorario();
+
+    // Determinar qué filas mostrar: si ocultarFilasVacias está activo,
+    // recortamos las filas finales que estén completamente vacías.
+    let filasVisibles = horariosDelDia;
+    if (config.ocultarFilasVacias) {
+        let ultimaFilaOcupada = -1;
+        for (let i = horariosDelDia.length - 1; i >= 0; i--) {
+            const horario = horariosDelDia[i];
+            const tieneAlgo = diasSemana.some((dia) => {
+                const key = `${dia}-${horario}`;
+                return horarioPersonal[key] || notasCelda[key];
+            });
+            if (tieneAlgo) {
+                ultimaFilaOcupada = i;
+                break;
+            }
+        }
+        // Mostrar al menos hasta la última fila ocupada + 1 extra, o mínimo 6 filas
+        const corte = Math.max(ultimaFilaOcupada + 2, 6);
+        filasVisibles = horariosDelDia.slice(0, Math.min(corte, horariosDelDia.length));
+    }
+
     return (
         <div className="overflow-x-auto">
             <table
@@ -43,7 +67,7 @@ function TablaHorario({
                     </tr>
                 </thead>
                 <tbody>
-                    {horariosDelDia.map((horario) => (
+                    {filasVisibles.map((horario) => (
                         <tr key={horario}>
                             <td className="border border-divider p-1 bg-content2 text-xs font-medium text-center text-foreground">
                                 <span className="block md:hidden text-xs">{horario.split('-')[0]}</span>
