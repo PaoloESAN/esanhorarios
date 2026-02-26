@@ -148,20 +148,24 @@ function HorarioAppInner() {
                         />
                     </div>
 
-                    {/* Panel lateral de cursos */}
-                    <PanelCursos
-                        cicloSeleccionado={cursos.cicloSeleccionado}
-                        setCicloSeleccionado={cursos.setCicloSeleccionado}
-                        cursosSeleccionados={horarios.cursosSeleccionados}
-                        nombreArchivo={excel.nombreArchivo}
-                        cargandoArchivo={excel.cargandoArchivo}
-                        obtenerHorariosPorCurso={excel.obtenerHorariosPorCurso}
-                        onAgregarCurso={cursos.agregarCursoAlHorario}
-                        onRemoverCurso={cursos.removerCursoPorId}
-                        onDragStart={cursos.handleDragStart}
-                        onAbrirModalCursoPersonalizado={addCourseModal.onOpen}
-                        onCargaArchivo={excel.manejarCargaArchivo}
-                    />
+                    {/* Panel lateral de cursos – wrapper para que la tabla dicte la altura */}
+                    <div className="order-1 lg:order-1 w-full lg:w-80 relative">
+                        <div className="lg:absolute lg:inset-0">
+                            <PanelCursos
+                                cicloSeleccionado={cursos.cicloSeleccionado}
+                                setCicloSeleccionado={cursos.setCicloSeleccionado}
+                                cursosSeleccionados={horarios.cursosSeleccionados}
+                                nombreArchivo={excel.nombreArchivo}
+                                cargandoArchivo={excel.cargandoArchivo}
+                                obtenerHorariosPorCurso={excel.obtenerHorariosPorCurso}
+                                onAgregarCurso={cursos.agregarCursoAlHorario}
+                                onRemoverCurso={cursos.removerCursoPorId}
+                                onDragStart={cursos.handleDragStart}
+                                onAbrirModalCursoPersonalizado={addCourseModal.onOpen}
+                                onCargaArchivo={excel.manejarCargaArchivo}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Pie de página */}

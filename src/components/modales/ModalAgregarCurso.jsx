@@ -278,7 +278,7 @@ export default function ModalAgregarCurso({
                                                         size="sm"
                                                         variant="light"
                                                         className="shrink-0 w-full sm:w-auto"
-                                                        startContent={<Trash2 />}
+                                                        startContent={<Trash2 size={20} />}
                                                     >
                                                         <span className="sm:hidden">Eliminar Horario</span>
                                                     </Button>

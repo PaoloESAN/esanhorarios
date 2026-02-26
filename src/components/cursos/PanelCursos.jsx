@@ -20,7 +20,7 @@ function PanelCursos({
     const hayArchivo = Boolean(nombreArchivo);
 
     return (
-        <div className="order-1 lg:order-1 w-full lg:w-80 bg-content1 rounded-lg shadow-md p-3 md:p-6">
+        <div className="bg-content1 rounded-lg shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
             {/* Cabecera del panel */}
             <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h2 className="text-lg md:text-xl font-semibold text-foreground">Cursos Disponibles</h2>
@@ -59,7 +59,7 @@ function PanelCursos({
 
             {/* Lista de cursos o pantalla de bienvenida */}
             {hayArchivo ? (
-                <div className="space-y-3 max-h-[calc(100vh-500px)] lg:max-h-[56.75rem] overflow-y-auto">
+                <div className="space-y-3 flex-1 min-h-0 overflow-y-auto">
                     {cursosPorCiclo[cicloSeleccionado]?.map((curso, idx) => {
                         const secciones = obtenerHorariosPorCurso(curso);
                         const creditos = obtenerCreditos(curso);
