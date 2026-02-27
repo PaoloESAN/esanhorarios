@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { procesarArchivoExcel, mapeoEspecial } from '@/lib/excel';
+import { procesarArchivoExcel, aliasCorrecciones } from '@/lib/excel';
 import { normalizar } from '@/lib/horario';
 
 /**
@@ -20,7 +20,7 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
 
     const mapaAliasNormalizados = (() => {
         const map = new Map();
-        for (const [k, v] of Object.entries(mapeoEspecial)) {
+        for (const [k, v] of Object.entries(aliasCorrecciones)) {
             map.set(normalizar(k), normalizar(v));
         }
         return map;

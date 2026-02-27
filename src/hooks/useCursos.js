@@ -15,7 +15,7 @@ export function useCursos({
     onExito,
     setMensajeModal,
 }) {
-    const [cicloSeleccionado, setCicloSeleccionado] = useState('Cuarto Ciclo');
+    const [cicloSeleccionado, setCicloSeleccionado] = useState('Quinto Ciclo');
     const [draggedItem, setDraggedItem] = useState(null);
     const [conflictoInfo, setConflictoInfo] = useState({ cursoExistente: '', cursoNuevo: '' });
 
