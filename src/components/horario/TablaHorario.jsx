@@ -57,7 +57,7 @@ function TablaHorario({
     const bgBody = tieneChaufa ? 'bg-transparent' : '';
 
     return (
-        <div className="overflow-x-auto relative">
+        <div id="tabla-horario" className="overflow-x-auto overflow-hidden rounded-lg relative">
             {fondoImagen && (
                 <div
                     className="absolute inset-0 z-0 pointer-events-none"
@@ -72,7 +72,6 @@ function TablaHorario({
                 />
             )}
             <table
-                id="tabla-horario"
                 className={`w-full min-w-[640px] md:min-w-[900px] table-fixed border-collapse text-xs md:text-sm relative z-[1] ${tieneChaufa ? 'bg-transparent' : ''}`}
             >
                 <thead>

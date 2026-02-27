@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 /**
  * Configuración visual del horario.
@@ -28,15 +28,18 @@ const DEFAULTS = {
 const ConfigHorarioContext = createContext(null);
 
 export function ConfigHorarioProvider({ children }) {
-    const [config, setConfig] = useState(() => {
-        if (typeof window === "undefined") return DEFAULTS;
+    const [config, setConfig] = useState(DEFAULTS);
+
+    // Cargar configuración guardada desde localStorage después del mount
+    // para evitar hydration mismatch (servidor siempre renderiza DEFAULTS)
+    useEffect(() => {
         try {
             const saved = localStorage.getItem("configHorario");
-            return saved ? { ...DEFAULTS, ...JSON.parse(saved) } : DEFAULTS;
-        } catch {
-            return DEFAULTS;
-        }
-    });
+            if (saved) {
+                setConfig((prev) => ({ ...prev, ...JSON.parse(saved) }));
+            }
+        } catch { }
+    }, []);
 
     const actualizarConfig = (patch) => {
         setConfig((prev) => {
