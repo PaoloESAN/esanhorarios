@@ -17,3 +17,35 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes calendarFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.calendar-enter {
+  animation: calendarFadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cellPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 4px 14px var(--cell-glow);
+  }
+
+  50% {
+    box-shadow: 0 6px 20px var(--cell-glow);
+  }
+}
+
+.cell-active {
+  animation: cellPulse 3s ease-in-out infinite;
+}
