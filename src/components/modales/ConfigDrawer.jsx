@@ -187,6 +187,50 @@ function ConfigDrawer({
                                     </Button>
                                 </ButtonGroup>
                             </section>
+
+                            {/* ═══ Fondos de Chaufa (ocultos hasta desbloqueo) ═══ */}
+                            {(config.chijaukayDesbloqueado || config.tipakayDesbloqueado) && (
+                                <>
+                                    <Divider />
+                                    <section>
+                                        <h4 className="text-sm font-semibold text-foreground-700 mb-2">
+                                            Fondo de chaufa
+                                        </h4>
+                                        <div className='flex flex-row gap-3'>
+                                            {config.chijaukayDesbloqueado && (
+                                                <Switch
+                                                    color='warning'
+                                                    isSelected={config.fondoChiJauKay}
+                                                    onValueChange={(v) =>
+                                                        actualizarConfig({
+                                                            fondoChiJauKay: v,
+                                                            ...(v ? { fondoTiPaKay: false } : {}),
+                                                        })
+                                                    }
+                                                    size="sm"
+                                                >
+                                                    <span className="text-sm">Chi Jau Kay</span>
+                                                </Switch>
+                                            )}
+                                            {config.tipakayDesbloqueado && (
+                                                <Switch
+                                                    color='warning'
+                                                    isSelected={config.fondoTiPaKay}
+                                                    onValueChange={(v) =>
+                                                        actualizarConfig({
+                                                            fondoTiPaKay: v,
+                                                            ...(v ? { fondoChiJauKay: false } : {}),
+                                                        })
+                                                    }
+                                                    size="sm"
+                                                >
+                                                    <span className="text-sm">Ti Pa Kay</span>
+                                                </Switch>
+                                            )}
+                                        </div>
+                                    </section>
+                                </>
+                            )}
                         </AccordionItem>
 
                         {/* ═══ GRUPO 2 — Campos visibles ═══ */}

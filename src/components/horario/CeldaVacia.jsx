@@ -1,12 +1,19 @@
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/dropdown';
+import { useConfigHorario } from '@/hooks/useConfigHorario';
 
 /**
  * Celda vacía del horario. Puede contener una nota de texto opcional.
  * Al hacer click en celda vacía abre el modal de nota.
  */
 function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
+    const { config } = useConfigHorario();
+    const tieneChaufa = config.fondoChiJauKay || config.fondoTiPaKay;
+    const bgClass = tieneChaufa
+        ? 'bg-transparent hover:bg-white/10'
+        : 'bg-content1 hover:bg-content2';
+
     return (
-        <div className="h-full bg-content1 hover:bg-content2 transition-colors rounded border-2 border-dashed border-transparent hover:border-primary relative">
+        <div className={`h-full ${bgClass} transition-colors rounded border-2 border-dashed border-transparent hover:border-primary relative`}>
             {nota ? (
                 <Dropdown>
                     <DropdownTrigger>

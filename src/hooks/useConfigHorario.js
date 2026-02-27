@@ -19,6 +19,10 @@ const DEFAULTS = {
     tamanoLetra: 14,
     alineacion: 'left',
     ocultarFilasVacias: false,
+    fondoChiJauKay: false,
+    fondoTiPaKay: false,
+    chijaukayDesbloqueado: false,
+    tipakayDesbloqueado: false,
 };
 
 const ConfigHorarioContext = createContext(null);
