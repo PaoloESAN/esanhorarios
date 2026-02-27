@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
@@ -18,6 +19,11 @@ function PanelCursos({
 }) {
     const { cursosPorCiclo, obtenerCreditos } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
+    const listaRef = useRef(null);
+
+    useEffect(() => {
+        listaRef.current?.scrollTo({ top: 0 });
+    }, [cicloSeleccionado]);
 
     return (
         <div className="bg-content1 rounded-lg shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
@@ -59,7 +65,7 @@ function PanelCursos({
 
             {/* Lista de cursos o pantalla de bienvenida */}
             {hayArchivo ? (
-                <div className="space-y-3 flex-1 min-h-0 overflow-y-auto">
+                <div ref={listaRef} className="space-y-3 flex-1 min-h-0 overflow-y-auto">
                     {cursosPorCiclo[cicloSeleccionado]?.map((curso, idx) => {
                         const secciones = obtenerHorariosPorCurso(curso);
                         const creditos = obtenerCreditos(curso);
