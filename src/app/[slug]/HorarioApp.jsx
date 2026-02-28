@@ -208,6 +208,9 @@ function HorarioAppInner() {
                     onCopy={compartir.copiarImagen}
                     onDownload={compartir.descargarImagen}
                     filename={compartir.shareFilename}
+                    horarioPersonal={horarios.horarioPersonal}
+                    notasCelda={notas.notasCelda}
+                    horarioActivo={horarios.horarioActivo}
                 />
                 <ModalNota
                     isOpen={noteModal.isOpen}

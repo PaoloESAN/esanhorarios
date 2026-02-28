@@ -20,15 +20,13 @@ const CAMPOS_LABELS = {
 };
 
 /* ── Accordion ligero con CSS ── */
-function LightAccordion({ icon, title, subtitle, defaultOpen, children }) {
-    const [open, setOpen] = useState(defaultOpen ?? false);
-
+function LightAccordion({ icon, title, subtitle, isOpen, onToggle, children }) {
     return (
         <div className="rounded-xl bg-content2 overflow-hidden">
             <button
                 type="button"
                 className="w-full flex items-center gap-2 px-4 py-3 text-left cursor-pointer"
-                onClick={() => setOpen(o => !o)}
+                onClick={onToggle}
             >
                 {icon}
                 <div className="flex-1 min-w-0">
@@ -39,7 +37,7 @@ function LightAccordion({ icon, title, subtitle, defaultOpen, children }) {
                     size={16}
                     className="text-foreground-400 shrink-0"
                     style={{
-                        transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                         transition: 'transform 0.15s ease',
                     }}
                 />
@@ -48,7 +46,7 @@ function LightAccordion({ icon, title, subtitle, defaultOpen, children }) {
                 className="accordion-body"
                 style={{
                     display: 'grid',
-                    gridTemplateRows: open ? '1fr' : '0fr',
+                    gridTemplateRows: isOpen ? '1fr' : '0fr',
                     transition: 'grid-template-rows 0.15s ease',
                 }}
             >
@@ -120,6 +118,9 @@ function ConfigDrawer({
         actualizarConfig({ camposVisibles: patch });
     };
 
+    const [panelAbierto, setPanelAbierto] = useState('apariencia');
+    const togglePanel = (key) => setPanelAbierto(prev => prev === key ? null : key);
+
     return (
         <>
             {/* Backdrop */}
@@ -156,7 +157,8 @@ function ConfigDrawer({
                     <LightAccordion
                         icon={<Palette size={18} className="text-primary" />}
                         title="Apariencia"
-                        defaultOpen
+                        isOpen={panelAbierto === 'apariencia'}
+                        onToggle={() => togglePanel('apariencia')}
                     >
                         {/* Modo claro / oscuro */}
                         <Switch
@@ -310,6 +312,8 @@ function ConfigDrawer({
                         icon={<LayoutList size={18} className="text-success" />}
                         title="Campos visibles"
                         subtitle="Mínimo 1 activo"
+                        isOpen={panelAbierto === 'campos'}
+                        onToggle={() => togglePanel('campos')}
                     >
                         <CheckboxGroup
                             value={camposActivos}
@@ -332,6 +336,8 @@ function ConfigDrawer({
                     <LightAccordion
                         icon={<UserRound size={18} className="text-warning" />}
                         title="Formato del profesor"
+                        isOpen={panelAbierto === 'profesor'}
+                        onToggle={() => togglePanel('profesor')}
                     >
                         <div>
                             <Switch
