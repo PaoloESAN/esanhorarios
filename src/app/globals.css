@@ -49,3 +49,46 @@ body {
 .cell-active {
   animation: cellPulse 3s ease-in-out infinite;
 }
+
+/* ═══ Config Drawer ═══ */
+.config-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.config-drawer-backdrop[data-open] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.config-drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  width: min(24rem, 85vw);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  transform: translate3d(100%, 0, 0);
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+  contain: layout style paint;
+  overscroll-behavior: contain;
+}
+
+.config-drawer-panel[data-open] {
+  transform: translate3d(0, 0, 0);
+}
+
+.dark .config-drawer-panel {
+  background: #18181b;
+}
