@@ -8,18 +8,27 @@ export const generarImagenHorario = async ({ tema }) => {
             return null;
         }
 
-        const originalOverflow = elemento.style.overflow;
-        const originalOverflowX = elemento.style.overflowX;
-        const originalWidth = elemento.style.width;
-        const originalMinWidth = elemento.style.minWidth;
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
 
+        const clon = elemento.cloneNode(true);
         const fullWidth = elemento.scrollWidth;
-        elemento.style.overflow = 'visible';
-        elemento.style.overflowX = 'visible';
-        elemento.style.width = `${fullWidth}px`;
-        elemento.style.minWidth = `${fullWidth}px`;
 
-        const canvas = await html2canvas(elemento, {
+        Object.assign(clon.style, {
+            position: 'fixed',
+            top: '0',
+            left: '-99999px',
+            width: `${fullWidth}px`,
+            minWidth: `${fullWidth}px`,
+            overflow: 'visible',
+            overflowX: 'visible',
+            zIndex: '-9999',
+            pointerEvents: 'none',
+        });
+
+        document.body.appendChild(clon);
+
+        const canvas = await html2canvas(clon, {
             backgroundColor: tema === 'dark' ? '#18181b' : '#ffffff',
             scale: 2,
             useCORS: true,
@@ -27,13 +36,12 @@ export const generarImagenHorario = async ({ tema }) => {
             windowWidth: fullWidth,
             width: fullWidth,
             scrollX: 0,
-            scrollY: -window.scrollY,
+            scrollY: 0,
         });
 
-        elemento.style.overflow = originalOverflow;
-        elemento.style.overflowX = originalOverflowX;
-        elemento.style.width = originalWidth;
-        elemento.style.minWidth = originalMinWidth;
+        document.body.removeChild(clon);
+
+        window.scrollTo(scrollX, scrollY);
 
         return canvas.toDataURL('image/png');
     } catch (error) {
