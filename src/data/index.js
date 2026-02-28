@@ -1,3 +1,6 @@
+import { ambiental } from './ambiental';
+import { ciencia_datos } from './ciencia_datos';
+import { industrial } from './industrial';
 import { software } from './software';
 import { ti } from './ti';
 
@@ -7,6 +10,9 @@ import { ti } from './ti';
  * e impórtalo aquí.
  */
 export const carreras = {
+    ambiental,
+    ciencia_datos,
+    industrial,
     software,
     ti,
 };

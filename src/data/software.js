@@ -4,101 +4,91 @@ export const software = {
     facultad: "Ingeniería",
     cursos: {
         "Primer Ciclo": {
-            "Comunicación y literatura I": 3,
-            "Pre Cálculo": 3,
-            "Globalización y Realidad Nacional": 3,
-            "Estadística y Probabilidades": 3,
-            "Sistemas operativos I": 3,
-            "Fundamentos de Programación": 3,
-            "Taller: Desarrollo de competencias personales I": 1
+            "Comunicación y Literatura I": 3,
+            "Filosofía y Ética": 3,
+            "Precálculo": 4,
+            "Programación": 5,
+            "Sistemas Operativos I": 3,
+            "Taller: Desarrollo de Competencias Personales I": 1
         },
         "Segundo Ciclo": {
-            "Algoritmos y estructura de datos": 3,
-            "Cálculo I": 4,
-            "Ingeniería de requerimientos": 3,
-            "Análisis de datos I": 3,
-            "Arquitectura del computador I": 3,
-            "Base de Datos": 3,
-            "Taller: Desarrollo de competencias profesionales I": 1
+            "Algoritmos y Estructura de Datos": 3,
+            "Arquitectura del Computador I": 3,
+            "Cálculo I": 5,
+            "Estadística I": 4,
+            "Ingeniería de Requerimientos": 3,
+            "Matemática Discreta": 3,
+            "Taller: Desarrollo de Competencias Profesionales I": 1
         },
         "Tercer Ciclo": {
-            "Algebra lineal I": 3,
-            "Cálculo II": 4,
-            "Programación Orientada a Objetos": 3,
-            "Administración de base de datos": 3,
+            "Análisis y Diseño de Algoritmos": 3,
+            "Cálculo II": 5,
+            "Estadística II": 4,
             "Física I": 4,
-            "Ingeniería de procesos de negocio": 3,
+            "Ingeniería de Procesos de Negocio": 3,
+            "Programación Orientada a Objetos": 3,
             "Taller: Desarrollo de Competencias Personales II": 1
         },
         "Cuarto Ciclo": {
-            "Matemática Discreta": 3,
-            "Estadística Inferencial": 5,
-            "Análisis y diseño de algoritmos": 3,
-            "Inteligencia de Negocios": 3,
-            "Ingeniería de software I": 3,
+            "Álgebra Lineal I": 5,
+            "Ingeniería de Software I": 3,
+            "Redes de Comunicaciones": 3,
             "Robótica": 3,
-            "Redes de comunicaciones": 3,
-            "Taller: Desarrollo de competencias profesionales II": 1
+            "Sistemas de Gestión de Bases de Datos": 4,
+            "UX/UI": 3,
+            "Taller: Desarrollo de Competencias Profesionales II": 1
         },
         "Quinto Ciclo": {
-            "Gerencia para ingeniería": 3,
-            "Inteligencia Artificial": 3,
-            "Prueba de software": 3,
-            "Desarrollo de Aplicaciones web": 3,
-            "Desarrollo de Aplicaciones móviles": 3,
-            "Desarrollo de soluciones de IoT": 3,
-            "Ingeniería de software II": 3,
-            "Taller: Desarrollo de competencias personales III": 1
+            "Análisis Multivariado": 4,
+            "Bases de Datos Avanzadas": 3,
+            "Desarrollo de Aplicaciones Móviles": 3,
+            "Desarrollo de Aplicaciones Web": 3,
+            "Diseño de Patrones de Software": 3,
+            "Prueba de Software": 3,
+            "Taller: Desarrollo de Competencias Personales III": 1
         },
         "Sexto Ciclo": {
-            "Metodología de la Investigación": 3,
-            "Ethical hacking y seguridad": 3,
-            "Interacción humano computador": 3,
-            "Machine learning": 3,
-            "Desarrollo de videojuegos I": 3,
-            "Finanzas para ingeniería": 3,
-            "Taller: Desarrollo de competencias profesionales III": 1,
-            "Electivo 1": 3
+            "Arquitectura de Software y Soluciones": 3,
+            "Computación en la Nube": 3,
+            "Ethical Hacking y Ciberseguridad": 3,
+            "Machine Learning": 3,
+            "Software Factory & Gestión de Proyectos Ágiles": 3,
+            "Technological Entrepreneurship": 3,
+            "Electivo Internacional I": 1.5,
+            "Electivo Internacional II": 1.5,
+            "Taller: Desarrollo de Competencias Personales IV": 1
         },
         "Séptimo Ciclo": {
-            "Ética y responsabilidad ambiental": 3,
-            "Calidad de software": 3,
-            "Desarrollo de videojuegos II": 3,
-            "Diseño y desarrollo de productos digitales": 3,
-            "Entrepreneurship": 4,
-            "Arquitectura de software": 3,
-            "Taller: Desarrollo de competencias personales IV": 1,
-            "Electivo 2": 3
+            "Calidad de Software": 3,
+            "Desarrollo de Videojuegos": 3,
+            "DevOps & DevSecOps": 3,
+            "Estrategia Comercial y Legal de Software": 3,
+            "Finanzas para Startups Tecnológicas": 3,
+            "Gerencia de Proyectos de Software": 3,
+            "Inteligencia Artificial Generativa": 3
         },
         "Octavo Ciclo": {
-            "Project Management": 3,
-            "Computación en la nube": 3,
-            "Diseño de patrones de software": 3,
-            "Diseño y evaluación de proyectos": 4,
-            "Proyecto StartUp": 3,
-            "Despliegue de aplicaciones": 3,
-            "Taller: Desarrollo de competencias profesionales IV": 1,
-            "Electivo 3": 3
+            "Capstone Project I": 3,
+            "Diseño de Componentes y APIs": 3,
+            "Diseño de Sistemas Inteligentes": 3,
+            "Marketing Digital para Tecnologías": 3,
+            "Realidad Virtual e Inmersiva": 3,
+            "Electivo I": 3
         },
         "Noveno Ciclo": {
-            "Capstone Project I": 3,
+            "Proyecto StartUp": 3,
+            "Sistemas Distribuidos": 3,
             "Trabajo de Tesis I": 3,
-            "Taller: Desarrollo de competencias personales V": 1,
-            "Electivo Internacional 1": 1.5,
-            "Electivo 4": 3,
-            "Electivo 5": 3,
-            "Electivo 6": 3,
-            "Electivo 7": 3
+            "Electivo II": 3,
+            "Electivo III": 3,
+            "Electivo IV": 3
         },
         "Décimo Ciclo": {
             "Trabajo de Tesis II": 3,
-            "Deep learning": 3,
-            "Taller: Desarrollo de competencias profesionales V": 1,
-            "Electivo Internacional 2": 1.5,
-            "Electivo 8": 3,
-            "Electivo 9": 3,
-            "Electivo 10": 3,
-            "Electivo 11": 3
+            "Electivo V": 3,
+            "Electivo VI": 3,
+            "Electivo VII": 3,
+            "Electivo VIII": 3
         }
     }
 };

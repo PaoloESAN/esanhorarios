@@ -40,9 +40,9 @@ export const COLUMNAS = [
         carreras: [
             { nombre: "Ing. de Software", slug: "software", activa: true },
             { nombre: "Ing. de TI", slug: "ti", activa: true },
-            { nombre: "Ciencia de Datos", activa: false },
-            { nombre: "Ing. Ambiental", activa: false },
-            { nombre: "Ing. Industrial y Comercial", activa: false },
+            { nombre: "Ciencia de Datos", slug: "ciencia_datos", activa: true },
+            { nombre: "Ing. Ambiental", slug: "ambiental", activa: true },
+            { nombre: "Ing. Industrial y Comercial", slug: "industrial", activa: true },
             { nombre: "Ing. en Inteligencia Artificial", activa: false },
         ],
     },
