@@ -151,7 +151,7 @@ export default function ChifaPromo() {
                                 onClick={() => seleccionar("chijaukay")}
                             >
                                 <img
-                                    src="/chaufachijaukay.jpg"
+                                    src="/chaufachijaukay.webp"
                                     alt="Chaufa Chi Jau Kay"
                                     className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-110"
                                 />
@@ -170,7 +170,7 @@ export default function ChifaPromo() {
                                 onClick={() => seleccionar("tipakay")}
                             >
                                 <img
-                                    src="/chaufatipakay.jpg"
+                                    src="/chaufatipakay.webp"
                                     alt="Chaufa Ti Pa Kay"
                                     className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-110"
                                 />

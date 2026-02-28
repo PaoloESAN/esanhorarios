@@ -46,9 +46,9 @@ function TablaHorario({
 
     // Determinar imagen de fondo de la tabla
     const fondoImagen = config.fondoChiJauKay
-        ? '/chaufachijaukay.jpg'
+        ? '/chaufachijaukay.webp'
         : config.fondoTiPaKay
-            ? '/chaufatipakay.jpg'
+            ? '/chaufatipakay.webp'
             : null;
 
     const tieneChaufa = !!fondoImagen;

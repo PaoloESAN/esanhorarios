@@ -28,7 +28,7 @@ function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
                     </Button>
                     <div>
                         <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-1">
-                            Creador de Horarios - {nombre}
+                            {nombre}
                         </h1>
                         <p className="text-sm md:text-base text-foreground-500">
                             Arrastra o selecciona los cursos desde el panel hacia la tabla de horarios.
