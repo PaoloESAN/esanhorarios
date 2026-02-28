@@ -8,12 +8,32 @@ export const generarImagenHorario = async ({ tema }) => {
             return null;
         }
 
+        const originalOverflow = elemento.style.overflow;
+        const originalOverflowX = elemento.style.overflowX;
+        const originalWidth = elemento.style.width;
+        const originalMinWidth = elemento.style.minWidth;
+
+        const fullWidth = elemento.scrollWidth;
+        elemento.style.overflow = 'visible';
+        elemento.style.overflowX = 'visible';
+        elemento.style.width = `${fullWidth}px`;
+        elemento.style.minWidth = `${fullWidth}px`;
+
         const canvas = await html2canvas(elemento, {
             backgroundColor: tema === 'dark' ? '#18181b' : '#ffffff',
             scale: 2,
             useCORS: true,
             logging: false,
+            windowWidth: fullWidth,
+            width: fullWidth,
+            scrollX: 0,
+            scrollY: -window.scrollY,
         });
+
+        elemento.style.overflow = originalOverflow;
+        elemento.style.overflowX = originalOverflowX;
+        elemento.style.width = originalWidth;
+        elemento.style.minWidth = originalMinWidth;
 
         return canvas.toDataURL('image/png');
     } catch (error) {
