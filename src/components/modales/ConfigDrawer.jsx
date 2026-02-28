@@ -6,6 +6,7 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerBody,
+    DrawerFooter,
 } from "@heroui/drawer";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Switch } from "@heroui/switch";
@@ -54,7 +55,18 @@ function ConfigDrawer({
     };
 
     return (
-        <Drawer isOpen={isOpen} onClose={onClose} placement="right" size="sm" hideCloseButton>
+        <Drawer
+            isOpen={isOpen}
+            onClose={onClose}
+            placement="right"
+            size="sm"
+            motionProps={{
+                variants: {
+                    enter: { x: 0, transition: { duration: 0.2, ease: "easeOut" } },
+                    exit: { x: "100%", transition: { duration: 0.15, ease: "easeIn" } },
+                },
+            }}
+        >
             <DrawerContent>
                 <DrawerHeader className="flex items-center gap-2">
                     <Brush size={18} className="text-primary" />
@@ -65,6 +77,12 @@ function ConfigDrawer({
                         defaultExpandedKeys={["apariencia"]}
                         variant="splitted"
                         itemClasses={{ base: "!bg-content2" }}
+                        motionProps={{
+                            variants: {
+                                enter: { height: "auto", opacity: 1, transition: { height: { duration: 0.15 }, opacity: { duration: 0.1 } } },
+                                exit: { height: 0, opacity: 0, transition: { height: { duration: 0.1 }, opacity: { duration: 0.05 } } },
+                            },
+                        }}
                     >
                         {/* ═══ GRUPO 1 — Apariencia ═══ */}
                         <AccordionItem
@@ -294,6 +312,15 @@ function ConfigDrawer({
                         </AccordionItem>
                     </Accordion>
                 </DrawerBody>
+                <DrawerFooter className="justify-end">
+                    <Button
+                        color="primary"
+                        variant="flat"
+                        onPress={onClose}
+                    >
+                        Cerrar
+                    </Button>
+                </DrawerFooter>
             </DrawerContent>
         </Drawer>
     );

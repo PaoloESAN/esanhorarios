@@ -57,17 +57,16 @@ function TablaHorario({
     const bgBody = tieneChaufa ? 'bg-transparent' : '';
 
     return (
-        <div id="tabla-horario" className="overflow-x-auto overflow-hidden rounded-lg relative">
+        <div id="tabla-horario" className="overflow-x-auto overflow-hidden relative">
             {fondoImagen && (
                 <div
-                    className="absolute inset-0 z-0 pointer-events-none"
+                    className="absolute inset-0 min-w-[640px] md:min-w-[900px] z-0 pointer-events-none"
                     style={{
                         backgroundImage: `url(${fondoImagen})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
                         opacity: 0.35,
-                        borderRadius: '8px',
                     }}
                 />
             )}

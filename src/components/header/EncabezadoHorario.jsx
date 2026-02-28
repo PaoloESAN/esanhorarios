@@ -27,7 +27,7 @@ function SelectorHorarios({ activo, onChange }) {
 
 function BotonLimpiar({ onLimpiarActual }) {
     return (
-        <Button onClick={onLimpiarActual} color="danger" variant="flat" aria-label='limpiar actual' startContent={<Trash2 size={18} />} className="px-4">
+        <Button onPress={onLimpiarActual} color="danger" variant="flat" aria-label='limpiar actual' startContent={<Trash2 size={18} />} className="px-4">
             Limpiar
         </Button>
     );
@@ -57,7 +57,7 @@ function EncabezadoHorario({
                 </div>
                 <div className="flex w-full gap-3">
                     <Button
-                        onClick={abrirConfigDrawer}
+                        onPress={abrirConfigDrawer}
                         color="warning"
                         size="sm"
                         variant="flat"
@@ -67,7 +67,7 @@ function EncabezadoHorario({
                         Personalizar
                     </Button>
                     <Button
-                        onClick={abrirShareModal}
+                        onPress={abrirShareModal}
                         color="success"
                         size="sm"
                         variant="flat"
@@ -96,7 +96,7 @@ function EncabezadoHorario({
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                         <Button
-                            onClick={abrirConfigDrawer}
+                            onPress={abrirConfigDrawer}
                             color="warning"
                             size="sm"
                             variant="flat"
@@ -106,7 +106,7 @@ function EncabezadoHorario({
                             <span className="font-medium whitespace-nowrap">Personalizar</span>
                         </Button>
                         <Button
-                            onClick={abrirShareModal}
+                            onPress={abrirShareModal}
                             color="success"
                             size="sm"
                             variant="flat"
