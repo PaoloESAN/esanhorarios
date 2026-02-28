@@ -2,7 +2,7 @@ import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@herou
 import { Button } from "@heroui/button";
 import { Share2, Copy, Download, FileSpreadsheet } from 'lucide-react';
 import { diasSemana, generarHorarios } from '@/lib/horario';
-import { useConfigHorario } from '@/hooks/useConfigHorario';
+import { useConfigHorario, acortarNombreProfesor, invertirOrdenProfesor } from '@/hooks/useConfigHorario';
 
 const horariosDelDia = generarHorarios();
 
@@ -32,7 +32,17 @@ const HORA_STYLE = {
     border: BORDER_STYLE,
 };
 
-function exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, camposVisibles) {
+function formatearProfesor(nombre, nombreCortoProfesor, nombrePrimero) {
+    if (nombreCortoProfesor) {
+        return acortarNombreProfesor(nombre, nombrePrimero);
+    } else if (nombrePrimero) {
+        return invertirOrdenProfesor(nombre);
+    }
+    return nombre;
+}
+
+function exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config) {
+    const { camposVisibles, nombreCortoProfesor, nombrePrimero } = config;
     import('xlsx-js-style').then((XLSX) => {
         const header = ['Hora', ...diasSemana];
         const filas = horariosDelDia.map((horario) => {
@@ -43,10 +53,11 @@ function exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, campos
                 const nota = notasCelda[key];
 
                 if (clase) {
+                    const profesor = formatearProfesor(clase.profesor, nombreCortoProfesor, nombrePrimero);
                     const partes = [
                         camposVisibles.curso && clase.curso,
                         camposVisibles.seccion && clase.seccion,
-                        camposVisibles.profesor && clase.profesor,
+                        camposVisibles.profesor && profesor,
                         camposVisibles.aula && clase.aula,
                     ].filter(Boolean);
                     fila.push(partes.join('\n'));
@@ -138,7 +149,7 @@ export default function ShareModal({
                                 className="w-full sm:w-auto"
                                 color="success"
                                 variant="flat"
-                                onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config.camposVisibles)}
+                                onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
                                 startContent={<FileSpreadsheet size={18} />}
                             >
                                 Excel

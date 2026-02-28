@@ -6,25 +6,14 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
-function NoteColorPicker({ initialColor, onChange, textColorChoice, onTextColorChange, previewText }) {
-    const [color, setColor] = useState(initialColor || "#fde68a");
-
-    useEffect(() => {
-        setColor(initialColor || "#fde68a");
-    }, [initialColor]);
-
-    const handleChange = (c) => {
-        setColor(c);
-        onChange?.(c);
-    };
-
+function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, previewText }) {
     return (
         <div className="flex items-start gap-4">
-            <HexColorPicker color={color} onChange={handleChange} />
+            <HexColorPicker color={color} onChange={onChange} />
             <div className="flex flex-col gap-2 w-[180px] shrink-0">
                 <HexColorInput
                     color={color}
-                    onChange={handleChange}
+                    onChange={onChange}
                     prefixed
                     className="w-full text-sm rounded border border-divider bg-content1 p-2 outline-none focus:border-primary"
                 />
@@ -101,7 +90,7 @@ function ModalNota({
                         <div className="space-y-2">
                             <label className="text-xs text-foreground-500">Color de fondo</label>
                             <NoteColorPicker
-                                initialColor={color}
+                                color={color}
                                 onChange={setColor}
                                 textColorChoice={textColor}
                                 onTextColorChange={setTextColor}
