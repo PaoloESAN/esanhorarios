@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import { read, utils } from 'xlsx';
 
 /** "GARCIA LOPEZ JUAN CARLOS" → "Garcia Lopez Juan Carlos" */
 const capitalizarNombre = (texto) =>
@@ -180,10 +180,10 @@ export const parsearDatosExcel = (datos) => {
 
 export const procesarArchivoExcel = async (archivo) => {
     const data = await archivo.arrayBuffer();
-    const workbook = XLSX.read(data);
+    const workbook = read(data);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    const jsonData = utils.sheet_to_json(worksheet, { header: 1 });
 
     return parsearDatosExcel(jsonData);
 };
