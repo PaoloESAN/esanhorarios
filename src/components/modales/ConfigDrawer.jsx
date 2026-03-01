@@ -22,7 +22,7 @@ const CAMPOS_LABELS = {
 /* ── Accordion ligero con CSS ── */
 function LightAccordion({ icon, title, subtitle, isOpen, onToggle, children }) {
     return (
-        <div className="rounded-xl bg-content2 overflow-hidden">
+        <div className="rounded-xl bg-content2 overflow-hidden shrink-0">
             <button
                 type="button"
                 className="w-full flex items-center gap-2 px-4 py-3 text-left cursor-pointer"
@@ -215,17 +215,6 @@ function ConfigDrawer({
 
                         <Divider />
 
-                        {/* Ocultar filas vacías */}
-                        <Switch
-                            isSelected={config.ocultarFilasVacias}
-                            onValueChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
-                            size="sm"
-                        >
-                            <span className="text-sm">Ocultar filas vacías al final</span>
-                        </Switch>
-
-                        <Divider />
-
                         {/* Alineación del texto */}
                         <section>
                             <h4 className="text-sm font-semibold text-foreground-700 mb-2">
@@ -261,6 +250,17 @@ function ConfigDrawer({
                                 </Button>
                             </ButtonGroup>
                         </section>
+
+                        <Divider />
+
+                        {/* Ocultar filas vacías */}
+                        <Switch
+                            isSelected={config.ocultarFilasVacias}
+                            onValueChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
+                            size="sm"
+                        >
+                            <span className="text-sm">Ocultar filas vacías al final</span>
+                        </Switch>
 
                         {/* ═══ Fondos de Chaufa (ocultos hasta desbloqueo) ═══ */}
                         {(config.chijaukayDesbloqueado || config.tipakayDesbloqueado) && (

@@ -39,8 +39,8 @@ function TablaHorario({
                 break;
             }
         }
-        // Mostrar al menos hasta la última fila ocupada + 1 extra, o mínimo 6 filas
-        const corte = Math.max(ultimaFilaOcupada + 2, 6);
+        // Mostrar al menos hasta la última fila ocupada, o mínimo 6 filas
+        const corte = Math.max(ultimaFilaOcupada + 1, 6);
         filasVisibles = horariosDelDia.slice(0, Math.min(corte, horariosDelDia.length));
     }
 
