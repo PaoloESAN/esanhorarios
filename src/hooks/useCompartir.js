@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { generarImagenHorario } from '@/lib/compartir';
+
+const preloadHtml2Canvas = () => import('html2canvas-pro');
 
 /**
  * Gestiona la generación, copia y descarga de la imagen del horario.
@@ -8,16 +10,15 @@ export function useCompartir({ horarioActivo, resolvedTheme, onAbrirModal, setMe
     const [shareDataUrl, setShareDataUrl] = useState(null);
     const [shareFilename, setShareFilename] = useState('mi-horario.png');
 
-    const abrirShareModal = () => {
+    useEffect(() => { preloadHtml2Canvas(); }, []);
+
+    const abrirShareModal = async () => {
         const filename = `horario-${horarioActivo}.png`;
         setShareFilename(filename);
         setShareDataUrl(null);
         onAbrirModal?.();
-
-        setTimeout(async () => {
-            const dataUrl = await generarImagenHorario({ tema: resolvedTheme });
-            setShareDataUrl(dataUrl);
-        }, 300);
+        const dataUrl = await generarImagenHorario({ tema: resolvedTheme });
+        setShareDataUrl(dataUrl);
     };
 
     const copiarImagen = async () => {

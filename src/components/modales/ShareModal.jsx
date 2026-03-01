@@ -150,6 +150,7 @@ export default function ShareModal({
                                 color="success"
                                 variant="flat"
                                 onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
+                                isDisabled={!dataUrl}
                                 startContent={<FileSpreadsheet size={18} />}
                             >
                                 Excel

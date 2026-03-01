@@ -12,14 +12,6 @@ export const crearSetsVacios = () =>
 export const crearMapasVacios = () =>
     Object.fromEntries(Array.from({ length: HORARIO_COUNT }, (_, i) => [i + 1, new Map()]));
 
-export const TEXTOS_MATRICULA = {
-    1: 'Eres INCREIBLE.',
-    2: 'Lo lograste, podrás matricularte a todo.',
-    3: 'Tienes oportunidad.',
-    4: 'La esperanza es lo último que se pierde.',
-    5: 'Retírate de la Universidad.'
-};
-
 export const PALETAS_NOMBRES = {
     default: 'Clásica',
     pastel: 'Pastel',

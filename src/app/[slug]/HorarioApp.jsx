@@ -12,7 +12,7 @@ import EncabezadoHorario from "@/components/header/EncabezadoHorario";
 import TablaHorario from "@/components/horario/TablaHorario";
 import PanelCursos from "@/components/cursos/PanelCursos";
 
-import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal, ModalAgregarCurso } from "@/components/modales";
+import { ConflictModal, SuccessModal, ErrorModal, ModalAgregarCurso } from "@/components/modales";
 import ConfigDrawer from "@/components/modales/ConfigDrawer";
 import ChifaPromo from "@/components/chifa/ChifaPromo";
 const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
@@ -26,7 +26,6 @@ import { useExcel } from "@/hooks/useExcel";
 import { useCompartir } from "@/hooks/useCompartir";
 import { ConfigHorarioProvider } from "@/hooks/useConfigHorario";
 
-import { TEXTOS_MATRICULA } from "@/constants";
 import { diasSemana } from "@/lib/horario";
 
 export default function HorarioApp({ carrera }) {
@@ -51,13 +50,11 @@ function HorarioAppInner() {
     });
 
     const [mensajeModal, setMensajeModal] = useState('');
-    const [imagenMatricula, setImagenMatricula] = useState(1);
     const [celdaSeleccionada, setCeldaSeleccionada] = useState(null);
 
     const conflictModal = useDisclosure();
     const successModal = useDisclosure();
     const errorModal = useDisclosure();
-    const matriculaModal = useDisclosure();
     const addCourseModal = useDisclosure();
     const shareModal = useDisclosure();
     const noteModal = useDisclosure();
@@ -195,12 +192,6 @@ function HorarioAppInner() {
                     isOpen={errorModal.isOpen}
                     onClose={errorModal.onClose}
                     mensaje={mensajeModal}
-                />
-                <MatriculaModal
-                    isOpen={matriculaModal.isOpen}
-                    onClose={matriculaModal.onClose}
-                    imagenMatricula={imagenMatricula}
-                    textosMatricula={TEXTOS_MATRICULA}
                 />
                 <ShareModal
                     isOpen={shareModal.isOpen}
