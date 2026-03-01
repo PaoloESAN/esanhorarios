@@ -8,13 +8,16 @@ export function useCompartir({ horarioActivo, resolvedTheme, onAbrirModal, setMe
     const [shareDataUrl, setShareDataUrl] = useState(null);
     const [shareFilename, setShareFilename] = useState('mi-horario.png');
 
-    const abrirShareModal = async () => {
+    const abrirShareModal = () => {
         const filename = `horario-${horarioActivo}.png`;
         setShareFilename(filename);
         setShareDataUrl(null);
         onAbrirModal?.();
-        const dataUrl = await generarImagenHorario({ tema: resolvedTheme });
-        setShareDataUrl(dataUrl);
+
+        setTimeout(async () => {
+            const dataUrl = await generarImagenHorario({ tema: resolvedTheme });
+            setShareDataUrl(dataUrl);
+        }, 300);
     };
 
     const copiarImagen = async () => {

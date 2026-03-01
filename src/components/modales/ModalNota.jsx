@@ -100,8 +100,8 @@ function ModalNota({
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button variant="light" onClick={onClose}>Cancelar</Button>
-                    <Button color="primary" onClick={handleSave} isDisabled={!isOpen}>Guardar</Button>
+                    <Button variant="light" onPress={onClose}>Cancelar</Button>
+                    <Button color="primary" onPress={handleSave} isDisabled={!isOpen}>Guardar</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

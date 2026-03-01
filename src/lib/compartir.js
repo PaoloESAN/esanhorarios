@@ -1,49 +1,21 @@
-import html2canvas from 'html2canvas-pro';
-
 export const generarImagenHorario = async ({ tema }) => {
     try {
+        const { toPng } = await import('html-to-image');
+
         const elemento = document.getElementById('tabla-horario');
         if (!elemento) {
             console.error('No se encontró el elemento del horario');
             return null;
         }
 
-        const scrollX = window.scrollX;
-        const scrollY = window.scrollY;
-
-        const clon = elemento.cloneNode(true);
-        const fullWidth = elemento.scrollWidth;
-
-        Object.assign(clon.style, {
-            position: 'fixed',
-            top: '0',
-            left: '-99999px',
-            width: `${fullWidth}px`,
-            minWidth: `${fullWidth}px`,
-            overflow: 'visible',
-            overflowX: 'visible',
-            zIndex: '-9999',
-            pointerEvents: 'none',
-        });
-
-        document.body.appendChild(clon);
-
-        const canvas = await html2canvas(clon, {
+        const dataUrl = await toPng(elemento, {
             backgroundColor: tema === 'dark' ? '#18181b' : '#ffffff',
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            windowWidth: fullWidth,
-            width: fullWidth,
-            scrollX: 0,
-            scrollY: 0,
+            pixelRatio: 2,
+            width: elemento.scrollWidth,
+            height: elemento.scrollHeight,
         });
 
-        document.body.removeChild(clon);
-
-        window.scrollTo(scrollX, scrollY);
-
-        return canvas.toDataURL('image/png');
+        return dataUrl;
     } catch (error) {
         console.error('Error al generar la imagen:', error);
         return null;

@@ -12,10 +12,11 @@ import EncabezadoHorario from "@/components/header/EncabezadoHorario";
 import TablaHorario from "@/components/horario/TablaHorario";
 import PanelCursos from "@/components/cursos/PanelCursos";
 
-import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal, ShareModal, ModalAgregarCurso } from "@/components/modales";
+import { ConflictModal, SuccessModal, ErrorModal, MatriculaModal, ModalAgregarCurso } from "@/components/modales";
 import ConfigDrawer from "@/components/modales/ConfigDrawer";
 import ChifaPromo from "@/components/chifa/ChifaPromo";
 const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
+const ShareModal = dynamic(() => import("@/components/modales/ShareModal"), { ssr: false });
 
 import { useHorarios } from "@/hooks/useHorarios";
 import { useNotas } from "@/hooks/useNotas";
