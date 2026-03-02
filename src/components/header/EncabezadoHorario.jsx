@@ -3,13 +3,23 @@ import { Tabs, Tab } from '@heroui/tabs';
 import {
     Trash2, Share2, BadgeCheck, Brush,
 } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
 
 function ContadorCreditos({ total }) {
     return (
-        <div className="flex items-center gap-2 bg-primary-50 px-3 md:px-4 py-2 rounded-lg border border-primary-200 shadow-sm">
-            <BadgeCheck size={18} className="text-primary" />
-            <span className="text-sm font-semibold text-primary">Créditos: {total}</span>
-        </div>
+        <Popover key={total} color='primary' placement='bottom'>
+            <PopoverTrigger>
+                <div className="flex items-center gap-2 bg-primary-50 px-3 md:px-4 py-2 rounded-lg border border-primary-200 shadow-sm cursor-pointer">
+                    <BadgeCheck size={18} className="text-primary" />
+                    <span className="text-sm font-semibold text-primary">Créditos: {total}</span>
+                </div>
+            </PopoverTrigger>
+            <PopoverContent>
+                <div className="px-1 py-2">
+                    <div className="text-small font-bold">Los créditos maximos son 24</div>
+                </div>
+            </PopoverContent>
+        </Popover>
     );
 }
 
