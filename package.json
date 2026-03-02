@@ -7,7 +7,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest",
+    "test:software": "vitest software",
+    "test:ti": "vitest ti",
+    "test:ambiental": "vitest ambiental",
+    "test:ciencia_datos": "vitest ciencia_datos",
+    "test:industrial": "vitest industrial"
   },
   "dependencies": {
     "@heroui/react": "^2.8.9",
@@ -29,6 +35,7 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "vitest": "^4.0.18"
   }
 }

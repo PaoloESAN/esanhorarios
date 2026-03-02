@@ -10,6 +10,7 @@ const capitalizarNombre = (texto) =>
  */
 export const aliasCorrecciones = {
     "INGENIERIA DE PROCESOS DE NEGOCIO": "INGENIERIA DE PROCESOS DE NEGOCIOS",
+    "PRECALCULO": "PRE CALCULO",
 };
 
 export const extraerHorarios = (textoHorario) => {
