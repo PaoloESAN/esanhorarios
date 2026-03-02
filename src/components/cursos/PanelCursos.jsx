@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
+import { Chip } from "@heroui/chip";
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { Plus, BadgeCheck } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
@@ -78,10 +79,16 @@ function PanelCursos({
                                     <div className="flex flex-wrap items-center justify-between gap-2">
                                         <span className="flex-1">{curso}</span>
                                         <div className="flex items-center gap-2">
-                                            <span className="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold border border-emerald-200">
-                                                <BadgeCheck className="w-3 h-3 text-emerald-600" />
-                                                {creditos}
-                                            </span>
+                                            <Chip
+                                                color='primary'
+                                                variant='flat'
+                                                size='sm'
+                                            >
+                                                <div className="flex items-center gap-1">
+                                                    <BadgeCheck className="w-3 h-3 text-primary" />
+                                                    {creditos}
+                                                </div>
+                                            </Chip>
                                         </div>
                                     </div>
                                 </h4>
