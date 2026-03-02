@@ -35,11 +35,17 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                     </DropdownMenu>
                 </Dropdown>
             ) : (
-                <div
-                    className="absolute inset-0"
-                    onClick={onAbrirNota}
-                    title="Click para agregar texto"
-                />
+                <Dropdown>
+                    <DropdownTrigger>
+                        <div
+                            className="absolute inset-0 cursor-pointer"
+                            title="Click para agregar texto"
+                        />
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="Opciones de celda vacía">
+                        <DropdownItem key="agregar" onPress={onAbrirNota}>Agregar nota</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
             )}
         </div>
     );
