@@ -35,12 +35,12 @@ export function useCompartir({ horarioActivo, resolvedTheme, onAbrirModal, setMe
                 setMensajeModal?.('Imagen copiada al portapapeles.');
                 onExito?.();
             } else {
-                setMensajeModal?.('Tu navegador no permite copiar imágenes. Usa "Descargar".');
+                setMensajeModal?.('Tu dispositivo no permite copiar la imagen directamente. Mantén presionada la imagen de arriba para copiarla.');
                 onError?.();
             }
         } catch (e) {
             console.error('Fallo al copiar la imagen', e);
-            setMensajeModal?.('No se pudo copiar la imagen.');
+            setMensajeModal?.('Tu dispositivo no permite copiar la imagen directamente. Mantén presionada la imagen de arriba para copiarla.');
             onError?.();
         }
     };
