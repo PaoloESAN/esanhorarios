@@ -1,17 +1,11 @@
-import {
-    DollarSign,
-    Briefcase,
-    Cpu,
-    Scale,
-} from "lucide-react";
-
 /* ─── Datos de facultades y carreras ─── */
 export const COLUMNAS = [
     {
         facultad: "Economía",
-        color: "#16a34a",
-        colorLight: "#dcfce7",
-        icon: DollarSign,
+        bgImage: "/economia.webp",
+        color: "#9c0a12",
+        colorLight: "#fee2e2",
+        icon: "/toro.webp",
         carreras: [
             { nombre: "Economía", activa: false },
             { nombre: "Economía y Finanzas", activa: false },
@@ -21,9 +15,10 @@ export const COLUMNAS = [
     },
     {
         facultad: "Administración",
-        color: "#ea580c",
-        colorLight: "#fff7ed",
-        icon: Briefcase,
+        bgImage: "/administracion.webp",
+        color: "#2140b0",
+        colorLight: "#dbeafe",
+        icon: "/lobo.webp",
         carreras: [
             { nombre: "Administración", activa: false },
             { nombre: "Adm. y Finanzas", activa: false },
@@ -34,9 +29,10 @@ export const COLUMNAS = [
     },
     {
         facultad: "Ingeniería",
-        color: "#2563eb",
-        colorLight: "#dbeafe",
-        icon: Cpu,
+        bgImage: "/ingenieria.webp",
+        color: "#016823",
+        colorLight: "#dcfce7",
+        icon: "/vikingo.webp",
         carreras: [
             { nombre: "Ing. de Software", slug: "software", activa: true },
             { nombre: "Ing. de TI", slug: "ti", activa: true },
@@ -47,10 +43,11 @@ export const COLUMNAS = [
         ],
     },
     {
-        facultad: "Derecho y Cs. Sociales",
-        color: "#7c3aed",
-        colorLight: "#ede9fe",
-        icon: Scale,
+        facultad: "Psicología y Derecho",
+        bgImage: "/derecho.webp",
+        color: "#f8c227",
+        colorLight: "#fef08a",
+        icon: "/leon.webp",
         carreras: [
             { nombre: "Derecho Corporativo", activa: false },
             { nombre: "Psicología", activa: false },
