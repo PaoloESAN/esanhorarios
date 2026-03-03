@@ -1,19 +1,27 @@
+![Captura de pantalla](./screenshots/captura.png)
 # ESAN Horarios
 
 Aplicación web interactiva para la gestión y creación de horarios académicos de la Universidad ESAN, desarrollada con Next.js y HeroUI.
+[Ver la página](https://esanhorarios.vercel.app)
+
+## Cómo Usar
+
+1. **Importa el archivo Excel** con horarios disponibles
+2. **Selecciona tu ciclo académico** desde el menú desplegable
+3. **Arrastra o selecciona tus cursos** desde la lista hacia los slots de horario
+4. **Personaliza tu horario** pulsando el boton de personalizar
+5. **Comparte tu horario** exportándolo como imagen
 
 ## Características
 
 ### Gestión de Cursos
-- **Cursos predefinidos** para Ingeniería de Software e Ingeniería de Sistemas
 - **10 ciclos académicos** completamente configurados
 - **Sistema de créditos** automático para cada curso
-- **Especialidades diferenciadas** con badges visuales distintivos
+- **Sistema anticonflicto** para evitar cursos que se superpongan
 
 ### Personalización Visual
 - **7 paletas de colores** temáticas diferentes
 - **Interfaz drag & drop** intuitiva para organizar horarios
-- **Detección automática de conflictos** de horarios
 - **Cálculo de créditos totales** en tiempo real
 
 ### Procesamiento de Archivos
@@ -23,8 +31,8 @@ Aplicación web interactiva para la gestión y creación de horarios académicos
 
 ### Funciones de Compartir
 - **Exportación a imagen** del horario creado
-- **Función de compartir** integrada
-- **Múltiples métodos de exportación** con fallbacks
+- **Función de copiado** integrada
+- **Exportación a Excel** del horario creado
 
 ## Inicio Rápido
 
@@ -64,42 +72,41 @@ bun dev
 
 ## Tecnologías Utilizadas
 
-- **[Next.js 15](https://nextjs.org/)** - Framework de React con App Router
-- **[React 19](https://react.dev/)** - Biblioteca de interfaz de usuario
-- **[HeroUI](https://heroui.com/)** - Biblioteca de componentes UI moderna
+- **[Next.js 16](https://nextjs.org/)** - Framework de React con App Router
+- **[React 19.2](https://react.dev/)** - Biblioteca de interfaz de usuario
+- **[HeroUI v2](https://heroui.com/)** - Biblioteca de componentes UI moderna
 - **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework de CSS utility-first
 - **[Framer Motion](https://www.framer.com/motion/)** - Biblioteca de animaciones
 - **[Lucide React](https://lucide.dev/)** - Biblioteca de íconos SVG
 - **[XLSX](https://sheetjs.com/)** - Procesamiento de archivos Excel
 - **[html2canvas-pro](https://github.com/yorickshan/html2canvas-pro)** - Exportación de DOM a imagen
+- **[Vitest](https://vitest.dev/)** - Framework de pruebas
 
-## Estructura del Proyecto
+## Tests
 
+Para corroborar que los cursos y los horarios se configuren correctamente, hay tests automatizados disponibles:
+
+1. Abre la carpeta `tests/excel/` en la raíz del proyecto
+2. Coloca tu archivo Excel (`.xlsx` o `.xls`) con los horarios a probar dentro de esa carpeta de test
+3. Ejecuta los tests usando Vitest:
+
+```bash
+npm run test
 ```
-src/
-├── app/
-│   ├── page.js              # Componente principal de la aplicación
-│   ├── layout.js            # Layout base de Next.js
-│   └── globals.css          # Estilos globales
-└── components/
-    ├── diaMatricula.jsx     # Componente día de matrícula
-    ├── ModalAgregarCurso.jsx # Modal para agregar cursos
-    ├── paletasColores.js    # Paletas de colores disponibles
-    ├── datosCursos.js       # Datos de cursos por ciclo
-    ├── datosCreditos.js     # Sistema de créditos
-    ├── procesadorExcel.js   # Procesamiento de archivos Excel
-    ├── utilidadesHorario.js # Utilidades para horarios
-    ├── utilidadesCompartir.js # Funciones para compartir
-    └── modales.jsx          # Componentes de modales
+o si usas yarn/pnpm/bun:
+```bash
+yarn test
 ```
 
-## Cómo Usar
+También puedes ejecutar un test individual para un curso específico:
 
-1. **Importa el archivo Excel** con horarios disponibles
-2. **Selecciona tu ciclo académico** desde el menú desplegable
-3. **Arrastra o selecciona tus cursos** desde la lista hacia los slots de horario
-4. **Personaliza colores** seleccionando diferentes paletas
-5. **Comparte tu horario** exportándolo como imagen
+```bash
+npm run test:curso
+```
+o si usas yarn/pnpm/bun:
+```bash
+yarn test:curso
+```
 
 ## Comandos Disponibles
 
@@ -108,18 +115,9 @@ npm run dev      # Inicia el servidor de desarrollo con Turbopack
 npm run build    # Construye la aplicación para producción
 npm run start    # Inicia el servidor de producción
 npm run lint     # Ejecuta el linter de ESLint
+npm run test     # Ejecuta los tests
+npm run test:curso # Ejecuta un test individual para un curso
 ```
-
-## Paletas de Colores
-
-La aplicación incluye 7 paletas temáticas:
-- **Default**: Colores vibrantes y modernos
-- **Pastel**: Tonos suaves y relajantes
-- **Vibrante**: Tonos vibrantes y llamativos
-- **Monocromatico**: Tema gris elegante
-- **Neón**: Colores brillantes y llamativos
-- **Otoño**: Colores cálidos y otoñales
-- **Océano**: Azules y verdes marinos
 
 ## Contribuciones
 
