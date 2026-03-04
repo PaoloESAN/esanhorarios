@@ -4,11 +4,18 @@ import { normalizar } from '@/lib/horario';
 
 /**
  * Gestiona la carga y procesamiento del archivo Excel de horarios.
+ * Soporta un segundo Excel exclusivo para talleres.
  */
 export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onError }) {
-    const [horariosDisponibles, setHorariosDisponibles] = useState({});
+    const [horariosBase, setHorariosBase] = useState({});
+    const [horariosTalleres, setHorariosTalleres] = useState({});
     const [cargandoArchivo, setCargandoArchivo] = useState(false);
+    const [cargandoTalleres, setCargandoTalleres] = useState(false);
     const [nombreArchivo, setNombreArchivo] = useState('');
+    const [nombreArchivoTalleres, setNombreArchivoTalleres] = useState('');
+
+    // Combinar horarios base + talleres
+    const horariosDisponibles = { ...horariosBase, ...horariosTalleres };
 
     const mapaHorariosNormalizados = (() => {
         const map = new Map();
@@ -38,13 +45,27 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         setCargandoArchivo(true);
         try {
             const nuevosHorarios = await procesarArchivoExcel(archivo);
-            setHorariosDisponibles(nuevosHorarios);
+            setHorariosBase(nuevosHorarios);
         } catch (error) {
             console.error('Error al procesar archivo Excel:', error);
             setMensajeModal?.('Error al cargar el archivo Excel. Por favor, verifica el formato.');
             onError?.();
         } finally {
             setCargandoArchivo(false);
+        }
+    };
+
+    const procesarArchivoTalleres = async (archivo) => {
+        setCargandoTalleres(true);
+        try {
+            const nuevosHorarios = await procesarArchivoExcel(archivo);
+            setHorariosTalleres(nuevosHorarios);
+        } catch (error) {
+            console.error('Error al procesar archivo Excel de talleres:', error);
+            setMensajeModal?.('Error al cargar el Excel de talleres. Por favor, verifica el formato.');
+            onError?.();
+        } finally {
+            setCargandoTalleres(false);
         }
     };
 
@@ -56,5 +77,17 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         procesarArchivo(archivo);
     };
 
-    return { nombreArchivo, cargandoArchivo, horariosDisponibles, obtenerHorariosPorCurso, manejarCargaArchivo };
+    const manejarCargaTalleres = (evento) => {
+        const archivo = evento.target.files[0];
+        if (!archivo) return;
+        setNombreArchivoTalleres(archivo.name);
+        procesarArchivoTalleres(archivo);
+    };
+
+    return {
+        nombreArchivo, cargandoArchivo,
+        nombreArchivoTalleres, cargandoTalleres,
+        horariosDisponibles, obtenerHorariosPorCurso,
+        manejarCargaArchivo, manejarCargaTalleres,
+    };
 }

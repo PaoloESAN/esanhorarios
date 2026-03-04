@@ -162,6 +162,9 @@ function HorarioAppInner() {
                                 onDragStart={cursos.handleDragStart}
                                 onAbrirModalCursoPersonalizado={addCourseModal.onOpen}
                                 onCargaArchivo={excel.manejarCargaArchivo}
+                                onCargaTalleres={excel.manejarCargaTalleres}
+                                cargandoTalleres={excel.cargandoTalleres}
+                                nombreArchivoTalleres={excel.nombreArchivoTalleres}
                             />
                         </div>
                     </div>

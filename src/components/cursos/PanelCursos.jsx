@@ -3,7 +3,7 @@ import { Button } from '@heroui/button';
 import { Select, SelectItem } from '@heroui/select';
 import { Chip } from "@heroui/chip";
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { Plus, BadgeCheck } from 'lucide-react';
+import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';
 
@@ -17,6 +17,9 @@ function PanelCursos({
     onDragStart,
     onAbrirModalCursoPersonalizado,
     onCargaArchivo,
+    onCargaTalleres,
+    cargandoTalleres,
+    nombreArchivoTalleres,
 }) {
     const { cursosPorCiclo, obtenerCreditos } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
@@ -25,6 +28,12 @@ function PanelCursos({
     useEffect(() => {
         listaRef.current?.scrollTo({ top: 0 });
     }, [cicloSeleccionado]);
+
+    const esTaller = (nombre) => nombre.toLowerCase().includes('taller');
+
+    const hayAlgunTallerEnExcel = hayArchivo && Object.values(cursosPorCiclo).some(cursos =>
+        cursos.some(c => esTaller(c) && obtenerHorariosPorCurso(c).length > 0)
+    );
 
     return (
         <div className="bg-content1 rounded-lg shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
@@ -71,6 +80,7 @@ function PanelCursos({
                         const secciones = obtenerHorariosPorCurso(curso);
                         const creditos = obtenerCreditos(curso);
                         const esElectivo = curso.toLowerCase().includes('electivo');
+                        const cursoEsTaller = esTaller(curso);
 
                         return (
                             <div key={idx} className="border border-divider rounded-lg p-2 md:p-3 bg-content2">
@@ -110,9 +120,44 @@ function PanelCursos({
                                     </div>
                                 ) : (
                                     !esElectivo && (
-                                        <div className="p-2 bg-content3 border border-divider rounded text-center">
-                                            <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
-                                        </div>
+                                        cursoEsTaller && !hayAlgunTallerEnExcel ? (
+                                            <div className="p-2 bg-content3 border border-divider rounded text-center">
+                                                {nombreArchivoTalleres ? (
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <div className="flex items-center gap-1">
+                                                            <FileText className="w-3 h-3 text-foreground-500" />
+                                                            <span className="text-xs text-foreground-500 truncate max-w-[140px]">
+                                                                {nombreArchivoTalleres}
+                                                            </span>
+                                                        </div>
+                                                        <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
+                                                    </div>
+                                                ) : (
+                                                    <Button
+                                                        as="label"
+                                                        color="warning"
+                                                        variant="flat"
+                                                        size="sm"
+                                                        className="cursor-pointer"
+                                                        isLoading={cargandoTalleres}
+                                                        startContent={!cargandoTalleres && <CloudUpload size={14} />}
+                                                    >
+                                                        {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}
+                                                        <input
+                                                            type="file"
+                                                            accept=".xlsx,.xls"
+                                                            onChange={onCargaTalleres}
+                                                            className="hidden"
+                                                            disabled={cargandoTalleres}
+                                                        />
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="p-2 bg-content3 border border-divider rounded text-center">
+                                                <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
+                                            </div>
+                                        )
                                     )
                                 )}
                             </div>
@@ -127,3 +172,4 @@ function PanelCursos({
 }
 
 export default PanelCursos;
+
