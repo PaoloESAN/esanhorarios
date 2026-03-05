@@ -115,6 +115,7 @@ function HorarioAppInner() {
                 {/* Encabezado superior con título y carga de Excel */}
                 <AppHeader
                     nombreArchivo={excel.nombreArchivo}
+                    nombreArchivoTalleres={excel.nombreArchivoTalleres}
                     cargandoArchivo={excel.cargandoArchivo}
                     onCargaArchivo={excel.manejarCargaArchivo}
                 />

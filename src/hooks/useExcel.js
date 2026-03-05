@@ -2,10 +2,6 @@ import { useState } from 'react';
 import { procesarArchivoExcel, aliasCorrecciones } from '@/lib/excel';
 import { normalizar } from '@/lib/horario';
 
-/**
- * Gestiona la carga y procesamiento del archivo Excel de horarios.
- * Soporta un segundo Excel exclusivo para talleres.
- */
 export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onError }) {
     const [horariosBase, setHorariosBase] = useState({});
     const [horariosTalleres, setHorariosTalleres] = useState({});
@@ -14,7 +10,6 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
     const [nombreArchivo, setNombreArchivo] = useState('');
     const [nombreArchivoTalleres, setNombreArchivoTalleres] = useState('');
 
-    // Combinar horarios base + talleres
     const horariosDisponibles = { ...horariosBase, ...horariosTalleres };
 
     const mapaHorariosNormalizados = (() => {
@@ -41,25 +36,69 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         return [];
     };
 
-    const procesarArchivo = async (archivo) => {
+    const esTallerExcel = (horarios) => {
+        const claves = Object.keys(horarios);
+        return claves.length > 0 && claves.every(k => k.toUpperCase().includes('TALLER'));
+    };
+
+    const manejarCargaArchivo = async (evento) => {
+        const archivos = Array.from(evento.target.files);
+        if (archivos.length === 0) return;
+
+        limpiarHorarioActual?.();
         setCargandoArchivo(true);
+        setCargandoTalleres(true);
+
         try {
-            const nuevosHorarios = await procesarArchivoExcel(archivo);
-            setHorariosBase(nuevosHorarios);
+            const resultados = await Promise.all(
+                archivos.map(async (archivo) => ({
+                    nombre: archivo.name,
+                    horarios: await procesarArchivoExcel(archivo),
+                }))
+            );
+
+            let base = {};
+            let talleres = {};
+            let nombreBase = '';
+            let nombreTalleres = '';
+
+            for (const r of resultados) {
+                if (esTallerExcel(r.horarios)) {
+                    talleres = { ...talleres, ...r.horarios };
+                    nombreTalleres = r.nombre;
+                } else {
+                    base = { ...base, ...r.horarios };
+                    nombreBase = r.nombre;
+                }
+            }
+
+            if (nombreBase) {
+                setHorariosBase(base);
+                setNombreArchivo(nombreBase);
+            }
+
+            if (nombreTalleres) {
+                setHorariosTalleres(talleres);
+                setNombreArchivoTalleres(nombreTalleres);
+            }
         } catch (error) {
-            console.error('Error al procesar archivo Excel:', error);
+            console.error('Error al procesar archivos Excel:', error);
             setMensajeModal?.('Error al cargar el archivo Excel. Por favor, verifica el formato.');
             onError?.();
         } finally {
             setCargandoArchivo(false);
+            setCargandoTalleres(false);
         }
     };
 
-    const procesarArchivoTalleres = async (archivo) => {
+    const manejarCargaTalleres = async (evento) => {
+        const archivo = evento.target.files[0];
+        if (!archivo) return;
         setCargandoTalleres(true);
         try {
             const nuevosHorarios = await procesarArchivoExcel(archivo);
             setHorariosTalleres(nuevosHorarios);
+            setNombreArchivoTalleres(archivo.name);
         } catch (error) {
             console.error('Error al procesar archivo Excel de talleres:', error);
             setMensajeModal?.('Error al cargar el Excel de talleres. Por favor, verifica el formato.');
@@ -67,21 +106,6 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         } finally {
             setCargandoTalleres(false);
         }
-    };
-
-    const manejarCargaArchivo = (evento) => {
-        const archivo = evento.target.files[0];
-        if (!archivo) return;
-        setNombreArchivo(archivo.name);
-        limpiarHorarioActual?.();
-        procesarArchivo(archivo);
-    };
-
-    const manejarCargaTalleres = (evento) => {
-        const archivo = evento.target.files[0];
-        if (!archivo) return;
-        setNombreArchivoTalleres(archivo.name);
-        procesarArchivoTalleres(archivo);
     };
 
     return {

@@ -6,7 +6,7 @@ import ExcelUploader from '@/components/excel/ExcelUploader';
 /**
  * Encabezado superior de la aplicación: título, zona de carga de Excel y toggle de tema.
  */
-function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
+function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }) {
     const { nombre } = useCarrera();
 
     return (
@@ -39,6 +39,7 @@ function AppHeader({ nombreArchivo, cargandoArchivo, onCargaArchivo }) {
                 <div className="flex flex-wrap gap-2 md:gap-3 items-center justify-end">
                     <ExcelUploader
                         nombreArchivo={nombreArchivo}
+                        nombreArchivoTalleres={nombreArchivoTalleres}
                         cargandoArchivo={cargandoArchivo}
                         onCargaArchivo={onCargaArchivo}
                     />
