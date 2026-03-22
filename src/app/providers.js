@@ -1,6 +1,5 @@
 'use client'
 import { useEffect } from 'react'
-import { HeroUIProvider } from '@heroui/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Analytics } from '@vercel/analytics/next';
 
@@ -29,11 +28,9 @@ export function Providers({ children }) {
     }, []);
 
     return (
-        <HeroUIProvider>
-            <NextThemesProvider defaultTheme="system" attribute="class" enableSystem>
-                {children}
-                <Analytics />
-            </NextThemesProvider>
-        </HeroUIProvider>
+        <NextThemesProvider defaultTheme="system" attribute="class" enableSystem>
+            {children}
+            <Analytics />
+        </NextThemesProvider>
     )
 }
