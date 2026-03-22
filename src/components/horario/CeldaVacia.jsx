@@ -1,4 +1,4 @@
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react';
+import { Dropdown, Label } from '@heroui/react';
 import { useConfigHorario } from '@/hooks/useConfigHorario';
 
 /**
@@ -16,7 +16,7 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
         <div className={`h-full ${bgClass} transition-colors rounded border-2 border-dashed border-transparent hover:border-primary relative`}>
             {nota ? (
                 <Dropdown>
-                    <DropdownTrigger>
+                    <Dropdown.Trigger>
                         <div
                             className="w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0"
                             style={{ backgroundColor: nota.color, color: nota.textColor ?? '#111827' }}
@@ -26,25 +26,33 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                                 {nota.texto}
                             </div>
                         </div>
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Opciones de nota">
-                        <DropdownItem key="editar" onPress={onEditarNota}>Editar texto</DropdownItem>
-                        <DropdownItem key="quitar" className="text-danger" color="danger" onPress={onQuitarNota}>
-                            Quitar texto
-                        </DropdownItem>
-                    </DropdownMenu>
+                    </Dropdown.Trigger>
+                    <Dropdown.Popover>
+                        <Dropdown.Menu aria-label="Opciones de nota">
+                            <Dropdown.Item id="editar" textValue="Editar texto" onPress={onEditarNota}>
+                                <Label>Editar texto</Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item id="quitar" textValue="Quitar texto" variant="danger" onPress={onQuitarNota}>
+                                <Label>Quitar texto</Label>
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown.Popover>
                 </Dropdown>
             ) : (
                 <Dropdown>
-                    <DropdownTrigger>
+                    <Dropdown.Trigger>
                         <div
                             className="absolute inset-0 cursor-pointer"
                             title="Click para agregar texto"
                         />
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Opciones de celda vacía">
-                        <DropdownItem key="agregar" onPress={onAbrirNota}>Agregar nota</DropdownItem>
-                    </DropdownMenu>
+                    </Dropdown.Trigger>
+                    <Dropdown.Popover>
+                        <Dropdown.Menu aria-label="Opciones de celda vacía">
+                            <Dropdown.Item id="agregar" textValue="Agregar nota" onPress={onAbrirNota}>
+                                <Label>Agregar nota</Label>
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown.Popover>
                 </Dropdown>
             )}
         </div>
