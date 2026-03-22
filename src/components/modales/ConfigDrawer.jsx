@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup } from "@heroui/react";
+import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
 import PaletaSelector from "@/components/ui/PaletaSelector";
@@ -160,12 +160,18 @@ function ConfigDrawer({
                         {/* Modo claro / oscuro */}
                         <Switch
                             isSelected={esDark}
-                            onValueChange={(v) => setTheme(v ? 'dark' : 'light')}
+                            onChange={(v) => setTheme(v ? 'dark' : 'light')}
                             size="sm"
-                            startContent={<Moon size={14} />}
-                            endContent={<Sun size={14} />}
                         >
-                            <span className="text-sm">{esDark ? "Modo oscuro" : "Modo claro"}</span>
+                            <Switch.Control>
+                                <Switch.Thumb />
+                            </Switch.Control>
+                            <Switch.Content>
+                                <Label className="text-sm flex items-center gap-2">
+                                    {esDark ? <Moon size={14} /> : <Sun size={14} />}
+                                    {esDark ? "Modo oscuro" : "Modo claro"}
+                                </Label>
+                            </Switch.Content>
                         </Switch>
 
                         <Divider />
@@ -217,7 +223,7 @@ function ConfigDrawer({
                             <h4 className="text-sm font-semibold text-foreground-700 mb-2">
                                 Alineación del texto
                             </h4>
-                            <ButtonGroup size="sm" variant="tertiary" className="w-full">
+                            <ButtonGroup size="sm" className="w-full">
                                 <Button
                                     className="flex-1"
                                     variant={config.alineacion === 'left' ? 'primary' : 'tertiary'}
@@ -250,10 +256,15 @@ function ConfigDrawer({
                         {/* Ocultar filas vacías */}
                         <Switch
                             isSelected={config.ocultarFilasVacias}
-                            onValueChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
+                            onChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
                             size="sm"
                         >
-                            <span className="text-sm">Ocultar filas vacías al final</span>
+                            <Switch.Control>
+                                <Switch.Thumb />
+                            </Switch.Control>
+                            <Switch.Content>
+                                <Label className="text-sm">Ocultar filas vacías al final</Label>
+                            </Switch.Content>
                         </Switch>
 
                         {/* ═══ Fondos de Chaufa (ocultos hasta desbloqueo) ═══ */}
@@ -267,9 +278,8 @@ function ConfigDrawer({
                                     <div className='flex flex-row gap-3'>
                                         {config.chijaukayDesbloqueado && (
                                             <Switch
-                                                color='warning'
                                                 isSelected={config.fondoChiJauKay}
-                                                onValueChange={(v) =>
+                                                onChange={(v) =>
                                                     actualizarConfig({
                                                         fondoChiJauKay: v,
                                                         ...(v ? { fondoTiPaKay: false } : {}),
@@ -277,14 +287,18 @@ function ConfigDrawer({
                                                 }
                                                 size="sm"
                                             >
-                                                <span className="text-sm">Chi Jau Kay</span>
+                                                <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
+                                                    <Switch.Thumb />
+                                                </Switch.Control>
+                                                <Switch.Content>
+                                                    <Label className="text-sm">Chi Jau Kay</Label>
+                                                </Switch.Content>
                                             </Switch>
                                         )}
                                         {config.tipakayDesbloqueado && (
                                             <Switch
-                                                color='warning'
                                                 isSelected={config.fondoTiPaKay}
-                                                onValueChange={(v) =>
+                                                onChange={(v) =>
                                                     actualizarConfig({
                                                         fondoTiPaKay: v,
                                                         ...(v ? { fondoChiJauKay: false } : {}),
@@ -292,7 +306,12 @@ function ConfigDrawer({
                                                 }
                                                 size="sm"
                                             >
-                                                <span className="text-sm">Ti Pa Kay</span>
+                                                <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
+                                                    <Switch.Thumb />
+                                                </Switch.Control>
+                                                <Switch.Content>
+                                                    <Label className="text-sm">Ti Pa Kay</Label>
+                                                </Switch.Content>
                                             </Switch>
                                         )}
                                     </div>
@@ -310,17 +329,24 @@ function ConfigDrawer({
                         onToggle={() => togglePanel('campos')}
                     >
                         <CheckboxGroup
+                            name="campos-visibles"
                             value={camposActivos}
-                            onValueChange={handleCamposChange}
+                            onChange={handleCamposChange}
                             size="sm"
                         >
+                            <Label>Selecciona los campos visibles</Label>
                             {Object.entries(CAMPOS_LABELS).map(([key, label]) => (
                                 <Checkbox
                                     key={key}
                                     value={key}
                                     isDisabled={camposActivos.length === 1 && camposActivos[0] === key}
                                 >
-                                    {label}
+                                    <Checkbox.Control>
+                                        <Checkbox.Indicator />
+                                    </Checkbox.Control>
+                                    <Checkbox.Content>
+                                        <Label>{label}</Label>
+                                    </Checkbox.Content>
                                 </Checkbox>
                             ))}
                         </CheckboxGroup>
@@ -336,10 +362,15 @@ function ConfigDrawer({
                         <div>
                             <Switch
                                 isSelected={config.nombreCortoProfesor}
-                                onValueChange={(v) => actualizarConfig({ nombreCortoProfesor: v })}
+                                onChange={(v) => actualizarConfig({ nombreCortoProfesor: v })}
                                 size="sm"
                             >
-                                <span className="text-sm">Solo primer apellido y nombre</span>
+                                <Switch.Control>
+                                    <Switch.Thumb />
+                                </Switch.Control>
+                                <Switch.Content>
+                                    <Label className="text-sm">Solo primer apellido y nombre</Label>
+                                </Switch.Content>
                             </Switch>
                             <p className="text-xs text-foreground-400 mt-1 ml-1">
                                 Ej.: &quot;Andrés Alfredo Lujan Carrión&quot; → &quot;Andrés Lujan&quot;
@@ -348,10 +379,15 @@ function ConfigDrawer({
                         <div>
                             <Switch
                                 isSelected={config.nombrePrimero}
-                                onValueChange={(v) => actualizarConfig({ nombrePrimero: v })}
+                                onChange={(v) => actualizarConfig({ nombrePrimero: v })}
                                 size="sm"
                             >
-                                <span className="text-sm">Nombre antes que apellido</span>
+                                <Switch.Control>
+                                    <Switch.Thumb />
+                                </Switch.Control>
+                                <Switch.Content>
+                                    <Label className="text-sm">Nombre antes que apellido</Label>
+                                </Switch.Content>
                             </Switch>
                             <p className="text-xs text-foreground-400 mt-1 ml-1">
                                 Ej.: &quot;Lujan Carrion Andrés&quot; → &quot;Andrés Lujan Carrion&quot;

@@ -101,18 +101,14 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ duration: 0.12, delay: idx * 0.03 }}
                                             >
-                                                <Button
-                                                    variant="tertiary"
-                                                    as={Link}
+                                                <Link
                                                     href={`/${carrera.slug}`}
-                                                    className="justify-between h-auto py-4 md:py-5 px-5 text-white text-sm md:text-base font-bold w-full rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-                                                    style={{
-                                                        backgroundColor: col.color,
-                                                    }}
+                                                    className="flex items-center justify-between h-auto py-4 md:py-5 px-5 text-white text-sm md:text-base font-bold w-full rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                                                    style={{ backgroundColor: col.color }}
                                                 >
                                                     <span className="truncate">{carrera.nombre}</span>
                                                     <ChevronRight size={18} className="shrink-0 ml-2 opacity-80" />
-                                                </Button>
+                                                </Link>
                                             </motion.div>
                                         );
                                     }

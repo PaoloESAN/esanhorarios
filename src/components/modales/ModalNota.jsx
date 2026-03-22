@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Input } from "@heroui/react";
+import { Modal, Button, Input, TextField, Label } from "@heroui/react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
 function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, previewText }) {
@@ -82,13 +82,14 @@ function ModalNota({
                         <Modal.Body>
                             <div className="space-y-3">
                                 <div>
-                                    <Input
-                                        key={`input-${instanceKey || "nota"}`}
-                                        label="Texto"
-                                        type="text"
-                                        value={texto}
-                                        onValueChange={(val) => setTexto(val)}
-                                    />
+                                    <TextField key={`input-${instanceKey || "nota"}`} name="textoNota" type="text">
+                                        <Label>Texto</Label>
+                                        <Input
+                                            value={texto}
+                                            onChange={(event) => setTexto(event.target.value)}
+                                            variant="secondary"
+                                        />
+                                    </TextField>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs text-foreground-500">Color de fondo</label>

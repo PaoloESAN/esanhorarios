@@ -1,7 +1,16 @@
+import { useRef } from 'react';
 import { Button } from '@heroui/react';
 import { CloudUpload, FileText } from 'lucide-react';
 
 function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }) {
+    const inputRef = useRef(null);
+
+    const handleOpenFilePicker = () => {
+        if (!inputRef.current || cargandoArchivo) return;
+        inputRef.current.value = '';
+        inputRef.current.click();
+    };
+
     return (
         <>
             {nombreArchivo && (
@@ -23,24 +32,25 @@ function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, 
             )}
 
             <Button
-                as="label"
                 variant="primary"
                 size="sm"
                 className="cursor-pointer"
                 isPending={cargandoArchivo}
                 startContent={!cargandoArchivo && <CloudUpload size={18} />}
+                onPress={handleOpenFilePicker}
             >
                 <span className="hidden sm:inline">{cargandoArchivo ? 'Cargando...' : 'Cargar Excel'}</span>
                 <span className="sm:hidden">Excel</span>
-                <input
-                    type="file"
-                    accept=".xlsx,.xls"
-                    multiple
-                    onChange={onCargaArchivo}
-                    className="hidden"
-                    disabled={cargandoArchivo}
-                />
             </Button>
+            <input
+                ref={inputRef}
+                type="file"
+                accept=".xlsx,.xls"
+                multiple
+                onChange={onCargaArchivo}
+                className="hidden"
+                disabled={cargandoArchivo}
+            />
         </>
     );
 }

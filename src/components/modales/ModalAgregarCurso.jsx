@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Select, Label, ListBox, Modal, Input } from "@heroui/react";
+import { Button, Select, Label, ListBox, Modal, Input, TextField } from "@heroui/react";
 import { Plus, Trash2 } from 'lucide-react';
 
 function FormSelect({ label, placeholder, value, onChange, options }) {
@@ -166,14 +166,15 @@ export default function ModalAgregarCurso({
                             <div className="space-y-4">
                                 {/* Información básica */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <Input
-                                        label="Nombre del Curso"
-                                        placeholder="Ej: Cálculo"
-                                        value={cursoPersonalizado.nombre}
-                                        onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, nombre: value }))}
-                                        variant="bordered"
-                                        isRequired
-                                    />
+                                    <TextField name="nombreCurso" isRequired>
+                                        <Label>Nombre del Curso</Label>
+                                        <Input
+                                            placeholder="Ej: Cálculo"
+                                            value={cursoPersonalizado.nombre}
+                                            onChange={(event) => setCursoPersonalizado(prev => ({ ...prev, nombre: event.target.value }))}
+                                            variant="secondary"
+                                        />
+                                    </TextField>
                                     <FormSelect
                                         label="Sección"
                                         value={cursoPersonalizado.seccion}
@@ -187,21 +188,24 @@ export default function ModalAgregarCurso({
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <Input
-                                        label="Profesor"
-                                        placeholder="Nombre del profesor"
-                                        value={cursoPersonalizado.profesor}
-                                        onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, profesor: value }))}
-                                        variant="bordered"
-                                        isRequired
-                                    />
-                                    <Input
-                                        label="Aula"
-                                        placeholder="Ej: A-101"
-                                        value={cursoPersonalizado.aula}
-                                        onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, aula: value }))}
-                                        variant="bordered"
-                                    />
+                                    <TextField name="profesorCurso" isRequired>
+                                        <Label>Profesor</Label>
+                                        <Input
+                                            placeholder="Nombre del profesor"
+                                            value={cursoPersonalizado.profesor}
+                                            onChange={(event) => setCursoPersonalizado(prev => ({ ...prev, profesor: event.target.value }))}
+                                            variant="secondary"
+                                        />
+                                    </TextField>
+                                    <TextField name="aulaCurso">
+                                        <Label>Aula</Label>
+                                        <Input
+                                            placeholder="Ej: A-101"
+                                            value={cursoPersonalizado.aula}
+                                            onChange={(event) => setCursoPersonalizado(prev => ({ ...prev, aula: event.target.value }))}
+                                            variant="secondary"
+                                        />
+                                    </TextField>
                                     <FormSelect
                                         label="Créditos"
                                         value={cursoPersonalizado.creditos}
