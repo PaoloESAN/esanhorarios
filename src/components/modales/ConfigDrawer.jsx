@@ -161,14 +161,21 @@ function ConfigDrawer({
                         <Switch
                             isSelected={esDark}
                             onChange={(v) => setTheme(v ? 'dark' : 'light')}
-                            size="sm"
+                            size="md"
                         >
                             <Switch.Control>
-                                <Switch.Thumb />
+                                <Switch.Thumb >
+                                    <Switch.Icon>
+                                        {esDark ? (
+                                            <Moon size={14} />
+                                        ) : (
+                                            <Sun size={14} />
+                                        )}
+                                    </Switch.Icon>
+                                </Switch.Thumb>
                             </Switch.Control>
                             <Switch.Content>
                                 <Label className="text-sm flex items-center gap-2">
-                                    {esDark ? <Moon size={14} /> : <Sun size={14} />}
                                     {esDark ? "Modo oscuro" : "Modo claro"}
                                 </Label>
                             </Switch.Content>
@@ -257,7 +264,7 @@ function ConfigDrawer({
                         <Switch
                             isSelected={config.ocultarFilasVacias}
                             onChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
-                            size="sm"
+                            size="md"
                         >
                             <Switch.Control>
                                 <Switch.Thumb />
@@ -285,7 +292,7 @@ function ConfigDrawer({
                                                         ...(v ? { fondoTiPaKay: false } : {}),
                                                     })
                                                 }
-                                                size="sm"
+                                                size="md"
                                             >
                                                 <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
                                                     <Switch.Thumb />
@@ -304,7 +311,7 @@ function ConfigDrawer({
                                                         ...(v ? { fondoChiJauKay: false } : {}),
                                                     })
                                                 }
-                                                size="sm"
+                                                size="md"
                                             >
                                                 <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
                                                     <Switch.Thumb />
@@ -363,7 +370,7 @@ function ConfigDrawer({
                             <Switch
                                 isSelected={config.nombreCortoProfesor}
                                 onChange={(v) => actualizarConfig({ nombreCortoProfesor: v })}
-                                size="sm"
+                                size="md"
                             >
                                 <Switch.Control>
                                     <Switch.Thumb />
@@ -380,7 +387,7 @@ function ConfigDrawer({
                             <Switch
                                 isSelected={config.nombrePrimero}
                                 onChange={(v) => actualizarConfig({ nombrePrimero: v })}
-                                size="sm"
+                                size="md"
                             >
                                 <Switch.Control>
                                     <Switch.Thumb />

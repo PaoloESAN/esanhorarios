@@ -128,9 +128,9 @@ export default function ChifaPromo() {
                     isDismissable={false}
                 >
                     <Modal.Container
-                        size="cover"
+                        size="xl"
                         placement="center"
-                        className="border-2 border-amber-400/50 bg-gradient-to-b from-gray-900 to-gray-950"
+                        className="w-[95vw] max-w-[1080px]"
                     >
                         <Modal.Dialog>
                             <Modal.CloseTrigger className="text-white hover:bg-white/10" />
@@ -146,11 +146,11 @@ export default function ChifaPromo() {
                                 </div>
 
                                 {/* Contenedor de las dos opciones */}
-                                <div className="flex flex-col md:flex-row w-full min-h-[350px] md:min-h-[450px]">
+                                <div className="flex flex-col md:flex-row w-full h-[340px] md:h-[450px]">
                                     {/* ── Chi Jau Kay (izquierda) ── */}
                                     <button
                                         id="btn-chijaukay"
-                                        className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15] border-r border-amber-400/20"
+                                        className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15] border-r border-amber-400/20 rounded-l-2xl"
                                         onClick={() => seleccionar("chijaukay")}
                                     >
                                         <img
@@ -169,7 +169,7 @@ export default function ChifaPromo() {
                                     {/* ── Ti Pa Kay (derecha) ── */}
                                     <button
                                         id="btn-tipakay"
-                                        className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15]"
+                                        className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15] rounded-r-2xl"
                                         onClick={() => seleccionar("tipakay")}
                                     >
                                         <img
