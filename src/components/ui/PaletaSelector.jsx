@@ -6,7 +6,6 @@ import { PALETAS_NOMBRES, PALETA_PREVIEW_COLORS } from '@/constants';
 const PALETAS = Object.entries(PALETAS_NOMBRES).map(([key, nombre]) => ({ key, nombre }));
 
 function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 'sm', className = '' }) {
-    const preview = PALETA_PREVIEW_COLORS[paletaSeleccionada] ?? PALETA_PREVIEW_COLORS.default;
 
     const handleChange = (selected) => {
         if (selected && selected !== paletaSeleccionada) onChange(selected);
@@ -23,11 +22,6 @@ function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 
             <Label>Paleta de colores</Label>
             <Select.Trigger className={`border border-divider shadow-sm ${size === 'sm' ? 'min-h-9' : ''}`}>
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="flex items-center gap-1 shrink-0">
-                        {(coloresActuales?.slice(0, 3) ?? preview.slice(0, 3)).map((c, i) => (
-                            <div key={i} className={`w-3 h-3 rounded-full ${c.bg ?? c}`} />
-                        ))}
-                    </div>
                     <Select.Value className="truncate" />
                 </div>
                 <Select.Indicator />
