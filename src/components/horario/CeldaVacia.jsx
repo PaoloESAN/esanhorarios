@@ -10,10 +10,10 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
     const tieneChaufa = config.fondoChiJauKay || config.fondoTiPaKay;
     const bgClass = tieneChaufa
         ? 'bg-transparent hover:bg-white/10'
-        : 'bg-content1 hover:bg-content2';
+        : 'bg-surface hover:bg-surface-secondary';
 
     return (
-        <div className={`h-full ${bgClass} transition-colors rounded border-2 border-dashed border-transparent hover:border-primary relative`}>
+        <div className={`h-full ${bgClass} transition-colors rounded border-2 border-dashed border-transparent hover:border-accent relative`}>
             {nota ? (
                 <Dropdown>
                     <Dropdown.Trigger>

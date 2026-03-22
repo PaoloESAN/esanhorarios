@@ -13,7 +13,7 @@ function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, 
                     color={color}
                     onChange={onChange}
                     prefixed
-                    className="w-full text-sm rounded border border-divider bg-content1 p-2 outline-none focus:border-primary"
+                    className="w-full text-sm rounded border border-divider bg-surface p-2 outline-none focus:border-accent"
                 />
                 <div
                     className="h-12 rounded border border-divider flex items-center justify-center text-xs font-medium px-2 text-center w-full overflow-hidden break-words"
@@ -27,13 +27,13 @@ function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, 
                     <div className="flex items-center gap-2">
                         <button
                             type="button"
-                            className={`w-8 h-8 rounded border ${textColorChoice === "#000000" ? "ring-2 ring-primary" : "border-divider"} bg-black`}
+                            className={`w-8 h-8 rounded border ${textColorChoice === "#000000" ? "ring-2 ring-accent" : "border-divider"} bg-black`}
                             title="Texto negro"
                             onClick={() => onTextColorChange?.("#000000")}
                         />
                         <button
                             type="button"
-                            className={`w-8 h-8 rounded border ${textColorChoice === "#ffffff" ? "ring-2 ring-primary" : "border-divider"} bg-white`}
+                            className={`w-8 h-8 rounded border ${textColorChoice === "#ffffff" ? "ring-2 ring-accent" : "border-divider"} bg-white`}
                             title="Texto blanco"
                             onClick={() => onTextColorChange?.("#ffffff")}
                         />

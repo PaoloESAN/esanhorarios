@@ -17,7 +17,7 @@ export default function ConflictModal({ isOpen, onClose, conflictoInfo }) {
                         <Modal.Body>
                             <div className="mb-4">
                                 <p className="text-sm md:text-base text-foreground-600 mb-2">
-                                    No se puede agregar <span className="font-semibold text-primary">{conflictoInfo.cursoNuevo}</span>
+                                    No se puede agregar <span className="font-semibold text-accent">{conflictoInfo.cursoNuevo}</span>
                                     {' '}porque tiene conflicto de horarios con:
                                 </p>
                                 <p className="text-sm md:text-base font-semibold text-danger">

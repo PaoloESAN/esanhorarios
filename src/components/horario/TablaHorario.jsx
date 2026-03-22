@@ -53,7 +53,7 @@ function TablaHorario({
 
     const tieneChaufa = !!fondoImagen;
     // Clases condicionales: transparente cuando hay chaufa, normal si no
-    const bgHeader = tieneChaufa ? 'bg-transparent' : 'bg-content2';
+    const bgHeader = tieneChaufa ? 'bg-transparent' : 'bg-surface-secondary';
     const bgBody = tieneChaufa ? 'bg-transparent' : '';
 
     return (

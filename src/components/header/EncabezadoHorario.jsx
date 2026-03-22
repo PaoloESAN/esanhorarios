@@ -7,9 +7,9 @@ function ContadorCreditos({ total }) {
     return (
         <Popover key={total}>
             <Popover.Trigger>
-                <div className="flex items-center gap-2 bg-primary-50 px-3 md:px-4 py-2 rounded-lg border border-primary-200 shadow-sm cursor-pointer">
-                    <BadgeCheck size={18} className="text-primary" />
-                    <span className="text-sm font-semibold text-primary">Créditos: {total}</span>
+                <div className="h-10 flex items-center gap-2 bg-accent-soft px-3 md:px-4 py-2 rounded-lg border border-accent shadow-sm cursor-pointer">
+                    <BadgeCheck size={18} className="text-accent" />
+                    <span className="text-sm font-semibold text-accent">Créditos: {total}</span>
                 </div>
             </Popover.Trigger>
             <Popover.Content placement='bottom'>
@@ -24,6 +24,7 @@ function ContadorCreditos({ total }) {
 function SelectorHorarios({ activo, onChange }) {
     return (
         <Tabs
+            className='mt-5'
             selectedKey={activo.toString()}
             onSelectionChange={(k) => onChange(parseInt(String(k), 10))}
         >
@@ -50,7 +51,13 @@ function SelectorHorarios({ activo, onChange }) {
 
 function BotonLimpiar({ onLimpiarActual }) {
     return (
-        <Button onPress={onLimpiarActual} variant="danger-soft" aria-label='limpiar actual' startContent={<Trash2 size={18} />} className="px-4">
+        <Button
+            onPress={onLimpiarActual}
+            variant="danger-soft"
+            aria-label='limpiar actual'
+            className="h-10 px-4 inline-flex items-center gap-2"
+        >
+            <Trash2 size={18} />
             Limpiar
         </Button>
     );
@@ -83,18 +90,18 @@ function EncabezadoHorario({
                         onPress={abrirConfigDrawer}
                         size="sm"
                         variant="tertiary"
-                        startContent={<Brush size={18} />}
-                        className="flex-1 border border-warning-200 shadow-sm"
+                        className="flex-1 border border-warning-200 shadow-sm inline-flex items-center justify-center gap-2"
                     >
+                        <Brush size={18} />
                         Personalizar
                     </Button>
                     <Button
                         onPress={abrirShareModal}
                         size="sm"
                         variant="tertiary"
-                        startContent={<Share2 size={18} />}
-                        className="flex-1 shadow-sm border border-success-200"
+                        className="flex-1 shadow-sm border border-success-200 inline-flex items-center justify-center gap-2"
                     >
+                        <Share2 size={18} />
                         <span className="font-medium">Compartir Horario</span>
                     </Button>
                 </div>
@@ -102,36 +109,38 @@ function EncabezadoHorario({
 
             {/* ── DESKTOP ─────────────────────────────────────────────────── */}
             <div className="md:flex flex-col gap-4 mb-4 hidden">
-                {/* Fila 2: Horarios | Boton Limpiar | Creditos | Personalizar | Compartir Horario */}
+                {/* Fila: Horarios | Boton Limpiar | Creditos | Personalizar | Compartir Horario */}
                 <div className='lg:hidden justify-center items-center flex'>
                     <ContadorCreditos total={creditosTotales} />
                 </div>
-                <div className="flex flex-row items-center justify-between gap-4 flex-wrap">
-                    <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-sm font-medium text-foreground-600 whitespace-nowrap">Horarios:</span>
-                        <SelectorHorarios activo={horarioActivo} onChange={cambiarHorario} />
+                <div className="flex flex-row items-start justify-between gap-4 flex-wrap">
+                    <div className="h-10 flex items-center gap-3 shrink-0">
+                        <span className="h-full flex items-center text-sm font-medium text-foreground-600 whitespace-nowrap">Horarios:</span>
+                        <div className="h-full flex items-center">
+                            <SelectorHorarios activo={horarioActivo} onChange={cambiarHorario} />
+                        </div>
                         <BotonLimpiar onLimpiarActual={limpiarHorario} />
                     </div>
-                    <div className='hidden lg:flex'>
+                    <div className='hidden lg:flex h-10 items-center'>
                         <ContadorCreditos total={creditosTotales} />
                     </div>
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="h-10 flex items-center gap-3 shrink-0">
                         <Button
                             onPress={abrirConfigDrawer}
                             size="sm"
-                            variant="tertiary"
-                            startContent={<Brush size={18} />}
-                            className="px-6 border border-warning-200 shadow-sm"
+                            variant="secondary"
+                            className="h-full px-6 border border-warning-200 shadow-sm inline-flex items-center justify-center gap-2"
                         >
+                            <Brush size={18} />
                             <span className="font-medium whitespace-nowrap">Personalizar</span>
                         </Button>
                         <Button
                             onPress={abrirShareModal}
                             size="sm"
-                            variant="tertiary"
-                            startContent={<Share2 size={18} />}
-                            className="px-6 shadow-sm border border-success-200 whitespace-nowrap min-w-fit"
+                            variant="secondary"
+                            className="h-full px-6 shadow-sm border border-success-200 whitespace-nowrap min-w-fit inline-flex items-center justify-center gap-2"
                         >
+                            <Share2 size={18} />
                             <span className="font-medium whitespace-nowrap">Compartir Horario</span>
                         </Button>
                     </div>

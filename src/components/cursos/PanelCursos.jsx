@@ -22,6 +22,7 @@ function PanelCursos({
     const { cursosPorCiclo, obtenerCreditos } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
     const listaRef = useRef(null);
+    const talleresInputRef = useRef(null);
 
     useEffect(() => {
         listaRef.current?.scrollTo({ top: 0 });
@@ -33,14 +34,20 @@ function PanelCursos({
         cursos.some(c => esTaller(c) && obtenerHorariosPorCurso(c).length > 0)
     );
 
+    const handleOpenTalleresPicker = () => {
+        if (!talleresInputRef.current || cargandoTalleres) return;
+        talleresInputRef.current.value = '';
+        talleresInputRef.current.click();
+    };
+
     return (
-        <div className="bg-content1 rounded-lg shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
+        <div className="bg-surface rounded-lg shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
             {/* Cabecera del panel */}
             <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h2 className="text-lg md:text-xl font-semibold text-foreground">Cursos Disponibles</h2>
                 <Button
                     onPress={onAbrirModalCursoPersonalizado}
-                    variant="tertiary"
+                    variant="secondary"
                     size="sm"
                     isIconOnly
                     title="Agregar curso personalizado"
@@ -60,7 +67,7 @@ function PanelCursos({
                     className="w-full"
                 >
                     <Label>Seleccionar Ciclo</Label>
-                    <Select.Trigger className="border border-divider shadow-sm">
+                    <Select.Trigger className="border border-divider bg-surface-secondary">
                         <Select.Value />
                         <Select.Indicator />
                     </Select.Trigger>
@@ -87,7 +94,7 @@ function PanelCursos({
                         const cursoEsTaller = esTaller(curso);
 
                         return (
-                            <div key={idx} className="border border-divider rounded-lg p-2 md:p-3 bg-content2">
+                            <div key={idx} className="border border-divider rounded-lg p-2 md:p-3 bg-surface-secondary">
                                 {/* Cabecera del curso */}
                                 <h4 className="font-semibold text-foreground text-xs md:text-sm mb-2 md:mb-3 border-b border-divider pb-2">
                                     <div className="flex flex-wrap items-center justify-between gap-2">
@@ -99,7 +106,7 @@ function PanelCursos({
                                                 size='sm'
                                             >
                                                 <div className="flex items-center gap-1">
-                                                    <BadgeCheck className="w-3 h-3 text-primary" />
+                                                    <BadgeCheck className="w-3 h-3 text-accent" />
                                                     {creditos}
                                                 </div>
                                             </Chip>
@@ -125,7 +132,7 @@ function PanelCursos({
                                 ) : (
                                     !esElectivo && (
                                         cursoEsTaller && !hayAlgunTallerEnExcel ? (
-                                            <div className="p-2 bg-content3 border border-divider rounded text-center">
+                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
                                                 {nombreArchivoTalleres ? (
                                                     <div className="flex flex-col items-center gap-1">
                                                         <div className="flex items-center gap-1">
@@ -137,27 +144,30 @@ function PanelCursos({
                                                         <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
                                                     </div>
                                                 ) : (
-                                                    <Button
-                                                        as="label"
-                                                        variant="tertiary"
-                                                        size="sm"
-                                                        className="cursor-pointer"
-                                                        isPending={cargandoTalleres}
-                                                        startContent={!cargandoTalleres && <CloudUpload size={14} />}
-                                                    >
-                                                        {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}
+                                                    <>
+                                                        <Button
+                                                            variant="tertiary"
+                                                            size="sm"
+                                                            className="cursor-pointer"
+                                                            isPending={cargandoTalleres}
+                                                            onPress={handleOpenTalleresPicker}
+                                                        >
+                                                            {!cargandoTalleres && <CloudUpload size={14} />}
+                                                            {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}
+                                                        </Button>
                                                         <input
+                                                            ref={talleresInputRef}
                                                             type="file"
                                                             accept=".xlsx,.xls"
                                                             onChange={onCargaTalleres}
                                                             className="hidden"
                                                             disabled={cargandoTalleres}
                                                         />
-                                                    </Button>
+                                                    </>
                                                 )}
                                             </div>
                                         ) : (
-                                            <div className="p-2 bg-content3 border border-divider rounded text-center">
+                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
                                                 <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
                                             </div>
                                         )

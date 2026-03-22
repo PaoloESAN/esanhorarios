@@ -123,7 +123,7 @@ function HorarioAppInner() {
                 {/* Layout principal */}
                 <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
                     {/* Tabla de horario */}
-                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-content1 rounded-lg shadow-md p-3 md:p-6">
+                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-surface rounded-lg shadow-md p-3 md:p-6">
                         <EncabezadoHorario
                             horarioActivo={horarios.horarioActivo}
                             creditosTotales={horarios.creditosTotales}
@@ -132,7 +132,7 @@ function HorarioAppInner() {
                             abrirShareModal={compartir.abrirShareModal}
                             abrirConfigDrawer={configDrawer.open}
                         />
-                        <h3 className="text-sm md:text-base text-foreground-500 mb-3 md:mb-4">
+                        <h3 className="text-sm md:text-base text-muted mb-3 md:mb-4">
                             Pulsa en un espacio en blanco para agregar un texto al horario.
                         </h3>
                         <TablaHorario

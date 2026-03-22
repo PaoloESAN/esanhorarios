@@ -126,15 +126,15 @@ export default function ShareModal({
                     <Modal.Dialog>
                         <Modal.CloseTrigger />
                         <Modal.Header className="flex gap-1 items-center">
-                            <div className="bg-primary-100 rounded-full p-2 mr-3">
-                                <Share2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                            <div className="bg-accent-soft rounded-full p-2 mr-3">
+                                <Share2 className="w-5 h-5 md:w-6 md:h-6 text-accent" />
                             </div>
                             <Modal.Heading className="text-foreground">Compartir horario</Modal.Heading>
                         </Modal.Header>
                         <Modal.Body>
                             <div className="space-y-4">
                                 <div className="text-sm text-foreground-600">Previsualización ({filename})</div>
-                                <div className="w-full max-h-[60vh] overflow-auto bg-content2 border border-divider rounded-lg p-2 flex justify-center">
+                                <div className="w-full max-h-[60vh] overflow-auto bg-surface-secondary border border-divider rounded-lg p-2 flex justify-center">
                                     {dataUrl ? (
                                         <img src={dataUrl} alt="Previsualización del horario" className="max-w-full h-auto rounded-md shadow" />
                                     ) : (
@@ -152,8 +152,8 @@ export default function ShareModal({
                                         variant="tertiary"
                                         onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
                                         isDisabled={!dataUrl}
-                                        startContent={<FileSpreadsheet size={18} />}
                                     >
+                                        <FileSpreadsheet size={18} />
                                         Excel
                                     </Button>
                                     <div className="flex gap-2 w-full sm:w-auto">
@@ -162,8 +162,8 @@ export default function ShareModal({
                                             variant="tertiary"
                                             onPress={onCopy}
                                             isDisabled={!dataUrl}
-                                            startContent={<Copy size={18} />}
                                         >
+                                            <Copy size={18} />
                                             Copiar imagen
                                         </Button>
                                         <Button
@@ -171,8 +171,8 @@ export default function ShareModal({
                                             variant="tertiary"
                                             onPress={onDownload}
                                             isDisabled={!dataUrl}
-                                            startContent={<Download size={18} />}
                                         >
+                                            <Download size={18} />
                                             Descargar
                                         </Button>
                                     </div>

@@ -15,7 +15,36 @@ function FormSelect({ label, placeholder, value, onChange, options }) {
             isRequired
         >
             <Label>{label}</Label>
-            <Select.Trigger className="border border-divider shadow-sm">
+            <Select.Trigger className="border border-divider shadow-sm bg-surface-secondary">
+                <Select.Value />
+                <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+                <ListBox>
+                    {options.map((option) => (
+                        <ListBox.Item key={option.value} id={option.value} textValue={option.label}>
+                            {option.label}
+                            <ListBox.ItemIndicator />
+                        </ListBox.Item>
+                    ))}
+                </ListBox>
+            </Select.Popover>
+        </Select>
+    );
+}
+
+function HoraSelect({ label, placeholder, value, onChange, options }) {
+    return (
+        <Select
+            value={value}
+            onChange={(nextValue) => {
+                if (nextValue) onChange(nextValue);
+            }}
+            placeholder={placeholder}
+            isRequired
+        >
+            <Label>{label}</Label>
+            <Select.Trigger className="border border-divider shadow-sm bg-surface">
                 <Select.Value />
                 <Select.Indicator />
             </Select.Trigger>
@@ -153,12 +182,12 @@ export default function ModalAgregarCurso({
     return (
         <Modal>
             <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
-                <Modal.Container size="cover" placement="center" scroll="inside">
+                <Modal.Container size="lg" placement="center" scroll="inside">
                     <Modal.Dialog>
                         <Modal.CloseTrigger />
                         <Modal.Header className="flex gap-1 items-center">
-                            <div className="bg-primary-100 rounded-full p-2 mr-3">
-                                <Plus className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                            <div className="bg-accent-soft rounded-full p-2 mr-3">
+                                <Plus className="w-5 h-5 md:w-6 md:h-6 text-accent" />
                             </div>
                             <Modal.Heading className="text-foreground">Agregar Curso Personalizado</Modal.Heading>
                         </Modal.Header>
@@ -224,21 +253,21 @@ export default function ModalAgregarCurso({
                                         <h4 className="text-lg font-semibold text-foreground">Horarios</h4>
                                         <Button
                                             onPress={agregarHorarioPersonalizado}
-                                            variant="tertiary"
+                                            variant="secondary"
                                             size="sm"
-                                            startContent={<Plus />}
                                         >
+                                            <Plus />
                                             Agregar Horario
                                         </Button>
                                     </div>
 
                                     <div className="space-y-3 max-h-60 overflow-y-auto">
                                         {cursoPersonalizado.horarios.map((horario, index) => (
-                                            <div key={index} className="flex flex-col gap-3 p-3 bg-content2 rounded-lg">
+                                            <div key={index} className="flex flex-col gap-3 p-3 bg-surface-secondary rounded-lg">
                                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                                                     <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
                                                         <div className="flex-1 min-w-0">
-                                                            <FormSelect
+                                                            <HoraSelect
                                                                 label="Día"
                                                                 value={horario.dia}
                                                                 onChange={(value) => actualizarHorarioPersonalizado(index, 'dia', value)}
@@ -246,7 +275,7 @@ export default function ModalAgregarCurso({
                                                             />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <FormSelect
+                                                            <HoraSelect
                                                                 label="Hora Inicio"
                                                                 value={horario.horaInicio}
                                                                 onChange={(value) => actualizarHorarioPersonalizado(index, 'horaInicio', value)}
@@ -254,7 +283,7 @@ export default function ModalAgregarCurso({
                                                             />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <FormSelect
+                                                            <HoraSelect
                                                                 label="Hora Fin"
                                                                 value={horario.horaFin}
                                                                 onChange={(value) => actualizarHorarioPersonalizado(index, 'horaFin', value)}
@@ -270,8 +299,8 @@ export default function ModalAgregarCurso({
                                                                 variant="danger-soft"
                                                                 size="sm"
                                                                 className="shrink-0 w-full sm:w-auto"
-                                                                startContent={<Trash2 size={20} />}
                                                             >
+                                                                <Trash2 size={20} />
                                                                 <span className="sm:hidden">Eliminar Horario</span>
                                                             </Button>
                                                         </div>
