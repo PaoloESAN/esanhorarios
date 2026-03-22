@@ -1,7 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Button } from '@heroui/button';
-import { Select, SelectItem } from '@heroui/select';
-import { Chip } from "@heroui/chip";
+import { Button, Select, SelectItem, Chip } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
@@ -41,9 +39,8 @@ function PanelCursos({
             <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h2 className="text-lg md:text-xl font-semibold text-foreground">Cursos Disponibles</h2>
                 <Button
-                    onClick={onAbrirModalCursoPersonalizado}
-                    color="primary"
-                    variant="flat"
+                    onPress={onAbrirModalCursoPersonalizado}
+                    variant="tertiary"
                     size="sm"
                     isIconOnly
                     title="Agregar curso personalizado"
@@ -90,8 +87,8 @@ function PanelCursos({
                                         <span className="flex-1">{curso}</span>
                                         <div className="flex items-center gap-2">
                                             <Chip
-                                                color='primary'
-                                                variant='flat'
+                                                color='accent'
+                                                variant='tertiary'
                                                 size='sm'
                                             >
                                                 <div className="flex items-center gap-1">
@@ -135,11 +132,10 @@ function PanelCursos({
                                                 ) : (
                                                     <Button
                                                         as="label"
-                                                        color="warning"
-                                                        variant="flat"
+                                                        variant="tertiary"
                                                         size="sm"
                                                         className="cursor-pointer"
-                                                        isLoading={cargandoTalleres}
+                                                        isPending={cargandoTalleres}
                                                         startContent={!cargandoTalleres && <CloudUpload size={14} />}
                                                     >
                                                         {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}

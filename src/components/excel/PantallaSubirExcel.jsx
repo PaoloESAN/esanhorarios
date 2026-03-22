@@ -1,4 +1,4 @@
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import { FileText, CloudUpload } from 'lucide-react';
 
 function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
@@ -13,10 +13,10 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
             </p>
             <Button
                 as="label"
-                color="primary"
+                variant="primary"
                 size="md"
                 className="cursor-pointer mb-4"
-                isLoading={cargandoArchivo}
+                isPending={cargandoArchivo}
                 startContent={!cargandoArchivo && <CloudUpload className="w-5 h-5" />}
             >
                 {cargandoArchivo ? 'Cargando Excel...' : 'Cargar Archivos Excel'}

@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@heroui/button";
-import { Select, SelectItem } from "@heroui/select";
-import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
-import { Input } from "@heroui/input";
+import { Button, Select, SelectItem, Modal, Input } from "@heroui/react";
 import { Plus, Trash2 } from 'lucide-react';
 
 export default function ModalAgregarCurso({
@@ -125,181 +122,184 @@ export default function ModalAgregarCurso({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={handleClose} size="2xl" placement="center" scrollBehavior="inside">
-            <ModalContent>
-                <ModalHeader className="flex gap-1 items-center">
-                    <div className="bg-primary-100 rounded-full p-2 mr-3">
-                        <Plus className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                    </div>
-                    <span className="text-foreground">Agregar Curso Personalizado</span>
-                </ModalHeader>
-                <ModalBody>
-                    <div className="space-y-4">
-                        {/* Información básica */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Input
-                                label="Nombre del Curso"
-                                placeholder="Ej: Cálculo"
-                                value={cursoPersonalizado.nombre}
-                                onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, nombre: value }))}
-                                variant="bordered"
-                                isRequired
-                            />
-                            <Select
-                                label="Sección"
-                                selectedKeys={[cursoPersonalizado.seccion]}
-                                onSelectionChange={(keys) => {
-                                    const s = Array.from(keys)[0];
-                                    if (s) setCursoPersonalizado(prev => ({ ...prev, seccion: s }));
-                                }}
-                                variant="bordered"
-                                placeholder="Selecciona una sección"
-                                isRequired
-                            >
-                                {Array.from({ length: 10 }, (_, i) => {
-                                    const seccion = `S-${String(i + 1).padStart(3, '0')}`;
-                                    return <SelectItem key={seccion} value={seccion}>{seccion}</SelectItem>;
-                                })}
-                            </Select>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <Input
-                                label="Profesor"
-                                placeholder="Nombre del profesor"
-                                value={cursoPersonalizado.profesor}
-                                onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, profesor: value }))}
-                                variant="bordered"
-                                isRequired
-                            />
-                            <Input
-                                label="Aula"
-                                placeholder="Ej: A-101"
-                                value={cursoPersonalizado.aula}
-                                onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, aula: value }))}
-                                variant="bordered"
-                            />
-                            <Select
-                                label="Créditos"
-                                selectedKeys={[cursoPersonalizado.creditos]}
-                                onSelectionChange={(keys) => {
-                                    const c = Array.from(keys)[0];
-                                    if (c) setCursoPersonalizado(prev => ({ ...prev, creditos: c }));
-                                }}
-                                variant="bordered"
-                                placeholder="Selecciona créditos"
-                                isRequired
-                            >
-                                {Array.from({ length: 5 }, (_, i) => {
-                                    const credito = String(i + 1);
-                                    return <SelectItem key={credito} value={credito}>{credito}</SelectItem>;
-                                })}
-                            </Select>
-                        </div>
-
-                        {/* Horarios */}
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <h4 className="text-lg font-semibold text-foreground">Horarios</h4>
-                                <Button
-                                    onClick={agregarHorarioPersonalizado}
-                                    color="success"
-                                    variant="flat"
-                                    size="sm"
-                                    startContent={<Plus />}
-                                >
-                                    Agregar Horario
-                                </Button>
+        <Modal>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+                <Modal.Container size="cover" placement="center" scroll="inside">
+                    <Modal.Dialog>
+                        <Modal.CloseTrigger />
+                        <Modal.Header className="flex gap-1 items-center">
+                            <div className="bg-primary-100 rounded-full p-2 mr-3">
+                                <Plus className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                             </div>
+                            <Modal.Heading className="text-foreground">Agregar Curso Personalizado</Modal.Heading>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="space-y-4">
+                                {/* Información básica */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Input
+                                        label="Nombre del Curso"
+                                        placeholder="Ej: Cálculo"
+                                        value={cursoPersonalizado.nombre}
+                                        onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, nombre: value }))}
+                                        variant="bordered"
+                                        isRequired
+                                    />
+                                    <Select
+                                        label="Sección"
+                                        selectedKeys={[cursoPersonalizado.seccion]}
+                                        onSelectionChange={(keys) => {
+                                            const s = Array.from(keys)[0];
+                                            if (s) setCursoPersonalizado(prev => ({ ...prev, seccion: s }));
+                                        }}
+                                        variant="bordered"
+                                        placeholder="Selecciona una sección"
+                                        isRequired
+                                    >
+                                        {Array.from({ length: 10 }, (_, i) => {
+                                            const seccion = `S-${String(i + 1).padStart(3, '0')}`;
+                                            return <SelectItem key={seccion} value={seccion}>{seccion}</SelectItem>;
+                                        })}
+                                    </Select>
+                                </div>
 
-                            <div className="space-y-3 max-h-60 overflow-y-auto">
-                                {cursoPersonalizado.horarios.map((horario, index) => (
-                                    <div key={index} className="flex flex-col gap-3 p-3 bg-content2 rounded-lg">
-                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                            <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
-                                                <div className="flex-1 min-w-0">
-                                                    <Select
-                                                        label="Día"
-                                                        selectedKeys={[horario.dia]}
-                                                        onSelectionChange={(keys) => {
-                                                            const d = Array.from(keys)[0];
-                                                            if (d) actualizarHorarioPersonalizado(index, 'dia', d);
-                                                        }}
-                                                        size="sm"
-                                                        variant="bordered"
-                                                        disallowEmptySelection
-                                                    >
-                                                        {diasSemana.map((dia) => (
-                                                            <SelectItem key={dia} value={dia}>{dia}</SelectItem>
-                                                        ))}
-                                                    </Select>
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <Select
-                                                        label="Hora Inicio"
-                                                        selectedKeys={[horario.horaInicio]}
-                                                        onSelectionChange={(keys) => {
-                                                            const t = Array.from(keys)[0];
-                                                            if (t) actualizarHorarioPersonalizado(index, 'horaInicio', t);
-                                                        }}
-                                                        size="sm"
-                                                        variant="bordered"
-                                                        disallowEmptySelection
-                                                    >
-                                                        {horasInicio.map((hora) => (
-                                                            <SelectItem key={hora} value={hora}>{hora}</SelectItem>
-                                                        ))}
-                                                    </Select>
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <Select
-                                                        label="Hora Fin"
-                                                        selectedKeys={[horario.horaFin]}
-                                                        onSelectionChange={(keys) => {
-                                                            const t = Array.from(keys)[0];
-                                                            if (t) actualizarHorarioPersonalizado(index, 'horaFin', t);
-                                                        }}
-                                                        size="sm"
-                                                        variant="bordered"
-                                                        disallowEmptySelection
-                                                    >
-                                                        {horasFin.map((hora) => (
-                                                            <SelectItem key={hora} value={hora}>{hora}</SelectItem>
-                                                        ))}
-                                                    </Select>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <Input
+                                        label="Profesor"
+                                        placeholder="Nombre del profesor"
+                                        value={cursoPersonalizado.profesor}
+                                        onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, profesor: value }))}
+                                        variant="bordered"
+                                        isRequired
+                                    />
+                                    <Input
+                                        label="Aula"
+                                        placeholder="Ej: A-101"
+                                        value={cursoPersonalizado.aula}
+                                        onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, aula: value }))}
+                                        variant="bordered"
+                                    />
+                                    <Select
+                                        label="Créditos"
+                                        selectedKeys={[cursoPersonalizado.creditos]}
+                                        onSelectionChange={(keys) => {
+                                            const c = Array.from(keys)[0];
+                                            if (c) setCursoPersonalizado(prev => ({ ...prev, creditos: c }));
+                                        }}
+                                        variant="bordered"
+                                        placeholder="Selecciona créditos"
+                                        isRequired
+                                    >
+                                        {Array.from({ length: 5 }, (_, i) => {
+                                            const credito = String(i + 1);
+                                            return <SelectItem key={credito} value={credito}>{credito}</SelectItem>;
+                                        })}
+                                    </Select>
+                                </div>
+
+                                {/* Horarios */}
+                                <div>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h4 className="text-lg font-semibold text-foreground">Horarios</h4>
+                                        <Button
+                                            onPress={agregarHorarioPersonalizado}
+                                            variant="tertiary"
+                                            size="sm"
+                                            startContent={<Plus />}
+                                        >
+                                            Agregar Horario
+                                        </Button>
+                                    </div>
+
+                                    <div className="space-y-3 max-h-60 overflow-y-auto">
+                                        {cursoPersonalizado.horarios.map((horario, index) => (
+                                            <div key={index} className="flex flex-col gap-3 p-3 bg-content2 rounded-lg">
+                                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                                    <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
+                                                        <div className="flex-1 min-w-0">
+                                                            <Select
+                                                                label="Día"
+                                                                selectedKeys={[horario.dia]}
+                                                                onSelectionChange={(keys) => {
+                                                                    const d = Array.from(keys)[0];
+                                                                    if (d) actualizarHorarioPersonalizado(index, 'dia', d);
+                                                                }}
+                                                                size="sm"
+                                                                variant="bordered"
+                                                                disallowEmptySelection
+                                                            >
+                                                                {diasSemana.map((dia) => (
+                                                                    <SelectItem key={dia} value={dia}>{dia}</SelectItem>
+                                                                ))}
+                                                            </Select>
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <Select
+                                                                label="Hora Inicio"
+                                                                selectedKeys={[horario.horaInicio]}
+                                                                onSelectionChange={(keys) => {
+                                                                    const t = Array.from(keys)[0];
+                                                                    if (t) actualizarHorarioPersonalizado(index, 'horaInicio', t);
+                                                                }}
+                                                                size="sm"
+                                                                variant="bordered"
+                                                                disallowEmptySelection
+                                                            >
+                                                                {horasInicio.map((hora) => (
+                                                                    <SelectItem key={hora} value={hora}>{hora}</SelectItem>
+                                                                ))}
+                                                            </Select>
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <Select
+                                                                label="Hora Fin"
+                                                                selectedKeys={[horario.horaFin]}
+                                                                onSelectionChange={(keys) => {
+                                                                    const t = Array.from(keys)[0];
+                                                                    if (t) actualizarHorarioPersonalizado(index, 'horaFin', t);
+                                                                }}
+                                                                size="sm"
+                                                                variant="bordered"
+                                                                disallowEmptySelection
+                                                            >
+                                                                {horasFin.map((hora) => (
+                                                                    <SelectItem key={hora} value={hora}>{hora}</SelectItem>
+                                                                ))}
+                                                            </Select>
+                                                        </div>
+                                                    </div>
+
+                                                    {cursoPersonalizado.horarios.length > 1 && (
+                                                        <div className="flex justify-center sm:justify-center w-full sm:w-auto mt-2 sm:mt-0">
+                                                            <Button
+                                                                onPress={() => eliminarHorarioPersonalizado(index)}
+                                                                variant="danger-soft"
+                                                                size="sm"
+                                                                className="shrink-0 w-full sm:w-auto"
+                                                                startContent={<Trash2 size={20} />}
+                                                            >
+                                                                <span className="sm:hidden">Eliminar Horario</span>
+                                                            </Button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-
-                                            {cursoPersonalizado.horarios.length > 1 && (
-                                                <div className="flex justify-center sm:justify-center w-full sm:w-auto mt-2 sm:mt-0">
-                                                    <Button
-                                                        onClick={() => eliminarHorarioPersonalizado(index)}
-                                                        color="danger"
-                                                        size="sm"
-                                                        variant="light"
-                                                        className="shrink-0 w-full sm:w-auto"
-                                                        startContent={<Trash2 size={20} />}
-                                                    >
-                                                        <span className="sm:hidden">Eliminar Horario</span>
-                                                    </Button>
-                                                </div>
-                                            )}
-                                        </div>
+                                        ))}
                                     </div>
-                                ))}
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="danger" variant="light" onPress={handleClose}>
-                        Cancelar
-                    </Button>
-                    <Button color="primary" onPress={handleGuardarCurso}>
-                        Agregar Curso
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="danger-soft" onPress={handleClose}>
+                                Cancelar
+                            </Button>
+                            <Button variant="primary" onPress={handleGuardarCurso}>
+                                Agregar Curso
+                            </Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </Modal.Container>
+            </Modal.Backdrop>
         </Modal>
     );
 }

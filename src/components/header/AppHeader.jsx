@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import ExcelUploader from '@/components/excel/ExcelUploader';
 
@@ -17,7 +17,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                         as={Link}
                         href="/"
                         size="sm"
-                        variant="flat"
+                        variant="tertiary"
                         isIconOnly
                         title="Volver al inicio"
                         className="shrink-0"

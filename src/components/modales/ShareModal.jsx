@@ -1,5 +1,4 @@
-import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
-import { Button } from "@heroui/button";
+import { Modal, Button } from "@heroui/react";
 import { Share2, Copy, Download, FileSpreadsheet } from 'lucide-react';
 import { diasSemana, generarHorarios } from '@/lib/horario';
 import { useConfigHorario, acortarNombreProfesor, invertirOrdenProfesor } from '@/hooks/useConfigHorario';
@@ -121,66 +120,68 @@ export default function ShareModal({
 }) {
     const { config } = useConfigHorario();
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="xl" placement="center">
-            <ModalContent>
-                <ModalHeader className="flex gap-1 items-center">
-                    <div className="bg-primary-100 rounded-full p-2 mr-3">
-                        <Share2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                    </div>
-                    <span className="text-foreground">Compartir horario</span>
-                </ModalHeader>
-                <ModalBody>
-                    <div className="space-y-4">
-                        <div className="text-sm text-foreground-600">Previsualización ({filename})</div>
-                        <div className="w-full max-h-[60vh] overflow-auto bg-content2 border border-divider rounded-lg p-2 flex justify-center">
-                            {dataUrl ? (
-                                <img src={dataUrl} alt="Previsualización del horario" className="max-w-full h-auto rounded-md shadow" />
-                            ) : (
-                                <div className="text-foreground-500 text-sm">Generando imagen…</div>
-                            )}
-                        </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center">
-                        <Button className="w-full sm:w-auto" variant="flat" color="default" onPress={onClose}>Cerrar</Button>
-                        <div className="flex w-full sm:w-auto gap-2 sm:ml-auto flex-wrap">
-                            <Button
-                                className="w-full sm:w-auto"
-                                color="success"
-                                variant="flat"
-                                onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
-                                isDisabled={!dataUrl}
-                                startContent={<FileSpreadsheet size={18} />}
-                            >
-                                Excel
-                            </Button>
-                            <div className="flex gap-2 w-full sm:w-auto">
-                                <Button
-                                    className="w-full sm:w-auto"
-                                    variant="flat"
-                                    color="warning"
-                                    onPress={onCopy}
-                                    isDisabled={!dataUrl}
-                                    startContent={<Copy size={18} />}
-                                >
-                                    Copiar imagen
-                                </Button>
-                                <Button
-                                    className="w-full sm:w-auto"
-                                    color="primary"
-                                    variant="flat"
-                                    onPress={onDownload}
-                                    isDisabled={!dataUrl}
-                                    startContent={<Download size={18} />}
-                                >
-                                    Descargar
-                                </Button>
+        <Modal>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+                <Modal.Container size="lg" placement="center">
+                    <Modal.Dialog>
+                        <Modal.CloseTrigger />
+                        <Modal.Header className="flex gap-1 items-center">
+                            <div className="bg-primary-100 rounded-full p-2 mr-3">
+                                <Share2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                             </div>
-                        </div>
-                    </div>
-                </ModalFooter>
-            </ModalContent>
+                            <Modal.Heading className="text-foreground">Compartir horario</Modal.Heading>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="space-y-4">
+                                <div className="text-sm text-foreground-600">Previsualización ({filename})</div>
+                                <div className="w-full max-h-[60vh] overflow-auto bg-content2 border border-divider rounded-lg p-2 flex justify-center">
+                                    {dataUrl ? (
+                                        <img src={dataUrl} alt="Previsualización del horario" className="max-w-full h-auto rounded-md shadow" />
+                                    ) : (
+                                        <div className="text-foreground-500 text-sm">Generando imagen…</div>
+                                    )}
+                                </div>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center">
+                                <Button className="w-full sm:w-auto" variant="tertiary" onPress={onClose}>Cerrar</Button>
+                                <div className="flex w-full sm:w-auto gap-2 sm:ml-auto flex-wrap">
+                                    <Button
+                                        className="w-full sm:w-auto"
+                                        variant="tertiary"
+                                        onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
+                                        isDisabled={!dataUrl}
+                                        startContent={<FileSpreadsheet size={18} />}
+                                    >
+                                        Excel
+                                    </Button>
+                                    <div className="flex gap-2 w-full sm:w-auto">
+                                        <Button
+                                            className="w-full sm:w-auto"
+                                            variant="tertiary"
+                                            onPress={onCopy}
+                                            isDisabled={!dataUrl}
+                                            startContent={<Copy size={18} />}
+                                        >
+                                            Copiar imagen
+                                        </Button>
+                                        <Button
+                                            className="w-full sm:w-auto"
+                                            variant="tertiary"
+                                            onPress={onDownload}
+                                            isDisabled={!dataUrl}
+                                            startContent={<Download size={18} />}
+                                        >
+                                            Descargar
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </Modal.Container>
+            </Modal.Backdrop>
         </Modal>
     );
 }

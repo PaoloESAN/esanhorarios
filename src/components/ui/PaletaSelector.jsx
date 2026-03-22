@@ -1,6 +1,6 @@
 "use client";
 
-import { Select, SelectItem } from '@heroui/select';
+import { Select, SelectItem } from '@heroui/react';
 import { PALETAS_NOMBRES, PALETA_PREVIEW_COLORS } from '@/constants';
 
 const PALETAS = Object.entries(PALETAS_NOMBRES).map(([key, nombre]) => ({ key, nombre }));

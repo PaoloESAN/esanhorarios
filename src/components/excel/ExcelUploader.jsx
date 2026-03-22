@@ -1,4 +1,4 @@
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import { CloudUpload, FileText } from 'lucide-react';
 
 function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }) {
@@ -24,10 +24,10 @@ function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, 
 
             <Button
                 as="label"
-                color="primary"
+                variant="primary"
                 size="sm"
                 className="cursor-pointer"
-                isLoading={cargandoArchivo}
+                isPending={cargandoArchivo}
                 startContent={!cargandoArchivo && <CloudUpload size={18} />}
             >
                 <span className="hidden sm:inline">{cargandoArchivo ? 'Cargando...' : 'Cargar Excel'}</span>

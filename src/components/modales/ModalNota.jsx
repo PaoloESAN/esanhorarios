@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
-import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
+import { Modal, Button, Input } from "@heroui/react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
 function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, previewText }) {
@@ -73,37 +71,44 @@ function ModalNota({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="md" placement="center" key={`modal-${instanceKey || "nota"}`}>
-            <ModalContent>
-                <ModalHeader className="flex gap-2 items-center">Texto para la celda</ModalHeader>
-                <ModalBody>
-                    <div className="space-y-3">
-                        <div>
-                            <Input
-                                key={`input-${instanceKey || "nota"}`}
-                                label="Texto"
-                                type="text"
-                                value={texto}
-                                onValueChange={(val) => setTexto(val)}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-xs text-foreground-500">Color de fondo</label>
-                            <NoteColorPicker
-                                color={color}
-                                onChange={setColor}
-                                textColorChoice={textColor}
-                                onTextColorChange={setTextColor}
-                                previewText={texto}
-                            />
-                        </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="light" onPress={onClose}>Cancelar</Button>
-                    <Button color="primary" onPress={handleSave} isDisabled={!isOpen}>Guardar</Button>
-                </ModalFooter>
-            </ModalContent>
+        <Modal key={`modal-${instanceKey || "nota"}`}>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+                <Modal.Container size="md" placement="center">
+                    <Modal.Dialog>
+                        <Modal.CloseTrigger />
+                        <Modal.Header className="flex gap-2 items-center">
+                            <Modal.Heading>Texto para la celda</Modal.Heading>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="space-y-3">
+                                <div>
+                                    <Input
+                                        key={`input-${instanceKey || "nota"}`}
+                                        label="Texto"
+                                        type="text"
+                                        value={texto}
+                                        onValueChange={(val) => setTexto(val)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs text-foreground-500">Color de fondo</label>
+                                    <NoteColorPicker
+                                        color={color}
+                                        onChange={setColor}
+                                        textColorChoice={textColor}
+                                        onTextColorChange={setTextColor}
+                                        previewText={texto}
+                                    />
+                                </div>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="tertiary" onPress={onClose}>Cancelar</Button>
+                            <Button variant="primary" onPress={handleSave} isDisabled={!isOpen}>Guardar</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </Modal.Container>
+            </Modal.Backdrop>
         </Modal>
     );
 }

@@ -1,28 +1,32 @@
-import { Modal, ModalContent, ModalBody, ModalHeader, ModalFooter } from "@heroui/modal";
-import { Button } from "@heroui/button";
+import { Modal, Button } from "@heroui/react";
 import { X } from 'lucide-react';
 
 export default function ErrorModal({ isOpen, onClose, mensaje }) {
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="md" placement="center">
-            <ModalContent>
-                <ModalHeader className="flex gap-1 items-center">
-                    <div className="bg-danger-100 rounded-full p-2 mr-3">
-                        <X className="w-5 h-5 md:w-6 md:h-6 text-danger" />
-                    </div>
-                    <span className="text-foreground">Error</span>
-                </ModalHeader>
-                <ModalBody>
-                    <p className="text-sm md:text-base text-foreground-600">
-                        {mensaje}
-                    </p>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="danger" onPress={onClose}>
-                        Cerrar
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
+        <Modal>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+                <Modal.Container size="md" placement="center">
+                    <Modal.Dialog>
+                        <Modal.CloseTrigger />
+                        <Modal.Header className="flex gap-1 items-center">
+                            <div className="bg-danger-100 rounded-full p-2 mr-3">
+                                <X className="w-5 h-5 md:w-6 md:h-6 text-danger" />
+                            </div>
+                            <Modal.Heading className="text-foreground">Error</Modal.Heading>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p className="text-sm md:text-base text-foreground-600">
+                                {mensaje}
+                            </p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="danger" onPress={onClose}>
+                                Cerrar
+                            </Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </Modal.Container>
+            </Modal.Backdrop>
         </Modal>
     );
 }

@@ -77,7 +77,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                 <Button
                                     isIconOnly
                                     size="sm"
-                                    variant="flat"
+                                    variant="tertiary"
                                     className="bg-black/50 hover:bg-black/70 text-white shadow-sm transition-colors"
                                     onPress={() => setExpandedFacultad(null)}
                                     aria-label="Volver"
@@ -98,7 +98,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                                 transition={{ duration: 0.12, delay: idx * 0.03 }}
                                             >
                                                 <Button
-                                                    variant="flat"
+                                                    variant="tertiary"
                                                     as={Link}
                                                     href={`/${carrera.slug}`}
                                                     className="justify-between h-auto py-4 md:py-5 px-5 text-white text-sm md:text-base font-bold w-full rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"

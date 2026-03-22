@@ -43,7 +43,7 @@ export default function Calendario() {
             {mounted && (
                 <Button
                     isIconOnly
-                    variant="flat"
+                    variant="tertiary"
                     className="fixed top-4 right-4 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg border border-gray-200/60 dark:border-gray-700/60 text-gray-600 dark:text-gray-300 hover:scale-110 transition-transform"
                     onPress={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
                     aria-label="Cambiar tema"

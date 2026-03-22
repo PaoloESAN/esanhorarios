@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Switch } from "@heroui/switch";
-import { Checkbox, CheckboxGroup } from "@heroui/checkbox";
-import { Slider } from "@heroui/slider";
-import { Button, ButtonGroup } from "@heroui/button";
+import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
 import PaletaSelector from "@/components/ui/PaletaSelector";
@@ -220,11 +217,10 @@ function ConfigDrawer({
                             <h4 className="text-sm font-semibold text-foreground-700 mb-2">
                                 Alineación del texto
                             </h4>
-                            <ButtonGroup size="sm" variant="flat" className="w-full">
+                            <ButtonGroup size="sm" variant="tertiary" className="w-full">
                                 <Button
                                     className="flex-1"
-                                    color={config.alineacion === 'left' ? 'primary' : 'default'}
-                                    variant={config.alineacion === 'left' ? 'solid' : 'flat'}
+                                    variant={config.alineacion === 'left' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'left' })}
                                     startContent={<AlignLeftIcon />}
                                 >
@@ -232,8 +228,7 @@ function ConfigDrawer({
                                 </Button>
                                 <Button
                                     className="flex-1"
-                                    color={config.alineacion === 'center' ? 'primary' : 'default'}
-                                    variant={config.alineacion === 'center' ? 'solid' : 'flat'}
+                                    variant={config.alineacion === 'center' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'center' })}
                                     startContent={<AlignCenterIcon />}
                                 >
@@ -241,8 +236,7 @@ function ConfigDrawer({
                                 </Button>
                                 <Button
                                     className="flex-1"
-                                    color={config.alineacion === 'right' ? 'primary' : 'default'}
-                                    variant={config.alineacion === 'right' ? 'solid' : 'flat'}
+                                    variant={config.alineacion === 'right' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'right' })}
                                     startContent={<AlignRightIcon />}
                                 >
@@ -369,8 +363,7 @@ function ConfigDrawer({
                 {/* Footer */}
                 <footer className="px-4 py-3 border-t border-divider flex justify-end shrink-0">
                     <Button
-                        color="primary"
-                        variant="flat"
+                        variant="tertiary"
                         onPress={onClose}
                     >
                         Cerrar

@@ -1,9 +1,7 @@
-import { Button } from '@heroui/button';
-import { Tabs, Tab } from '@heroui/tabs';
+import { Button, Tabs, Tab, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
 import {
     Trash2, Share2, BadgeCheck, Brush,
 } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
 
 function ContadorCreditos({ total }) {
     return (
@@ -37,7 +35,7 @@ function SelectorHorarios({ activo, onChange }) {
 
 function BotonLimpiar({ onLimpiarActual }) {
     return (
-        <Button onPress={onLimpiarActual} color="danger" variant="flat" aria-label='limpiar actual' startContent={<Trash2 size={18} />} className="px-4">
+        <Button onPress={onLimpiarActual} variant="danger-soft" aria-label='limpiar actual' startContent={<Trash2 size={18} />} className="px-4">
             Limpiar
         </Button>
     );
@@ -68,9 +66,8 @@ function EncabezadoHorario({
                 <div className="flex w-full gap-3">
                     <Button
                         onPress={abrirConfigDrawer}
-                        color="warning"
                         size="sm"
-                        variant="flat"
+                        variant="tertiary"
                         startContent={<Brush size={18} />}
                         className="flex-1 border border-warning-200 shadow-sm"
                     >
@@ -78,9 +75,8 @@ function EncabezadoHorario({
                     </Button>
                     <Button
                         onPress={abrirShareModal}
-                        color="success"
                         size="sm"
-                        variant="flat"
+                        variant="tertiary"
                         startContent={<Share2 size={18} />}
                         className="flex-1 shadow-sm border border-success-200"
                     >
@@ -107,9 +103,8 @@ function EncabezadoHorario({
                     <div className="flex items-center gap-3 shrink-0">
                         <Button
                             onPress={abrirConfigDrawer}
-                            color="warning"
                             size="sm"
-                            variant="flat"
+                            variant="tertiary"
                             startContent={<Brush size={18} />}
                             className="px-6 border border-warning-200 shadow-sm"
                         >
@@ -117,9 +112,8 @@ function EncabezadoHorario({
                         </Button>
                         <Button
                             onPress={abrirShareModal}
-                            color="success"
                             size="sm"
-                            variant="flat"
+                            variant="tertiary"
                             startContent={<Share2 size={18} />}
                             className="px-6 shadow-sm border border-success-200 whitespace-nowrap min-w-fit"
                         >
