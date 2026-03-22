@@ -1,8 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Select, SelectItem, Modal, Input } from "@heroui/react";
+import { Button, Select, Label, ListBox, Modal, Input } from "@heroui/react";
 import { Plus, Trash2 } from 'lucide-react';
+
+function FormSelect({ label, placeholder, value, onChange, options }) {
+    return (
+        <Select
+            value={value}
+            onChange={(nextValue) => {
+                if (nextValue) onChange(nextValue);
+            }}
+            placeholder={placeholder}
+            isRequired
+        >
+            <Label>{label}</Label>
+            <Select.Trigger className="border border-divider shadow-sm">
+                <Select.Value />
+                <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+                <ListBox>
+                    {options.map((option) => (
+                        <ListBox.Item key={option.value} id={option.value} textValue={option.label}>
+                            {option.label}
+                            <ListBox.ItemIndicator />
+                        </ListBox.Item>
+                    ))}
+                </ListBox>
+            </Select.Popover>
+        </Select>
+    );
+}
 
 export default function ModalAgregarCurso({
     isOpen,
@@ -145,22 +174,16 @@ export default function ModalAgregarCurso({
                                         variant="bordered"
                                         isRequired
                                     />
-                                    <Select
+                                    <FormSelect
                                         label="Sección"
-                                        selectedKeys={[cursoPersonalizado.seccion]}
-                                        onSelectionChange={(keys) => {
-                                            const s = Array.from(keys)[0];
-                                            if (s) setCursoPersonalizado(prev => ({ ...prev, seccion: s }));
-                                        }}
-                                        variant="bordered"
+                                        value={cursoPersonalizado.seccion}
+                                        onChange={(value) => setCursoPersonalizado(prev => ({ ...prev, seccion: value }))}
                                         placeholder="Selecciona una sección"
-                                        isRequired
-                                    >
-                                        {Array.from({ length: 10 }, (_, i) => {
+                                        options={Array.from({ length: 10 }, (_, i) => {
                                             const seccion = `S-${String(i + 1).padStart(3, '0')}`;
-                                            return <SelectItem key={seccion} value={seccion}>{seccion}</SelectItem>;
+                                            return { value: seccion, label: seccion };
                                         })}
-                                    </Select>
+                                    />
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -179,22 +202,16 @@ export default function ModalAgregarCurso({
                                         onValueChange={(value) => setCursoPersonalizado(prev => ({ ...prev, aula: value }))}
                                         variant="bordered"
                                     />
-                                    <Select
+                                    <FormSelect
                                         label="Créditos"
-                                        selectedKeys={[cursoPersonalizado.creditos]}
-                                        onSelectionChange={(keys) => {
-                                            const c = Array.from(keys)[0];
-                                            if (c) setCursoPersonalizado(prev => ({ ...prev, creditos: c }));
-                                        }}
-                                        variant="bordered"
+                                        value={cursoPersonalizado.creditos}
+                                        onChange={(value) => setCursoPersonalizado(prev => ({ ...prev, creditos: value }))}
                                         placeholder="Selecciona créditos"
-                                        isRequired
-                                    >
-                                        {Array.from({ length: 5 }, (_, i) => {
+                                        options={Array.from({ length: 5 }, (_, i) => {
                                             const credito = String(i + 1);
-                                            return <SelectItem key={credito} value={credito}>{credito}</SelectItem>;
+                                            return { value: credito, label: credito };
                                         })}
-                                    </Select>
+                                    />
                                 </div>
 
                                 {/* Horarios */}
@@ -217,55 +234,28 @@ export default function ModalAgregarCurso({
                                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                                                     <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
                                                         <div className="flex-1 min-w-0">
-                                                            <Select
+                                                            <FormSelect
                                                                 label="Día"
-                                                                selectedKeys={[horario.dia]}
-                                                                onSelectionChange={(keys) => {
-                                                                    const d = Array.from(keys)[0];
-                                                                    if (d) actualizarHorarioPersonalizado(index, 'dia', d);
-                                                                }}
-                                                                size="sm"
-                                                                variant="bordered"
-                                                                disallowEmptySelection
-                                                            >
-                                                                {diasSemana.map((dia) => (
-                                                                    <SelectItem key={dia} value={dia}>{dia}</SelectItem>
-                                                                ))}
-                                                            </Select>
+                                                                value={horario.dia}
+                                                                onChange={(value) => actualizarHorarioPersonalizado(index, 'dia', value)}
+                                                                options={diasSemana.map((dia) => ({ value: dia, label: dia }))}
+                                                            />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <Select
+                                                            <FormSelect
                                                                 label="Hora Inicio"
-                                                                selectedKeys={[horario.horaInicio]}
-                                                                onSelectionChange={(keys) => {
-                                                                    const t = Array.from(keys)[0];
-                                                                    if (t) actualizarHorarioPersonalizado(index, 'horaInicio', t);
-                                                                }}
-                                                                size="sm"
-                                                                variant="bordered"
-                                                                disallowEmptySelection
-                                                            >
-                                                                {horasInicio.map((hora) => (
-                                                                    <SelectItem key={hora} value={hora}>{hora}</SelectItem>
-                                                                ))}
-                                                            </Select>
+                                                                value={horario.horaInicio}
+                                                                onChange={(value) => actualizarHorarioPersonalizado(index, 'horaInicio', value)}
+                                                                options={horasInicio.map((hora) => ({ value: hora, label: hora }))}
+                                                            />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <Select
+                                                            <FormSelect
                                                                 label="Hora Fin"
-                                                                selectedKeys={[horario.horaFin]}
-                                                                onSelectionChange={(keys) => {
-                                                                    const t = Array.from(keys)[0];
-                                                                    if (t) actualizarHorarioPersonalizado(index, 'horaFin', t);
-                                                                }}
-                                                                size="sm"
-                                                                variant="bordered"
-                                                                disallowEmptySelection
-                                                            >
-                                                                {horasFin.map((hora) => (
-                                                                    <SelectItem key={hora} value={hora}>{hora}</SelectItem>
-                                                                ))}
-                                                            </Select>
+                                                                value={horario.horaFin}
+                                                                onChange={(value) => actualizarHorarioPersonalizado(index, 'horaFin', value)}
+                                                                options={horasFin.map((hora) => ({ value: hora, label: hora }))}
+                                                            />
                                                         </div>
                                                     </div>
 

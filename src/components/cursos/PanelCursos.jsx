@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Button, Select, SelectItem, Chip } from '@heroui/react';
+import { Button, Select, Label, ListBox, Chip } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
@@ -52,21 +52,28 @@ function PanelCursos({
             {/* Selector de ciclo */}
             <div className="mb-4 md:mb-6">
                 <Select
-                    label="Seleccionar Ciclo"
-                    labelPlacement="outside"
-                    placeholder="Selecciona un ciclo"
-                    selectedKeys={[cicloSeleccionado]}
-                    onSelectionChange={(keys) => {
-                        const k = Array.from(keys)[0];
-                        if (k && k !== cicloSeleccionado) setCicloSeleccionado(k);
+                    value={cicloSeleccionado}
+                    onChange={(value) => {
+                        if (value && value !== cicloSeleccionado) setCicloSeleccionado(value);
                     }}
-                    size="sm"
-                    variant="bordered"
-                    disallowEmptySelection
+                    placeholder="Selecciona un ciclo"
+                    className="w-full"
                 >
-                    {Object.keys(cursosPorCiclo).map((ciclo) => (
-                        <SelectItem key={ciclo} value={ciclo}>{ciclo}</SelectItem>
-                    ))}
+                    <Label>Seleccionar Ciclo</Label>
+                    <Select.Trigger className="border border-divider shadow-sm">
+                        <Select.Value />
+                        <Select.Indicator />
+                    </Select.Trigger>
+                    <Select.Popover>
+                        <ListBox>
+                            {Object.keys(cursosPorCiclo).map((ciclo) => (
+                                <ListBox.Item key={ciclo} id={ciclo} textValue={ciclo}>
+                                    {ciclo}
+                                    <ListBox.ItemIndicator />
+                                </ListBox.Item>
+                            ))}
+                        </ListBox>
+                    </Select.Popover>
                 </Select>
             </div>
 

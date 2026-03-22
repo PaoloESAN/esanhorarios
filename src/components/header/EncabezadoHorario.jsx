@@ -1,22 +1,22 @@
-import { Button, Tabs, Tab, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
+import { Button, Tabs, Popover } from '@heroui/react';
 import {
     Trash2, Share2, BadgeCheck, Brush,
 } from 'lucide-react';
 
 function ContadorCreditos({ total }) {
     return (
-        <Popover key={total} color='primary' placement='bottom'>
-            <PopoverTrigger>
+        <Popover key={total}>
+            <Popover.Trigger>
                 <div className="flex items-center gap-2 bg-primary-50 px-3 md:px-4 py-2 rounded-lg border border-primary-200 shadow-sm cursor-pointer">
                     <BadgeCheck size={18} className="text-primary" />
                     <span className="text-sm font-semibold text-primary">Créditos: {total}</span>
                 </div>
-            </PopoverTrigger>
-            <PopoverContent>
-                <div className="px-1 py-2">
-                    <div className="text-small font-bold">Los créditos maximos son 24</div>
-                </div>
-            </PopoverContent>
+            </Popover.Trigger>
+            <Popover.Content placement='bottom'>
+                <Popover.Dialog className="px-1 py-2">
+                    <Popover.Heading className="text-small font-bold">Los créditos maximos son 24</Popover.Heading>
+                </Popover.Dialog>
+            </Popover.Content>
         </Popover>
     );
 }
@@ -25,10 +25,25 @@ function SelectorHorarios({ activo, onChange }) {
     return (
         <Tabs
             selectedKey={activo.toString()}
-            onSelectionChange={(k) => onChange(parseInt(k))}
-            aria-label="Opciones de horarios"
+            onSelectionChange={(k) => onChange(parseInt(String(k), 10))}
         >
-            {[1, 2, 3, 4, 5].map(n => <Tab key={n.toString()} title={n.toString()} />)}
+            <Tabs.ListContainer>
+                <Tabs.List aria-label="Opciones de horarios">
+                    {[1, 2, 3, 4, 5].map((n) => {
+                        const id = n.toString();
+                        return (
+                            <Tabs.Tab key={id} id={id}>
+                                {id}
+                                <Tabs.Indicator />
+                            </Tabs.Tab>
+                        );
+                    })}
+                </Tabs.List>
+            </Tabs.ListContainer>
+            {[1, 2, 3, 4, 5].map((n) => {
+                const id = n.toString();
+                return <Tabs.Panel key={`panel-${id}`} id={id} />;
+            })}
         </Tabs>
     );
 }
