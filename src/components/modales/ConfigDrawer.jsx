@@ -19,7 +19,7 @@ const CAMPOS_LABELS = {
 /* ── Accordion ligero con CSS ── */
 function LightAccordion({ icon, title, subtitle, isOpen, onToggle, children }) {
     return (
-        <div className="rounded-xl bg-content2 overflow-hidden shrink-0">
+        <div className="rounded-xl bg-surface-secondary overflow-hidden shrink-0">
             <button
                 type="button"
                 className="w-full flex items-center gap-2 px-4 py-3 text-left cursor-pointer"
@@ -135,12 +135,12 @@ function ConfigDrawer({
             >
                 {/* Header */}
                 <header className="flex items-center gap-2 px-4 py-3 border-b border-divider shrink-0">
-                    <Brush size={18} className="text-primary" />
+                    <Brush size={18} className="text-accent" />
                     <span className="font-semibold text-base flex-1">Personalización del Horario</span>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="p-1 rounded-lg hover:bg-content2 transition-colors cursor-pointer"
+                        className="p-1 rounded-lg hover:bg-surface-secondary transition-colors cursor-pointer"
                         aria-label="Cerrar"
                     >
                         <X size={18} className="text-foreground-400" />
@@ -152,7 +152,7 @@ function ConfigDrawer({
 
                     {/* ═══ GRUPO 1 — Apariencia ═══ */}
                     <LightAccordion
-                        icon={<Palette size={18} className="text-primary" />}
+                        icon={<Palette size={18} className="text-accent" />}
                         title="Apariencia"
                         isOpen={panelAbierto === 'apariencia'}
                         onToggle={() => togglePanel('apariencia')}
@@ -193,27 +193,27 @@ function ConfigDrawer({
 
                         {/* Tamaño de letra */}
                         <section>
-                            <h4 className="text-sm font-semibold text-foreground-700 mb-2">
-                                Tamaño de letra en celdas
-                            </h4>
                             <Slider
                                 aria-label="Tamaño de letra"
                                 step={1}
                                 minValue={10}
                                 maxValue={18}
                                 value={config.tamanoLetra}
-                                onChange={(v) => actualizarConfig({ tamanoLetra: v })}
+                                onChange={(v) => {
+                                    const nextValue = Array.isArray(v) ? v[0] : v;
+                                    actualizarConfig({ tamanoLetra: nextValue });
+                                }}
                                 className="max-w-full"
-                                size="sm"
-                                showSteps
-                                marks={[
-                                    { value: 10, label: "10px" },
-                                    { value: 12, label: "12" },
-                                    { value: 14, label: "14" },
-                                    { value: 16, label: "16" },
-                                    { value: 18, label: "18px" },
-                                ]}
-                            />
+                            >
+                                <div className="mb-2 flex items-center justify-between gap-2">
+                                    <Label className="text-sm font-semibold text-foreground-700">Tamaño de letra en celdas</Label>
+                                    <Slider.Output className="text-xs text-foreground-500" />
+                                </div>
+                                <Slider.Track>
+                                    <Slider.Fill />
+                                    <Slider.Thumb />
+                                </Slider.Track>
+                            </Slider>
                         </section>
 
                         <Divider />
@@ -228,24 +228,24 @@ function ConfigDrawer({
                                     className="flex-1"
                                     variant={config.alineacion === 'left' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'left' })}
-                                    startContent={<AlignLeftIcon />}
                                 >
+                                    <AlignLeftIcon />
                                     Izquierda
                                 </Button>
                                 <Button
                                     className="flex-1"
                                     variant={config.alineacion === 'center' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'center' })}
-                                    startContent={<AlignCenterIcon />}
                                 >
+                                    <AlignCenterIcon />
                                     Centro
                                 </Button>
                                 <Button
                                     className="flex-1"
                                     variant={config.alineacion === 'right' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'right' })}
-                                    startContent={<AlignRightIcon />}
                                 >
+                                    <AlignRightIcon />
                                     Derecha
                                 </Button>
                             </ButtonGroup>
