@@ -6,12 +6,10 @@ import {
 function ContadorCreditos({ total }) {
     return (
         <Popover key={total}>
-            <Popover.Trigger>
-                <div className="h-10 flex items-center gap-2 bg-accent-soft px-3 md:px-4 py-2 rounded-lg border border-accent shadow-sm cursor-pointer">
-                    <BadgeCheck size={18} className="text-accent" />
-                    <span className="text-sm font-semibold text-accent">Créditos: {total}</span>
-                </div>
-            </Popover.Trigger>
+            <Button variant="tertiary" className="h-10 flex items-center gap-2 bg-accent-soft px-3 md:px-4 py-2 rounded-lg border border-accent shadow-sm">
+                <BadgeCheck size={18} className="text-accent" />
+                <span className="text-sm font-semibold text-accent">Créditos: {total}</span>
+            </Button>
             <Popover.Content placement='bottom'>
                 <Popover.Dialog className="px-1 py-2">
                     <Popover.Heading className="text-small font-bold">Los créditos maximos son 24</Popover.Heading>
