@@ -61,6 +61,9 @@ export default function ChifaPromo() {
 
             {/* ═══ MODAL 1 — ¿Estás seguro? ═══ */}
             <Modal>
+                <Modal.Trigger className="sr-only">
+                    <span />
+                </Modal.Trigger>
                 <Modal.Backdrop isOpen={paso === 1} onOpenChange={(open) => !open && cerrar()}>
                     <Modal.Container size="md" placement="center">
                         <Modal.Dialog>
@@ -91,6 +94,9 @@ export default function ChifaPromo() {
 
             {/* ═══ MODAL 2 — ¿De verdad estás seguro? ═══ */}
             <Modal>
+                <Modal.Trigger className="sr-only">
+                    <span />
+                </Modal.Trigger>
                 <Modal.Backdrop isOpen={paso === 2} onOpenChange={(open) => !open && cerrar()}>
                     <Modal.Container size="md" placement="center">
                         <Modal.Dialog>
@@ -121,6 +127,9 @@ export default function ChifaPromo() {
 
             {/* ═══ MODAL 3 — Pantalla de selección de chaufa ═══ */}
             <Modal>
+                <Modal.Trigger className="sr-only">
+                    <span />
+                </Modal.Trigger>
                 <Modal.Backdrop
                     isOpen={paso === 3}
                     onOpenChange={(open) => !open && cerrar()}

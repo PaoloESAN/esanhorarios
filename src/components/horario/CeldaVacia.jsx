@@ -16,15 +16,14 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
         <div className={`h-full ${bgClass} transition-colors rounded border-2 border-dashed border-transparent hover:border-accent relative`}>
             {nota ? (
                 <Dropdown>
-                    <Dropdown.Trigger>
-                        <div
-                            className="w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0"
-                            style={{ backgroundColor: nota.color, color: nota.textColor ?? '#111827' }}
-                            title={nota.texto}
-                        >
-                            <div className="text-xs md:text-sm leading-tight px-2 w-full max-w-full whitespace-normal break-words text-center">
-                                {nota.texto}
-                            </div>
+                    <Dropdown.Trigger
+                        variant="light"
+                        className="w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0"
+                        style={{ backgroundColor: nota.color, color: nota.textColor ?? '#111827' }}
+                        title={nota.texto}
+                    >
+                        <div className="text-xs md:text-sm leading-tight px-2 w-full max-w-full whitespace-normal break-words text-center">
+                            {nota.texto}
                         </div>
                     </Dropdown.Trigger>
                     <Dropdown.Popover>
@@ -40,12 +39,12 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                 </Dropdown>
             ) : (
                 <Dropdown>
-                    <Dropdown.Trigger>
-                        <div
-                            className="absolute inset-0 cursor-pointer"
-                            title="Click para agregar texto"
-                        />
-                    </Dropdown.Trigger>
+                    <Dropdown.Trigger
+                        variant="light"
+                        className="absolute inset-0 min-w-0 h-full p-0 cursor-pointer"
+                        title="Click para agregar texto"
+                        aria-label="Agregar nota"
+                    />
                     <Dropdown.Popover>
                         <Dropdown.Menu aria-label="Opciones de celda vacía">
                             <Dropdown.Item id="agregar" textValue="Agregar nota" onPress={onAbrirNota}>

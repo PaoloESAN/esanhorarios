@@ -72,6 +72,9 @@ function ModalNota({
 
     return (
         <Modal key={`modal-${instanceKey || "nota"}`}>
+            <Modal.Trigger className="sr-only">
+                <span />
+            </Modal.Trigger>
             <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
                 <Modal.Container size="md" placement="center">
                     <Modal.Dialog>

@@ -181,6 +181,9 @@ export default function ModalAgregarCurso({
 
     return (
         <Modal>
+            <Modal.Trigger className="sr-only">
+                <span />
+            </Modal.Trigger>
             <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
                 <Modal.Container size="lg" placement="center" scroll="inside">
                     <Modal.Dialog>

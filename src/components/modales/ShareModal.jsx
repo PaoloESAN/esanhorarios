@@ -121,6 +121,9 @@ export default function ShareModal({
     const { config } = useConfigHorario();
     return (
         <Modal>
+            <Modal.Trigger className="sr-only">
+                <span />
+            </Modal.Trigger>
             <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
                 <Modal.Container size="lg" placement="center">
                     <Modal.Dialog>

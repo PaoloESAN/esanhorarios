@@ -4,6 +4,9 @@ import { TriangleAlert } from 'lucide-react';
 export default function ConflictModal({ isOpen, onClose, conflictoInfo }) {
     return (
         <Modal>
+            <Modal.Trigger className="sr-only">
+                <span />
+            </Modal.Trigger>
             <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
                 <Modal.Container size="md" placement="center">
                     <Modal.Dialog>
