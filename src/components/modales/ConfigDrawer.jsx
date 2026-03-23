@@ -28,7 +28,7 @@ function LightAccordion({ icon, title, subtitle, isOpen, onToggle, children }) {
                 {icon}
                 <div className="flex-1 min-w-0">
                     <span className="text-sm font-semibold block">{title}</span>
-                    {subtitle && <span className="text-xs text-foreground-400 block">{subtitle}</span>}
+                    {subtitle && <span className="text-xs text-muted block">{subtitle}</span>}
                 </div>
                 <ChevronDown
                     size={16}
