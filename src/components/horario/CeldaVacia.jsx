@@ -15,7 +15,7 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
     return (
         <div className={`h-full ${bgClass} transition-colors rounded border-2 border-dashed border-transparent hover:border-accent relative`}>
             {nota ? (
-                <Dropdown>
+                <Dropdown key="celda-con-nota">
                     <Dropdown.Trigger
                         variant="light"
                         className="w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0"
@@ -27,18 +27,18 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                         </div>
                     </Dropdown.Trigger>
                     <Dropdown.Popover>
-                        <Dropdown.Menu aria-label="Opciones de nota">
-                            <Dropdown.Item id="editar" textValue="Editar texto" onPress={onEditarNota}>
+                        <Dropdown.Menu key="menu-con-nota" aria-label="Opciones de nota">
+                            <Dropdown.Item key="editar" id="editar" textValue="Editar texto" onPress={onEditarNota}>
                                 <Label>Editar texto</Label>
                             </Dropdown.Item>
-                            <Dropdown.Item id="quitar" textValue="Quitar texto" variant="danger" onPress={onQuitarNota}>
+                            <Dropdown.Item key="quitar" id="quitar" textValue="Quitar texto" variant="danger" onPress={onQuitarNota}>
                                 <Label>Quitar texto</Label>
                             </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown.Popover>
                 </Dropdown>
             ) : (
-                <Dropdown>
+                <Dropdown key="celda-sin-nota">
                     <Dropdown.Trigger
                         variant="light"
                         className="absolute inset-0 min-w-0 h-full p-0 cursor-pointer"
@@ -46,8 +46,8 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                         aria-label="Agregar nota"
                     />
                     <Dropdown.Popover>
-                        <Dropdown.Menu aria-label="Opciones de celda vacía">
-                            <Dropdown.Item id="agregar" textValue="Agregar nota" onPress={onAbrirNota}>
+                        <Dropdown.Menu key="menu-sin-nota" aria-label="Opciones de celda vacía">
+                            <Dropdown.Item key="agregar" id="agregar" textValue="Agregar nota" onPress={onAbrirNota}>
                                 <Label>Agregar nota</Label>
                             </Dropdown.Item>
                         </Dropdown.Menu>
