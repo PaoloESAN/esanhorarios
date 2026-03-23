@@ -10,9 +10,15 @@ function ContadorCreditos({ total }) {
                 <BadgeCheck size={18} className="text-accent" />
                 <span className="text-sm font-semibold text-accent">Créditos: {total}</span>
             </Button>
-            <Popover.Content placement='bottom'>
-                <Popover.Dialog className="px-1 py-2">
-                    <Popover.Heading className="text-small font-bold">Los créditos maximos son 24</Popover.Heading>
+            <Popover.Content
+                placement="bottom"
+                offset={10}
+                className="rounded-xl border border-divider bg-content1 shadow-lg"
+            >
+                <Popover.Dialog className="px-3 py-2.5 max-w-[240px]">
+                    <Popover.Heading className="text-sm font-semibold text-foreground leading-snug text-center">
+                        Los créditos máximos son 24
+                    </Popover.Heading>
                 </Popover.Dialog>
             </Popover.Content>
         </Popover>
