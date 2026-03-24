@@ -148,11 +148,11 @@ export default function ShareModal({
                         </Modal.Body>
                         <Modal.Footer>
                             <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center">
-                                <Button className="w-full sm:w-auto" variant="tertiary" onPress={onClose}>Cerrar</Button>
+                                <Button className="w-full sm:w-auto" variant="danger-soft" onPress={onClose}>Cerrar</Button>
                                 <div className="flex w-full sm:w-auto gap-2 sm:ml-auto flex-wrap">
                                     <Button
                                         className="w-full sm:w-auto"
-                                        variant="tertiary"
+                                        variant="secondary"
                                         onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
                                         isDisabled={!dataUrl}
                                     >
@@ -162,7 +162,7 @@ export default function ShareModal({
                                     <div className="flex gap-2 w-full sm:w-auto">
                                         <Button
                                             className="w-full sm:w-auto"
-                                            variant="tertiary"
+                                            variant="secondary"
                                             onPress={onCopy}
                                             isDisabled={!dataUrl}
                                         >
@@ -171,7 +171,7 @@ export default function ShareModal({
                                         </Button>
                                         <Button
                                             className="w-full sm:w-auto"
-                                            variant="tertiary"
+                                            variant="secondary"
                                             onPress={onDownload}
                                             isDisabled={!dataUrl}
                                         >
