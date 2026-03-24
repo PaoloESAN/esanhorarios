@@ -16,7 +16,7 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
                 curso, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
             })}
             className={`p-2 border rounded transition-colors ${estaSeleccionado
-                ? 'bg-surface-secondary border-divider cursor-pointer hover:bg-overlay'
+                ? 'bg-surface border-divider cursor-pointer hover:bg-overlay'
                 : 'bg-accent-soft border-accent cursor-move hover:bg-accent-soft'
                 }`}
         >
