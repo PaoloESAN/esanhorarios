@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardBody, Button } from "@heroui/react";
+import { Card, Button } from "@heroui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, Lock, X } from "lucide-react";
 import { COLUMNAS } from "./data";
@@ -24,23 +24,27 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                             return (
                                 <Card
                                     key={col.facultad}
-                                    isPressable
-                                    onPress={() => setExpandedFacultad(col.facultad)}
                                     className="aspect-square border-none shadow-md hover:shadow-lg hover:-translate-y-1 active:scale-95 transition-all duration-300 relative overflow-hidden"
                                     style={{ backgroundColor: col.color }}
                                 >
-                                    <CardBody className="flex flex-col items-center justify-center gap-3 md:gap-4 p-4 text-white relative z-10 w-full h-full overflow-hidden">
-                                        <div
-                                            className="w-14 h-14 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-2xl md:rounded-3xl flex items-center justify-center border border-white/10 bg-white/10 shrink-0"
-                                        >
-                                            <img src={col.icon} alt={col.facultad} className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain drop-shadow-md" />
-                                        </div>
-                                        <h2
-                                            className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-center leading-tight px-1 w-full break-words"
-                                        >
-                                            {col.facultad}
-                                        </h2>
-                                    </CardBody>
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedFacultad(col.facultad)}
+                                        className="w-full h-full text-left"
+                                    >
+                                        <Card.Content className="flex flex-col items-center justify-center gap-3 md:gap-4 p-4 text-white relative z-10 w-full h-full overflow-hidden">
+                                            <div
+                                                className="w-14 h-14 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-2xl md:rounded-3xl flex items-center justify-center border border-white/10 bg-white/10 shrink-0"
+                                            >
+                                                <img src={col.icon} alt={col.facultad} className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain drop-shadow-md" />
+                                            </div>
+                                            <h2
+                                                className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-center leading-tight px-1 w-full break-words"
+                                            >
+                                                {col.facultad}
+                                            </h2>
+                                        </Card.Content>
+                                    </button>
                                 </Card>
                             );
                         })}
@@ -77,7 +81,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                 <Button
                                     isIconOnly
                                     size="sm"
-                                    variant="flat"
+                                    variant="tertiary"
                                     className="bg-black/50 hover:bg-black/70 text-white shadow-sm transition-colors"
                                     onPress={() => setExpandedFacultad(null)}
                                     aria-label="Volver"
@@ -97,18 +101,14 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ duration: 0.12, delay: idx * 0.03 }}
                                             >
-                                                <Button
-                                                    variant="flat"
-                                                    as={Link}
+                                                <Link
                                                     href={`/${carrera.slug}`}
-                                                    className="justify-between h-auto py-4 md:py-5 px-5 text-white text-sm md:text-base font-bold w-full rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-                                                    style={{
-                                                        backgroundColor: col.color,
-                                                    }}
+                                                    className="flex items-center justify-between h-auto py-4 md:py-5 px-5 text-white text-sm md:text-base font-bold w-full rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                                                    style={{ backgroundColor: col.color }}
                                                 >
                                                     <span className="truncate">{carrera.nombre}</span>
                                                     <ChevronRight size={18} className="shrink-0 ml-2 opacity-80" />
-                                                </Button>
+                                                </Link>
                                             </motion.div>
                                         );
                                     }

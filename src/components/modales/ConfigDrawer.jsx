@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Switch } from "@heroui/switch";
-import { Checkbox, CheckboxGroup } from "@heroui/checkbox";
-import { Slider } from "@heroui/slider";
-import { Button, ButtonGroup } from "@heroui/button";
+import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
 import PaletaSelector from "@/components/ui/PaletaSelector";
@@ -22,7 +19,7 @@ const CAMPOS_LABELS = {
 /* ── Accordion ligero con CSS ── */
 function LightAccordion({ icon, title, subtitle, isOpen, onToggle, children }) {
     return (
-        <div className="rounded-xl bg-content2 overflow-hidden shrink-0">
+        <div className="rounded-xl bg-surface-secondary overflow-hidden shrink-0">
             <button
                 type="button"
                 className="w-full flex items-center gap-2 px-4 py-3 text-left cursor-pointer"
@@ -31,7 +28,7 @@ function LightAccordion({ icon, title, subtitle, isOpen, onToggle, children }) {
                 {icon}
                 <div className="flex-1 min-w-0">
                     <span className="text-sm font-semibold block">{title}</span>
-                    {subtitle && <span className="text-xs text-foreground-400 block">{subtitle}</span>}
+                    {subtitle && <span className="text-xs text-muted block">{subtitle}</span>}
                 </div>
                 <ChevronDown
                     size={16}
@@ -138,12 +135,12 @@ function ConfigDrawer({
             >
                 {/* Header */}
                 <header className="flex items-center gap-2 px-4 py-3 border-b border-divider shrink-0">
-                    <Brush size={18} className="text-primary" />
+                    <Brush size={18} className="text-accent" />
                     <span className="font-semibold text-base flex-1">Personalización del Horario</span>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="p-1 rounded-lg hover:bg-content2 transition-colors cursor-pointer"
+                        className="p-1 rounded-lg hover:bg-surface-secondary transition-colors cursor-pointer"
                         aria-label="Cerrar"
                     >
                         <X size={18} className="text-foreground-400" />
@@ -155,7 +152,7 @@ function ConfigDrawer({
 
                     {/* ═══ GRUPO 1 — Apariencia ═══ */}
                     <LightAccordion
-                        icon={<Palette size={18} className="text-primary" />}
+                        icon={<Palette size={18} className="text-accent" />}
                         title="Apariencia"
                         isOpen={panelAbierto === 'apariencia'}
                         onToggle={() => togglePanel('apariencia')}
@@ -163,12 +160,25 @@ function ConfigDrawer({
                         {/* Modo claro / oscuro */}
                         <Switch
                             isSelected={esDark}
-                            onValueChange={(v) => setTheme(v ? 'dark' : 'light')}
-                            size="sm"
-                            startContent={<Moon size={14} />}
-                            endContent={<Sun size={14} />}
+                            onChange={(v) => setTheme(v ? 'dark' : 'light')}
+                            size="md"
                         >
-                            <span className="text-sm">{esDark ? "Modo oscuro" : "Modo claro"}</span>
+                            <Switch.Control>
+                                <Switch.Thumb >
+                                    <Switch.Icon>
+                                        {esDark ? (
+                                            <Moon size={14} />
+                                        ) : (
+                                            <Sun size={14} />
+                                        )}
+                                    </Switch.Icon>
+                                </Switch.Thumb>
+                            </Switch.Control>
+                            <Switch.Content>
+                                <Label className="text-sm flex items-center gap-2">
+                                    {esDark ? "Modo oscuro" : "Modo claro"}
+                                </Label>
+                            </Switch.Content>
                         </Switch>
 
                         <Divider />
@@ -190,27 +200,27 @@ function ConfigDrawer({
 
                         {/* Tamaño de letra */}
                         <section>
-                            <h4 className="text-sm font-semibold text-foreground-700 mb-2">
-                                Tamaño de letra en celdas
-                            </h4>
                             <Slider
                                 aria-label="Tamaño de letra"
                                 step={1}
                                 minValue={10}
                                 maxValue={18}
                                 value={config.tamanoLetra}
-                                onChange={(v) => actualizarConfig({ tamanoLetra: v })}
+                                onChange={(v) => {
+                                    const nextValue = Array.isArray(v) ? v[0] : v;
+                                    actualizarConfig({ tamanoLetra: nextValue });
+                                }}
                                 className="max-w-full"
-                                size="sm"
-                                showSteps
-                                marks={[
-                                    { value: 10, label: "10px" },
-                                    { value: 12, label: "12" },
-                                    { value: 14, label: "14" },
-                                    { value: 16, label: "16" },
-                                    { value: 18, label: "18px" },
-                                ]}
-                            />
+                            >
+                                <div className="mb-2 flex items-center justify-between gap-2">
+                                    <Label className="text-sm font-semibold text-foreground-700">Tamaño de letra en celdas</Label>
+                                    <Slider.Output className="text-xs text-foreground-500" />
+                                </div>
+                                <Slider.Track>
+                                    <Slider.Fill />
+                                    <Slider.Thumb />
+                                </Slider.Track>
+                            </Slider>
                         </section>
 
                         <Divider />
@@ -220,32 +230,29 @@ function ConfigDrawer({
                             <h4 className="text-sm font-semibold text-foreground-700 mb-2">
                                 Alineación del texto
                             </h4>
-                            <ButtonGroup size="sm" variant="flat" className="w-full">
+                            <ButtonGroup size="sm" className="w-full">
                                 <Button
                                     className="flex-1"
-                                    color={config.alineacion === 'left' ? 'primary' : 'default'}
-                                    variant={config.alineacion === 'left' ? 'solid' : 'flat'}
+                                    variant={config.alineacion === 'left' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'left' })}
-                                    startContent={<AlignLeftIcon />}
                                 >
+                                    <AlignLeftIcon />
                                     Izquierda
                                 </Button>
                                 <Button
                                     className="flex-1"
-                                    color={config.alineacion === 'center' ? 'primary' : 'default'}
-                                    variant={config.alineacion === 'center' ? 'solid' : 'flat'}
+                                    variant={config.alineacion === 'center' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'center' })}
-                                    startContent={<AlignCenterIcon />}
                                 >
+                                    <AlignCenterIcon />
                                     Centro
                                 </Button>
                                 <Button
                                     className="flex-1"
-                                    color={config.alineacion === 'right' ? 'primary' : 'default'}
-                                    variant={config.alineacion === 'right' ? 'solid' : 'flat'}
+                                    variant={config.alineacion === 'right' ? 'primary' : 'tertiary'}
                                     onPress={() => actualizarConfig({ alineacion: 'right' })}
-                                    startContent={<AlignRightIcon />}
                                 >
+                                    <AlignRightIcon />
                                     Derecha
                                 </Button>
                             </ButtonGroup>
@@ -256,10 +263,15 @@ function ConfigDrawer({
                         {/* Ocultar filas vacías */}
                         <Switch
                             isSelected={config.ocultarFilasVacias}
-                            onValueChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
-                            size="sm"
+                            onChange={(v) => actualizarConfig({ ocultarFilasVacias: v })}
+                            size="md"
                         >
-                            <span className="text-sm">Ocultar filas vacías al final</span>
+                            <Switch.Control>
+                                <Switch.Thumb />
+                            </Switch.Control>
+                            <Switch.Content>
+                                <Label className="text-sm">Ocultar filas vacías al final</Label>
+                            </Switch.Content>
                         </Switch>
 
                         {/* ═══ Fondos de Chaufa (ocultos hasta desbloqueo) ═══ */}
@@ -273,32 +285,40 @@ function ConfigDrawer({
                                     <div className='flex flex-row gap-3'>
                                         {config.chijaukayDesbloqueado && (
                                             <Switch
-                                                color='warning'
                                                 isSelected={config.fondoChiJauKay}
-                                                onValueChange={(v) =>
+                                                onChange={(v) =>
                                                     actualizarConfig({
                                                         fondoChiJauKay: v,
                                                         ...(v ? { fondoTiPaKay: false } : {}),
                                                     })
                                                 }
-                                                size="sm"
+                                                size="md"
                                             >
-                                                <span className="text-sm">Chi Jau Kay</span>
+                                                <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
+                                                    <Switch.Thumb />
+                                                </Switch.Control>
+                                                <Switch.Content>
+                                                    <Label className="text-sm">Chi Jau Kay</Label>
+                                                </Switch.Content>
                                             </Switch>
                                         )}
                                         {config.tipakayDesbloqueado && (
                                             <Switch
-                                                color='warning'
                                                 isSelected={config.fondoTiPaKay}
-                                                onValueChange={(v) =>
+                                                onChange={(v) =>
                                                     actualizarConfig({
                                                         fondoTiPaKay: v,
                                                         ...(v ? { fondoChiJauKay: false } : {}),
                                                     })
                                                 }
-                                                size="sm"
+                                                size="md"
                                             >
-                                                <span className="text-sm">Ti Pa Kay</span>
+                                                <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
+                                                    <Switch.Thumb />
+                                                </Switch.Control>
+                                                <Switch.Content>
+                                                    <Label className="text-sm">Ti Pa Kay</Label>
+                                                </Switch.Content>
                                             </Switch>
                                         )}
                                     </div>
@@ -316,17 +336,24 @@ function ConfigDrawer({
                         onToggle={() => togglePanel('campos')}
                     >
                         <CheckboxGroup
+                            name="campos-visibles"
                             value={camposActivos}
-                            onValueChange={handleCamposChange}
+                            onChange={handleCamposChange}
                             size="sm"
                         >
+                            <Label>Selecciona los campos visibles</Label>
                             {Object.entries(CAMPOS_LABELS).map(([key, label]) => (
                                 <Checkbox
                                     key={key}
                                     value={key}
                                     isDisabled={camposActivos.length === 1 && camposActivos[0] === key}
                                 >
-                                    {label}
+                                    <Checkbox.Control>
+                                        <Checkbox.Indicator />
+                                    </Checkbox.Control>
+                                    <Checkbox.Content>
+                                        <Label>{label}</Label>
+                                    </Checkbox.Content>
                                 </Checkbox>
                             ))}
                         </CheckboxGroup>
@@ -342,10 +369,15 @@ function ConfigDrawer({
                         <div>
                             <Switch
                                 isSelected={config.nombreCortoProfesor}
-                                onValueChange={(v) => actualizarConfig({ nombreCortoProfesor: v })}
-                                size="sm"
+                                onChange={(v) => actualizarConfig({ nombreCortoProfesor: v })}
+                                size="md"
                             >
-                                <span className="text-sm">Solo primer apellido y nombre</span>
+                                <Switch.Control>
+                                    <Switch.Thumb />
+                                </Switch.Control>
+                                <Switch.Content>
+                                    <Label className="text-sm">Solo primer apellido y nombre</Label>
+                                </Switch.Content>
                             </Switch>
                             <p className="text-xs text-foreground-400 mt-1 ml-1">
                                 Ej.: &quot;Andrés Alfredo Lujan Carrión&quot; → &quot;Andrés Lujan&quot;
@@ -354,10 +386,15 @@ function ConfigDrawer({
                         <div>
                             <Switch
                                 isSelected={config.nombrePrimero}
-                                onValueChange={(v) => actualizarConfig({ nombrePrimero: v })}
-                                size="sm"
+                                onChange={(v) => actualizarConfig({ nombrePrimero: v })}
+                                size="md"
                             >
-                                <span className="text-sm">Nombre antes que apellido</span>
+                                <Switch.Control>
+                                    <Switch.Thumb />
+                                </Switch.Control>
+                                <Switch.Content>
+                                    <Label className="text-sm">Nombre antes que apellido</Label>
+                                </Switch.Content>
                             </Switch>
                             <p className="text-xs text-foreground-400 mt-1 ml-1">
                                 Ej.: &quot;Lujan Carrion Andrés&quot; → &quot;Andrés Lujan Carrion&quot;
@@ -369,8 +406,7 @@ function ConfigDrawer({
                 {/* Footer */}
                 <footer className="px-4 py-3 border-t border-divider flex justify-end shrink-0">
                     <Button
-                        color="primary"
-                        variant="flat"
+                        variant="tertiary"
                         onPress={onClose}
                     >
                         Cerrar

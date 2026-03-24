@@ -74,7 +74,7 @@ bun dev
 
 - **[Next.js 16](https://nextjs.org/)** - Framework de React con App Router
 - **[React 19.2](https://react.dev/)** - Biblioteca de interfaz de usuario
-- **[HeroUI v2](https://heroui.com/)** - Biblioteca de componentes UI moderna
+- **[HeroUI v3](https://heroui.com/)** - Biblioteca de componentes UI moderna
 - **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework de CSS utility-first
 - **[Framer Motion](https://www.framer.com/motion/)** - Biblioteca de animaciones
 - **[Lucide React](https://lucide.dev/)** - Biblioteca de íconos SVG

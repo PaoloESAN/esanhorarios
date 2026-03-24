@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { useDisclosure } from "@heroui/use-disclosure";
+import { useOverlayState } from "@heroui/react";
 import { useTheme } from "next-themes";
 
 import { CarreraProvider } from "./CarreraContext";
@@ -52,13 +52,13 @@ function HorarioAppInner() {
     const [mensajeModal, setMensajeModal] = useState('');
     const [celdaSeleccionada, setCeldaSeleccionada] = useState(null);
 
-    const conflictModal = useDisclosure();
-    const successModal = useDisclosure();
-    const errorModal = useDisclosure();
-    const addCourseModal = useDisclosure();
-    const shareModal = useDisclosure();
-    const noteModal = useDisclosure();
-    const configDrawer = useDisclosure();
+    const conflictModal = useOverlayState();
+    const successModal = useOverlayState();
+    const errorModal = useOverlayState();
+    const addCourseModal = useOverlayState();
+    const shareModal = useOverlayState();
+    const noteModal = useOverlayState();
+    const configDrawer = useOverlayState();
 
     const limpiarHorario = () => {
         horarios.limpiarHorarioActual();
@@ -73,8 +73,8 @@ function HorarioAppInner() {
     const excel = useExcel({
         limpiarHorarioActual: limpiarHorario,
         setMensajeModal,
-        onExito: successModal.onOpen,
-        onError: errorModal.onOpen,
+        onExito: successModal.open,
+        onError: errorModal.open,
     });
 
     const cursos = useCursos({
@@ -86,27 +86,27 @@ function HorarioAppInner() {
         setColoresAsignados: horarios.setColoresAsignados,
         coloresActuales: paleta.coloresActuales,
         obtenerHorariosPorCurso: excel.obtenerHorariosPorCurso,
-        onConflicto: conflictModal.onOpen,
-        onExito: successModal.onOpen,
+        onConflicto: conflictModal.open,
+        onExito: successModal.open,
         setMensajeModal,
     });
 
     const compartir = useCompartir({
         horarioActivo: horarios.horarioActivo,
         resolvedTheme,
-        onAbrirModal: shareModal.onOpen,
+        onAbrirModal: shareModal.open,
         setMensajeModal,
-        onExito: successModal.onOpen,
-        onError: errorModal.onOpen,
+        onExito: successModal.open,
+        onError: errorModal.open,
     });
 
     const abrirModalNota = (key) => {
         setCeldaSeleccionada(key);
-        noteModal.onOpen();
+        noteModal.open();
     };
 
     const guardarNota = (datos) => {
-        notas.guardarNota(celdaSeleccionada, datos, noteModal.onClose);
+        notas.guardarNota(celdaSeleccionada, datos, noteModal.close);
     };
 
     return (
@@ -123,16 +123,16 @@ function HorarioAppInner() {
                 {/* Layout principal */}
                 <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
                     {/* Tabla de horario */}
-                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-content1 rounded-lg shadow-md p-3 md:p-6">
+                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-surface rounded-lg shadow-md p-3 md:p-6">
                         <EncabezadoHorario
                             horarioActivo={horarios.horarioActivo}
                             creditosTotales={horarios.creditosTotales}
                             cambiarHorario={horarios.cambiarHorario}
                             limpiarHorario={limpiarHorario}
                             abrirShareModal={compartir.abrirShareModal}
-                            abrirConfigDrawer={configDrawer.onOpen}
+                            abrirConfigDrawer={configDrawer.open}
                         />
-                        <h3 className="text-sm md:text-base text-foreground-500 mb-3 md:mb-4">
+                        <h3 className="text-sm md:text-base text-muted mb-3 md:mb-4">
                             Pulsa en un espacio en blanco para agregar un texto al horario.
                         </h3>
                         <TablaHorario
@@ -161,7 +161,7 @@ function HorarioAppInner() {
                                 onAgregarCurso={cursos.agregarCursoAlHorario}
                                 onRemoverCurso={cursos.removerCursoPorId}
                                 onDragStart={cursos.handleDragStart}
-                                onAbrirModalCursoPersonalizado={addCourseModal.onOpen}
+                                onAbrirModalCursoPersonalizado={addCourseModal.open}
                                 onCargaArchivo={excel.manejarCargaArchivo}
                                 onCargaTalleres={excel.manejarCargaTalleres}
                                 cargandoTalleres={excel.cargandoTalleres}
@@ -184,22 +184,22 @@ function HorarioAppInner() {
 
                 <ConflictModal
                     isOpen={conflictModal.isOpen}
-                    onClose={conflictModal.onClose}
+                    onClose={conflictModal.close}
                     conflictoInfo={cursos.conflictoInfo}
                 />
                 <SuccessModal
                     isOpen={successModal.isOpen}
-                    onClose={successModal.onClose}
+                    onClose={successModal.close}
                     mensaje={mensajeModal}
                 />
                 <ErrorModal
                     isOpen={errorModal.isOpen}
-                    onClose={errorModal.onClose}
+                    onClose={errorModal.close}
                     mensaje={mensajeModal}
                 />
                 <ShareModal
                     isOpen={shareModal.isOpen}
-                    onClose={shareModal.onClose}
+                    onClose={shareModal.close}
                     dataUrl={compartir.shareDataUrl}
                     onCopy={compartir.copiarImagen}
                     onDownload={compartir.descargarImagen}
@@ -210,7 +210,7 @@ function HorarioAppInner() {
                 />
                 <ModalNota
                     isOpen={noteModal.isOpen}
-                    onClose={noteModal.onClose}
+                    onClose={noteModal.close}
                     onSave={guardarNota}
                     instanceKey={celdaSeleccionada}
                     textoDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.texto ?? '') : ''}
@@ -219,14 +219,14 @@ function HorarioAppInner() {
                 />
                 <ModalAgregarCurso
                     isOpen={addCourseModal.isOpen}
-                    onClose={addCourseModal.onClose}
+                    onClose={addCourseModal.close}
                     onAgregarCurso={cursos.manejarAgregarPersonalizado}
-                    onError={(msg) => { setMensajeModal(msg); errorModal.onOpen(); }}
+                    onError={(msg) => { setMensajeModal(msg); errorModal.open(); }}
                     diasSemana={diasSemana}
                 />
                 <ConfigDrawer
                     isOpen={configDrawer.isOpen}
-                    onClose={configDrawer.onClose}
+                    onClose={configDrawer.close}
                     paletaSeleccionada={paleta.paletaSeleccionada}
                     coloresActuales={paleta.coloresActuales}
                     cambiarPaleta={paleta.cambiarPaleta}

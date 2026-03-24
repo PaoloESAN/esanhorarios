@@ -1,58 +1,51 @@
 "use client";
 
-import { Select, SelectItem } from '@heroui/select';
+import { Select, Label, ListBox } from '@heroui/react';
 import { PALETAS_NOMBRES, PALETA_PREVIEW_COLORS } from '@/constants';
 
 const PALETAS = Object.entries(PALETAS_NOMBRES).map(([key, nombre]) => ({ key, nombre }));
 
 function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 'sm', className = '' }) {
-    const preview = PALETA_PREVIEW_COLORS[paletaSeleccionada] ?? PALETA_PREVIEW_COLORS.default;
 
-    const handleChange = (keys) => {
-        const selected = Array.from(keys)[0];
+    const handleChange = (selected) => {
         if (selected && selected !== paletaSeleccionada) onChange(selected);
     };
 
     return (
         <Select
             placeholder="Selecciona paleta"
-            selectedKeys={[paletaSeleccionada]}
-            onSelectionChange={handleChange}
+            value={paletaSeleccionada}
+            onChange={handleChange}
             aria-label="Selecciona paleta de colores"
-            size={size}
-            variant="bordered"
             className={className}
-            classNames={{
-                trigger: 'border border-divider shadow-sm',
-                listboxWrapper: 'max-h-60',
-            }}
-            disallowEmptySelection
-            renderValue={() => (
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                        {(coloresActuales?.slice(0, 3) ?? []).map((c, i) => (
-                            <div key={i} className={`w-3 h-3 rounded-full ${c.bg}`} />
-                        ))}
-                    </div>
-                    <span className="text-sm">{PALETAS_NOMBRES[paletaSeleccionada] ?? 'Selecciona paleta'}</span>
-                </div>
-            )}
         >
-            {PALETAS.map(({ key, nombre }) => {
-                const colors = PALETA_PREVIEW_COLORS[key];
-                return (
-                    <SelectItem key={key} value={key} textValue={key}>
-                        <div className="flex items-center gap-2">
-                            <div className="flex gap-1">
-                                {colors.map((bg, i) => (
-                                    <div key={i} className={`w-3 h-3 rounded-full ${bg}`} />
-                                ))}
-                            </div>
-                            <span>{nombre}</span>
-                        </div>
-                    </SelectItem>
-                );
-            })}
+            <Label>Paleta de colores</Label>
+            <Select.Trigger className={`border border-divider shadow-sm ${size === 'sm' ? 'min-h-9' : ''}`}>
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <Select.Value className="truncate" />
+                </div>
+                <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+                <ListBox className="max-h-60">
+                    {PALETAS.map(({ key, nombre }) => {
+                        const colors = PALETA_PREVIEW_COLORS[key];
+                        return (
+                            <ListBox.Item key={key} id={key} textValue={nombre}>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex gap-1">
+                                        {colors.map((bg, i) => (
+                                            <div key={i} className={`w-3 h-3 rounded-full ${bg}`} />
+                                        ))}
+                                    </div>
+                                    <span>{nombre}</span>
+                                </div>
+                                <ListBox.ItemIndicator />
+                            </ListBox.Item>
+                        );
+                    })}
+                </ListBox>
+            </Select.Popover>
         </Select>
     );
 }

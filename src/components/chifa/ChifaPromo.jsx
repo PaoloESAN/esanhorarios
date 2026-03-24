@@ -1,14 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-} from "@heroui/modal";
-import { Button } from "@heroui/button";
+import { Modal, Button } from "@heroui/react";
 import { TriangleAlert, Skull } from 'lucide-react';
 import { useConfigHorario } from "@/hooks/useConfigHorario";
 
@@ -57,8 +50,7 @@ export default function ChifaPromo() {
             <div className="flex justify-center mt-4 mb-2">
                 <Button
                     id="btn-chifa-promo"
-                    color="warning"
-                    variant="shadow"
+                    variant="primary"
                     size="lg"
                     className="font-bold text-white hover:scale-105 transition-transform shadow-lg"
                     onPress={iniciarFlujo}
@@ -68,122 +60,144 @@ export default function ChifaPromo() {
             </div>
 
             {/* ═══ MODAL 1 — ¿Estás seguro? ═══ */}
-            <Modal isOpen={paso === 1} onClose={cerrar} size="md" placement="center">
-                <ModalContent>
-                    <ModalHeader className="flex gap-1 items-center">
-                        <div className="bg-warning-100 rounded-full p-2 mr-3">
-                            <TriangleAlert className="w-5 h-5 md:w-6 md:h-6 text-warning" />
-                        </div>
-                        <span className="text-foreground">¿Estás seguro?</span>
-                    </ModalHeader>
-                    <ModalBody>
-                        <p className="text-sm md:text-base text-foreground-600">
-                            Estás a punto de descubrir algo increíble... ¿Deseas continuar?
-                        </p>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="danger" variant="light" onPress={cerrar}>
-                            No, mejor no
-                        </Button>
-                        <Button color="warning" onPress={aceptarPrimero}>
-                            Sí, continuar
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
+            <Modal>
+                <Modal.Trigger className="sr-only">
+                    <span />
+                </Modal.Trigger>
+                <Modal.Backdrop isOpen={paso === 1} onOpenChange={(open) => !open && cerrar()}>
+                    <Modal.Container size="md" placement="center">
+                        <Modal.Dialog>
+                            <Modal.CloseTrigger />
+                            <Modal.Header className="flex gap-1 items-center">
+                                <div className="bg-warning-100 rounded-full p-2 mr-3">
+                                    <TriangleAlert className="w-5 h-5 md:w-6 md:h-6 text-warning" />
+                                </div>
+                                <Modal.Heading className="text-foreground">¿Estás seguro?</Modal.Heading>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <p className="text-sm md:text-base text-foreground-600">
+                                    Estás a punto de descubrir algo increíble... ¿Deseas continuar?
+                                </p>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="danger-soft" onPress={cerrar}>
+                                    No, mejor no
+                                </Button>
+                                <Button variant="primary" onPress={aceptarPrimero}>
+                                    Sí, continuar
+                                </Button>
+                            </Modal.Footer>
+                        </Modal.Dialog>
+                    </Modal.Container>
+                </Modal.Backdrop>
             </Modal>
 
             {/* ═══ MODAL 2 — ¿De verdad estás seguro? ═══ */}
-            <Modal isOpen={paso === 2} onClose={cerrar} size="md" placement="center">
-                <ModalContent>
-                    <ModalHeader className="flex gap-1 items-center">
-                        <div className="bg-danger-100 rounded-full p-2 mr-3">
-                            <Skull className="w-5 h-5 md:w-6 md:h-6 text-danger" />
-                        </div>
-                        <span className="text-foreground">¿DE VERDAD estás seguro?</span>
-                    </ModalHeader>
-                    <ModalBody>
-                        <p className="text-sm md:text-base text-foreground-600">
-                            No hay vuelta atrás... ¿Realmente estás seguro de lo que estás haciendo?
-                        </p>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="danger" variant="light" onPress={cerrar}>
-                            Mejor me arrepiento
-                        </Button>
-                        <Button color="danger" onPress={aceptarSegundo}>
-                            ¡SÍ, ESTOY SEGURO!
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
+            <Modal>
+                <Modal.Trigger className="sr-only">
+                    <span />
+                </Modal.Trigger>
+                <Modal.Backdrop isOpen={paso === 2} onOpenChange={(open) => !open && cerrar()}>
+                    <Modal.Container size="md" placement="center">
+                        <Modal.Dialog>
+                            <Modal.CloseTrigger />
+                            <Modal.Header className="flex gap-1 items-center">
+                                <div className="bg-danger-100 rounded-full p-2 mr-3">
+                                    <Skull className="w-5 h-5 md:w-6 md:h-6 text-danger" />
+                                </div>
+                                <Modal.Heading className="text-foreground">¿DE VERDAD estás seguro?</Modal.Heading>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <p className="text-sm md:text-base text-foreground-600">
+                                    No hay vuelta atrás... ¿Realmente estás seguro de lo que estás haciendo?
+                                </p>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="danger-soft" onPress={cerrar}>
+                                    Mejor me arrepiento
+                                </Button>
+                                <Button variant="danger" onPress={aceptarSegundo}>
+                                    ¡SÍ, ESTOY SEGURO!
+                                </Button>
+                            </Modal.Footer>
+                        </Modal.Dialog>
+                    </Modal.Container>
+                </Modal.Backdrop>
             </Modal>
 
             {/* ═══ MODAL 3 — Pantalla de selección de chaufa ═══ */}
-            <Modal
-                isOpen={paso === 3}
-                onClose={cerrar}
-                placement="center"
-                backdrop="blur"
-                size="5xl"
-                classNames={{
-                    base: "border-2 border-amber-400/50 bg-gradient-to-b from-gray-900 to-gray-950",
-                    closeButton: "text-white hover:bg-white/10",
-                }}
-                isDismissable={false}
-            >
-                <ModalContent>
-                    <ModalBody className="p-0 overflow-hidden">
-                        {/* Título */}
-                        <div className="text-center pt-6 pb-4 px-4">
-                            <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 drop-shadow-lg">
-                                Chifa la Union te regala un chaufa
-                            </h2>
-                            <p className="text-amber-300/80 text-base md:text-lg mt-2 font-medium">
-                                Elige tu favorito
-                            </p>
-                        </div>
-
-                        {/* Contenedor de las dos opciones */}
-                        <div className="flex flex-col md:flex-row w-full min-h-[350px] md:min-h-[450px]">
-                            {/* ── Chi Jau Kay (izquierda) ── */}
-                            <button
-                                id="btn-chijaukay"
-                                className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15] border-r border-amber-400/20"
-                                onClick={() => seleccionar("chijaukay")}
-                            >
-                                <img
-                                    src="/chaufachijaukay.webp"
-                                    alt="Chaufa Chi Jau Kay"
-                                    className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
-                                <div className="relative z-10 flex flex-col items-center justify-end h-full pb-8 px-4">
-                                    <span className="text-xl md:text-2xl font-extrabold text-white drop-shadow-lg tracking-wide group-hover:scale-110 transition-transform duration-300">
-                                        Chi Jau Kay
-                                    </span>
+            <Modal>
+                <Modal.Trigger className="sr-only">
+                    <span />
+                </Modal.Trigger>
+                <Modal.Backdrop
+                    isOpen={paso === 3}
+                    onOpenChange={(open) => !open && cerrar()}
+                    variant="blur"
+                    isDismissable={false}
+                >
+                    <Modal.Container
+                        size="xl"
+                        placement="center"
+                        className="w-[95vw] max-w-[1080px]"
+                    >
+                        <Modal.Dialog>
+                            <Modal.CloseTrigger className="text-white hover:bg-white/10" />
+                            <Modal.Body className="p-0 overflow-hidden">
+                                {/* Título */}
+                                <div className="text-center pt-6 pb-4 px-4">
+                                    <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 drop-shadow-lg">
+                                        Chifa la Union te regala un chaufa
+                                    </h2>
+                                    <p className="text-amber-300/80 text-base md:text-lg mt-2 font-medium">
+                                        Elige tu favorito
+                                    </p>
                                 </div>
-                            </button>
 
-                            {/* ── Ti Pa Kay (derecha) ── */}
-                            <button
-                                id="btn-tipakay"
-                                className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15]"
-                                onClick={() => seleccionar("tipakay")}
-                            >
-                                <img
-                                    src="/chaufatipakay.webp"
-                                    alt="Chaufa Ti Pa Kay"
-                                    className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
-                                <div className="relative z-10 flex flex-col items-center justify-end h-full pb-8 px-4">
-                                    <span className="text-xl md:text-2xl font-extrabold text-white drop-shadow-lg tracking-wide group-hover:scale-110 transition-transform duration-300">
-                                        Ti Pa Kay
-                                    </span>
+                                {/* Contenedor de las dos opciones */}
+                                <div className="flex flex-col md:flex-row w-full h-[340px] md:h-[450px]">
+                                    {/* ── Chi Jau Kay (izquierda) ── */}
+                                    <button
+                                        id="btn-chijaukay"
+                                        className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15] border-r border-amber-400/20 rounded-l-2xl"
+                                        onClick={() => seleccionar("chijaukay")}
+                                    >
+                                        <img
+                                            src="/chaufachijaukay.webp"
+                                            alt="Chaufa Chi Jau Kay"
+                                            className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
+                                        <div className="relative z-10 flex flex-col items-center justify-end h-full pb-8 px-4">
+                                            <span className="text-xl md:text-2xl font-extrabold text-white drop-shadow-lg tracking-wide group-hover:scale-110 transition-transform duration-300">
+                                                Chi Jau Kay
+                                            </span>
+                                        </div>
+                                    </button>
+
+                                    {/* ── Ti Pa Kay (derecha) ── */}
+                                    <button
+                                        id="btn-tipakay"
+                                        className="group relative flex-1 cursor-pointer overflow-hidden transition-all duration-300 hover:flex-[1.15] rounded-r-2xl"
+                                        onClick={() => seleccionar("tipakay")}
+                                    >
+                                        <img
+                                            src="/chaufatipakay.webp"
+                                            alt="Chaufa Ti Pa Kay"
+                                            className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
+                                        <div className="relative z-10 flex flex-col items-center justify-end h-full pb-8 px-4">
+                                            <span className="text-xl md:text-2xl font-extrabold text-white drop-shadow-lg tracking-wide group-hover:scale-110 transition-transform duration-300">
+                                                Ti Pa Kay
+                                            </span>
+                                        </div>
+                                    </button>
                                 </div>
-                            </button>
-                        </div>
-                    </ModalBody>
-                </ModalContent>
+                            </Modal.Body>
+                        </Modal.Dialog>
+                    </Modal.Container>
+                </Modal.Backdrop>
             </Modal>
         </>
     );
