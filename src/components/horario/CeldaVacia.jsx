@@ -26,7 +26,7 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                             {nota.texto}
                         </div>
                     </Dropdown.Trigger>
-                    <Dropdown.Popover>
+                    <Dropdown.Popover className="max-w-sm">
                         <Dropdown.Menu key="menu-con-nota" aria-label="Opciones de nota">
                             <Dropdown.Item key="editar" id="editar" textValue="Editar texto" onPress={onEditarNota}>
                                 <Label>Editar texto</Label>
@@ -45,7 +45,7 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
                         title="Click para agregar texto"
                         aria-label="Agregar nota"
                     />
-                    <Dropdown.Popover>
+                    <Dropdown.Popover className="max-w-sm">
                         <Dropdown.Menu key="menu-sin-nota" aria-label="Opciones de celda vacía">
                             <Dropdown.Item key="agregar" id="agregar" textValue="Agregar nota" onPress={onAbrirNota}>
                                 <Label>Agregar nota</Label>
