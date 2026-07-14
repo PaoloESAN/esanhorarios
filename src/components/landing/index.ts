@@ -1,1 +1,1 @@
-export { default as Calendario } from "./Calendario";
+export { default as Landing } from "./Landing";

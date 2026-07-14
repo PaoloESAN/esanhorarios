@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import FacultadesCard from "./FacultadesCard";
 import { COLUMNAS } from "./data";
 
-export default function Calendario() {
+export default function Landing() {
     const { resolvedTheme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);

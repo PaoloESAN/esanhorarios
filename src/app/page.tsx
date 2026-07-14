@@ -1,5 +1,5 @@
-import { Calendario } from "@/components/landing";
+import { Landing } from "@/components/landing";
 
 export default function Home() {
-  return <Calendario />;
+  return <Landing />;
 }
