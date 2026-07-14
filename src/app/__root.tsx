@@ -8,6 +8,8 @@ import {
 // @ts-ignore
 import appCss from "./globals.css?url"
 import { Providers } from "./-providers"
+// @ts-ignore
+import favicon from "./favicon.ico"
 
 export const Route = createRootRoute({
     head: () => ({
@@ -20,6 +22,10 @@ export const Route = createRootRoute({
             { title: "Horarios" }
         ],
         links: [
+            {
+                rel: 'icon',
+                href: favicon,
+            },
             {
                 rel: 'stylesheet',
                 href: appCss,
@@ -43,6 +49,28 @@ function RootLayout() {
         <html lang="es" suppressHydrationWarning>
             <head>
                 <HeadContent />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                try {
+                                    var savedTheme = localStorage.getItem('heroui-theme');
+                                    var theme = savedTheme || 'system';
+                                    if (theme === 'system') {
+                                        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                                    }
+                                    if (theme === 'dark') {
+                                        document.documentElement.classList.add('dark');
+                                        document.documentElement.setAttribute('data-theme', 'dark');
+                                    } else {
+                                        document.documentElement.classList.remove('dark');
+                                        document.documentElement.setAttribute('data-theme', 'light');
+                                    }
+                                } catch (e) {}
+                            })();
+                        `,
+                    }}
+                />
             </head>
             <body className="antialiased">
                 <Providers>

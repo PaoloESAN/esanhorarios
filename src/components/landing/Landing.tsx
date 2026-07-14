@@ -1,15 +1,17 @@
 "use client";
 
-import { Button } from "@heroui/react";
+import { Button, useTheme } from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FacultadesCard from "./FacultadesCard";
 import { COLUMNAS } from "./data";
 
 export default function Landing() {
-    const { resolvedTheme, setTheme } = useTheme();
+    const { theme, setTheme } = useTheme();
+    const resolvedTheme = theme === 'system'
+        ? (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : theme;
     const [mounted, setMounted] = useState(false);
     const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);
 

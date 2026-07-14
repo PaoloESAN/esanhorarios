@@ -1,6 +1,5 @@
 import { useState, lazy, Suspense } from "react";
-import { useOverlayState } from "@heroui/react";
-import { useTheme } from "next-themes";
+import { useOverlayState, useTheme } from "@heroui/react";
 
 import { CarreraProvider } from "./CarreraContext";
 import { Carrera } from "@/data";
@@ -38,7 +37,10 @@ export default function HorarioApp({ carrera }: { carrera: Carrera }) {
 }
 
 function HorarioAppInner() {
-    const { resolvedTheme } = useTheme();
+    const { theme } = useTheme();
+    const resolvedTheme = theme === 'system'
+        ? (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : theme;
 
     const horarios = useHorarios();
     const notas = useNotas(horarios.horarioActivo);

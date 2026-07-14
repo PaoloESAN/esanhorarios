@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion } from "@heroui/react";
-import { useTheme } from 'next-themes';
+import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion, useTheme } from "@heroui/react";
 
 import PaletaSelector from "@/components/ui/PaletaSelector";
 import { useConfigHorario } from "@/hooks/useConfigHorario";
@@ -48,9 +47,14 @@ function ConfigDrawer({
     cambiarPaleta,
 }) {
     const { config, actualizarConfig } = useConfigHorario();
-    const { setTheme, resolvedTheme } = useTheme();
+    const { setTheme, theme } = useTheme();
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
+
+    const resolvedTheme = theme === 'system'
+        ? (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : theme;
+
     const esDark = mounted && resolvedTheme === 'dark';
 
     // Prevenir scroll del body cuando está abierto
