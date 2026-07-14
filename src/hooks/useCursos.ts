@@ -1,10 +1,44 @@
-import { useState } from 'react';
-import { obtenerColorPorOrden, reasignarColores } from '@/lib/colores';
+import { useState, DragEvent } from 'react';
+import { obtenerColorPorOrden, reasignarColores, ColorCelda } from '@/lib/colores';
 
-/**
- * Lógica de negocio para agregar/remover cursos del horario,
- * detección de conflictos y drag & drop.
- */
+export interface CursoItem {
+    id: string;
+    curso: string;
+    profesor: string;
+    seccion: string;
+    aula?: string;
+    creditos?: number;
+    diaOriginal?: string;
+    horarioOriginal?: string;
+}
+
+export interface ConflictoDetalle {
+    dia: string;
+    horario: string;
+    cursoExistente: string;
+    seccionExistente: string;
+}
+
+export interface ConflictoInfo {
+    cursoExistente: string;
+    cursoNuevo: string;
+    detallesConflicto?: ConflictoDetalle[];
+}
+
+export interface UseCursosParams {
+    horarioPersonal: Record<string, CursoItem>;
+    setHorarioPersonal: React.Dispatch<React.SetStateAction<Record<string, CursoItem>>>;
+    cursosSeleccionados: Set<string>;
+    setCursosSeleccionados: React.Dispatch<React.SetStateAction<Set<string>>>;
+    coloresAsignados: Map<string, ColorCelda>;
+    setColoresAsignados: React.Dispatch<React.SetStateAction<Map<string, ColorCelda>>>;
+    coloresActuales: ColorCelda[];
+    obtenerHorariosPorCurso: (curso: string) => any[];
+    onConflicto?: () => void;
+    onExito?: () => void;
+    setMensajeModal?: (msg: string) => void;
+}
+
 export function useCursos({
     horarioPersonal, setHorarioPersonal,
     cursosSeleccionados, setCursosSeleccionados,
@@ -14,12 +48,12 @@ export function useCursos({
     onConflicto,
     onExito,
     setMensajeModal,
-}) {
-    const [cicloSeleccionado, setCicloSeleccionado] = useState('Quinto Ciclo');
-    const [draggedItem, setDraggedItem] = useState(null);
-    const [conflictoInfo, setConflictoInfo] = useState({ cursoExistente: '', cursoNuevo: '' });
+}: UseCursosParams) {
+    const [cicloSeleccionado, setCicloSeleccionado] = useState<string>('Quinto Ciclo');
+    const [draggedItem, setDraggedItem] = useState<CursoItem | null>(null);
+    const [conflictoInfo, setConflictoInfo] = useState<ConflictoInfo>({ cursoExistente: '', cursoNuevo: '' });
 
-    const detectarConflictos = (horarioItems) => {
+    const detectarConflictos = (horarioItems: any[]): ConflictoDetalle[] => {
         return horarioItems
             .filter(({ dia, horario }) => Boolean(horarioPersonal[`${dia}-${horario}`]))
             .map(({ dia, horario }) => ({
@@ -29,7 +63,7 @@ export function useCursos({
             }));
     };
 
-    const abrirConflicto = (cursoNuevo, conflictos) => {
+    const abrirConflicto = (cursoNuevo: string, conflictos: ConflictoDetalle[]) => {
         setConflictoInfo({
             cursoNuevo,
             cursoExistente: `${conflictos[0].cursoExistente} (${conflictos[0].seccionExistente})`,
@@ -38,7 +72,7 @@ export function useCursos({
         onConflicto?.();
     };
 
-    const agregarCursoAlHorario = (item) => {
+    const agregarCursoAlHorario = (item: CursoItem) => {
         if (cursosSeleccionados.has(item.id)) return;
 
         const cursosData = obtenerHorariosPorCurso(item.curso);
@@ -52,17 +86,21 @@ export function useCursos({
         }
 
         const color = obtenerColorPorOrden(item.id, coloresAsignados, coloresActuales);
-        setColoresAsignados(prev => new Map(prev).set(item.id, color));
+        setColoresAsignados(prev => {
+            const next = new Map(prev);
+            next.set(item.id, color);
+            return next;
+        });
 
         const nuevoHorario = { ...horarioPersonal };
-        seccion.horarios.forEach(({ dia, horario, aula }) => {
+        seccion.horarios.forEach(({ dia, horario, aula }: any) => {
             nuevoHorario[`${dia}-${horario}`] = { ...item, aula, diaOriginal: dia, horarioOriginal: horario };
         });
         setHorarioPersonal(nuevoHorario);
         setCursosSeleccionados(prev => new Set([...prev, item.id]));
     };
 
-    const removerDelHorario = (dia, horario) => {
+    const removerDelHorario = (dia: string, horario: string) => {
         const clase = horarioPersonal[`${dia}-${horario}`];
         if (!clase?.id) return;
 
@@ -76,7 +114,7 @@ export function useCursos({
         setColoresAsignados(reasignarColores(nuevosCursos, nuevoHorario, coloresActuales));
     };
 
-    const removerCursoPorId = (id) => {
+    const removerCursoPorId = (id: string) => {
         const nuevoHorario = Object.fromEntries(
             Object.entries(horarioPersonal).filter(([, v]) => v.id !== id)
         );
@@ -87,7 +125,7 @@ export function useCursos({
         setColoresAsignados(reasignarColores(nuevosCursos, nuevoHorario, coloresActuales));
     };
 
-    const manejarAgregarPersonalizado = (cursoData) => {
+    const manejarAgregarPersonalizado = (cursoData: any) => {
         const conflictos = detectarConflictos(cursoData.horarios);
         if (conflictos.length > 0) {
             abrirConflicto(`${cursoData.nombre} (${cursoData.seccion})`, conflictos);
@@ -95,13 +133,17 @@ export function useCursos({
         }
 
         const id = `personalizado-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const item = { id, curso: cursoData.nombre, profesor: cursoData.profesor, seccion: cursoData.seccion };
+        const item: CursoItem = { id, curso: cursoData.nombre, profesor: cursoData.profesor, seccion: cursoData.seccion };
 
         const color = obtenerColorPorOrden(id, coloresAsignados, coloresActuales);
-        setColoresAsignados(prev => new Map(prev).set(id, color));
+        setColoresAsignados(prev => {
+            const next = new Map(prev);
+            next.set(id, color);
+            return next;
+        });
 
         const nuevoHorario = { ...horarioPersonal };
-        cursoData.horarios.forEach(({ dia, horario }) => {
+        cursoData.horarios.forEach(({ dia, horario }: any) => {
             nuevoHorario[`${dia}-${horario}`] = {
                 ...item, aula: cursoData.aula, creditos: cursoData.creditos,
                 diaOriginal: dia, horarioOriginal: horario,
@@ -115,17 +157,17 @@ export function useCursos({
         return { success: true };
     };
 
-    const handleDragStart = (e, item) => {
+    const handleDragStart = (e: DragEvent<HTMLElement>, item: CursoItem) => {
         setDraggedItem(item);
         e.dataTransfer.effectAllowed = 'move';
     };
 
-    const handleDragOver = (e) => {
+    const handleDragOver = (e: DragEvent<HTMLElement>) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
     };
 
-    const handleDrop = (e) => {
+    const handleDrop = (e: DragEvent<HTMLElement>) => {
         e.preventDefault();
         if (draggedItem) {
             agregarCursoAlHorario(draggedItem);

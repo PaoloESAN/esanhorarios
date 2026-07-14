@@ -67,9 +67,9 @@ function ConfigDrawer({
         .filter(([, v]) => v)
         .map(([k]) => k);
 
-    const handleCamposChange = (nuevos) => {
+    const handleCamposChange = (nuevos: any) => {
         if (nuevos.length === 0) return;
-        const patch = {};
+        const patch: any = {};
         for (const key of Object.keys(CAMPOS_LABELS)) {
             patch[key] = nuevos.includes(key);
         }

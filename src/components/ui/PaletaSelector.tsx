@@ -2,12 +2,21 @@
 
 import { Select, Label, ListBox } from '@heroui/react';
 import { PALETAS_NOMBRES, PALETA_PREVIEW_COLORS } from '@/constants';
+import { ColorCelda } from '@/lib/colores';
 
 const PALETAS = Object.entries(PALETAS_NOMBRES).map(([key, nombre]) => ({ key, nombre }));
 
-function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 'sm', className = '' }) {
+export interface PaletaSelectorProps {
+    paletaSeleccionada: string;
+    coloresActuales: ColorCelda[];
+    onChange: (nuevaPaleta: string) => void;
+    size?: 'sm' | 'md' | 'lg';
+    className?: string;
+}
 
-    const handleChange = (selected) => {
+function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 'sm', className = '' }: PaletaSelectorProps) {
+
+    const handleChange = (selected: any) => {
         if (selected && selected !== paletaSeleccionada) onChange(selected);
     };
 
@@ -29,7 +38,7 @@ function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 
             <Select.Popover>
                 <ListBox className="max-h-60">
                     {PALETAS.map(({ key, nombre }) => {
-                        const colors = PALETA_PREVIEW_COLORS[key];
+                        const colors = PALETA_PREVIEW_COLORS[key] ?? [];
                         return (
                             <ListBox.Item key={key} id={key} textValue={nombre}>
                                 <div className="flex items-center gap-2">

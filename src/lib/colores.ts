@@ -1,4 +1,13 @@
-export const paletasDisponibles = {
+export interface ColorCelda {
+    bg: string;
+    border: string;
+    text: string;
+    textSecondary: string;
+}
+
+export type NombrePaleta = 'default' | 'pastel' | 'vibrante' | 'monocromatico' | 'neon' | 'otono' | 'oceanico';
+
+export const paletasDisponibles: Record<string, ColorCelda[]> = {
     default: [
         { bg: 'bg-blue-200', border: 'border-blue-400', text: 'text-blue-900', textSecondary: 'text-blue-800' },
         { bg: 'bg-green-200', border: 'border-green-400', text: 'text-green-900', textSecondary: 'text-green-800' },
@@ -78,16 +87,24 @@ export const paletasDisponibles = {
     ]
 };
 
-export const obtenerColoresActuales = (paletaSeleccionada) =>
+export const obtenerColoresActuales = (paletaSeleccionada: string): ColorCelda[] =>
     paletasDisponibles[paletaSeleccionada] ?? paletasDisponibles.default;
 
-export const obtenerColorPorOrden = (id, coloresAsignados, coloresDisponibles) => {
-    if (coloresAsignados.has(id)) return coloresAsignados.get(id);
+export const obtenerColorPorOrden = (
+    id: string,
+    coloresAsignados: Map<string, ColorCelda>,
+    coloresDisponibles: ColorCelda[]
+): ColorCelda => {
+    if (coloresAsignados.has(id)) return coloresAsignados.get(id)!;
     return coloresDisponibles[coloresAsignados.size % coloresDisponibles.length];
 };
 
-export const reasignarColores = (cursosSeleccionados, _horario, coloresDisponibles) => {
-    const mapa = new Map();
+export const reasignarColores = (
+    cursosSeleccionados: Set<string> | string[],
+    _horario: any,
+    coloresDisponibles: ColorCelda[]
+): Map<string, ColorCelda> => {
+    const mapa = new Map<string, ColorCelda>();
     Array.from(cursosSeleccionados).forEach((id, i) => {
         mapa.set(id, coloresDisponibles[i % coloresDisponibles.length]);
     });

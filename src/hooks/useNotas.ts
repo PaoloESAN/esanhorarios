@@ -1,25 +1,31 @@
 import { useState } from 'react';
 import { crearHorariosVacios } from '@/constants';
 
-const NOTA_DEFAULT = { texto: '', color: '#fde68a', textColor: '#111827' };
+export interface NotaCelda {
+    texto: string;
+    color: string;
+    textColor: string;
+}
+
+export const NOTA_DEFAULT: NotaCelda = { texto: '', color: '#fde68a', textColor: '#111827' };
 
 /**
  * Gestiona las notas de celdas para todos los horarios.
  * @param {number} horarioActivo
  */
-export function useNotas(horarioActivo) {
-    const [notasPorHorario, setNotasPorHorario] = useState(crearHorariosVacios);
+export function useNotas(horarioActivo: number) {
+    const [notasPorHorario, setNotasPorHorario] = useState<Record<number, Record<string, NotaCelda>>>(crearHorariosVacios);
 
     const notasCelda = notasPorHorario[horarioActivo] ?? {};
 
-    const setNotasCelda = (updater) => {
+    const setNotasCelda = (updater: any) => {
         setNotasPorHorario(prev => ({
             ...prev,
             [horarioActivo]: typeof updater === 'function' ? updater(prev[horarioActivo] ?? {}) : updater
         }));
     };
 
-    const guardarNota = (key, datos, onClose) => {
+    const guardarNota = (key: string, datos: Partial<NotaCelda>, onClose?: () => void) => {
         if (!key) return;
         setNotasCelda(prev => ({
             ...prev,
@@ -32,7 +38,7 @@ export function useNotas(horarioActivo) {
         onClose?.();
     };
 
-    const quitarNota = (key) => {
+    const quitarNota = (key: string) => {
         setNotasCelda(prev => {
             const copia = { ...prev };
             delete copia[key];

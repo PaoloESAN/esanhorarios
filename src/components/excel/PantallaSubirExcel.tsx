@@ -1,9 +1,14 @@
-import { useRef } from 'react';
+import { useRef, ChangeEvent } from 'react';
 import { Button } from '@heroui/react';
 import { FileText, CloudUpload } from 'lucide-react';
 
-function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
-    const inputRef = useRef(null);
+export interface PantallaSubirExcelProps {
+    cargandoArchivo: boolean;
+    onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
+}
+
+function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }: PantallaSubirExcelProps) {
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const handleOpenFilePicker = () => {
         if (!inputRef.current || cargandoArchivo) return;
@@ -44,4 +49,3 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }) {
 }
 
 export default PantallaSubirExcel;
-

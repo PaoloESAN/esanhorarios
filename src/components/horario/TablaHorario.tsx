@@ -1,9 +1,26 @@
+import { DragEvent } from 'react';
 import { diasSemana, generarHorarios } from '@/lib/horario';
 import { useConfigHorario } from '@/hooks/useConfigHorario';
 import CeldaAsignada from './CeldaAsignada';
 import CeldaVacia from './CeldaVacia';
+import { CursoItem } from '@/hooks/useCursos';
+import { ColorCelda } from '@/lib/colores';
+import { NotaCelda } from '@/hooks/useNotas';
 
 const horariosDelDia = generarHorarios();
+
+export interface TablaHorarioProps {
+    horarioPersonal: Record<string, CursoItem>;
+    coloresAsignados: Map<string, ColorCelda>;
+    coloresActuales: ColorCelda[];
+    notesCelda?: Record<string, NotaCelda>; // keep backwards compatibility if needed
+    notasCelda: Record<string, NotaCelda>;
+    onRemover: (dia: string, horario: string) => void;
+    onDragOver: (e: DragEvent<HTMLElement>) => void;
+    onDrop: (e: DragEvent<HTMLElement>, dia: string, horario: string) => void;
+    onAbrirNota: (key: string) => void;
+    onQuitarNota: (key: string) => void;
+}
 
 /**
  * Tabla de horarios semanal.
@@ -20,7 +37,7 @@ function TablaHorario({
     onDrop,
     onAbrirNota,
     onQuitarNota,
-}) {
+}: TablaHorarioProps) {
     const { config } = useConfigHorario();
 
     // Determinar qué filas mostrar: si ocultarFilasVacias está activo,

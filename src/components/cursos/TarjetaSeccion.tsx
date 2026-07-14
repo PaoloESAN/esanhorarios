@@ -1,10 +1,25 @@
+import { DragEvent, MouseEvent } from 'react';
 import { Search } from 'lucide-react';
+
+export interface TarjetaSeccionProps {
+    curso: string;
+    seccionData: {
+        id: string;
+        profesor: string;
+        seccion: string;
+        horarios: any[];
+    };
+    estaSeleccionado: boolean;
+    onAgregar: (item: any) => void;
+    onRemover: (id: string) => void;
+    onDragStart: (e: DragEvent<HTMLElement>, item: any) => void;
+}
 
 /**
  * Tarjeta individual de una sección de curso.
  * Permite agregar/remover la sección y drag&drop.
  */
-function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRemover, onDragStart }) {
+function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRemover, onDragStart }: TarjetaSeccionProps) {
 
     return (
         <div
@@ -25,7 +40,7 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
             </div>
             <div className={`text-xs mb-1 flex items-center gap-1 flex-row ${estaSeleccionado ? 'text-foreground-500' : 'text-foreground-600'}`}>
                 <button
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
                         e.stopPropagation();
                         window.open(`https://www.google.com/search?q=${encodeURIComponent(seccionData.profesor)}`, '_blank');
                     }}

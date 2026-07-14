@@ -1,18 +1,18 @@
 export const HORARIO_COUNT = 5;
 
 /** Genera un objeto { 1:{}, 2:{}, 3:{}, 4:{}, 5:{} } */
-export const crearHorariosVacios = () =>
+export const crearHorariosVacios = (): Record<number, any> =>
     Object.fromEntries(Array.from({ length: HORARIO_COUNT }, (_, i) => [i + 1, {}]));
 
 /** Genera { 1: new Set(), … 5: new Set() } */
-export const crearSetsVacios = () =>
-    Object.fromEntries(Array.from({ length: HORARIO_COUNT }, (_, i) => [i + 1, new Set()]));
+export const crearSetsVacios = (): Record<number, Set<string>> =>
+    Object.fromEntries(Array.from({ length: HORARIO_COUNT }, (_, i) => [i + 1, new Set<string>()]));
 
 /** Genera { 1: new Map(), … 5: new Map() } */
-export const crearMapasVacios = () =>
-    Object.fromEntries(Array.from({ length: HORARIO_COUNT }, (_, i) => [i + 1, new Map()]));
+export const crearMapasVacios = (): Record<number, Map<string, any>> =>
+    Object.fromEntries(Array.from({ length: HORARIO_COUNT }, (_, i) => [i + 1, new Map<string, any>()]));
 
-export const PALETAS_NOMBRES = {
+export const PALETAS_NOMBRES: Record<string, string> = {
     default: 'Clásica',
     pastel: 'Pastel',
     vibrante: 'Vibrante',
@@ -22,7 +22,7 @@ export const PALETAS_NOMBRES = {
     oceanico: 'Oceánico'
 };
 
-export const PALETA_PREVIEW_COLORS = {
+export const PALETA_PREVIEW_COLORS: Record<string, string[]> = {
     default: ['bg-blue-200', 'bg-green-200', 'bg-red-200'],
     pastel: ['bg-rose-100', 'bg-sky-100', 'bg-emerald-100'],
     vibrante: ['bg-blue-400', 'bg-green-400', 'bg-red-400'],

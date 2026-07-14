@@ -1,5 +1,20 @@
+export interface CarreraItem {
+    nombre: string;
+    slug?: string;
+    activa: boolean;
+}
+
+export interface FacultadColumna {
+    facultad: string;
+    bgImage: string;
+    color: string;
+    colorLight: string;
+    icon: string;
+    carreras: CarreraItem[];
+}
+
 /* ─── Datos de facultades y carreras ─── */
-export const COLUMNAS = [
+export const COLUMNAS: FacultadColumna[] = [
     {
         facultad: "Economía",
         bgImage: "/economia.webp",
@@ -56,4 +71,4 @@ export const COLUMNAS = [
     },
 ];
 
-export const NUM_FILAS = Math.max(...COLUMNAS.map((c) => c.carreras.length));
+export const NUM_FILAS: number = Math.max(...COLUMNAS.map((c) => c.carreras.length));

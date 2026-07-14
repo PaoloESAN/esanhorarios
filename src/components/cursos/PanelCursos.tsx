@@ -1,9 +1,27 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, ChangeEvent, DragEvent } from 'react';
 import { Button, Select, Label, ListBox, Chip } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';
+import { CursoItem } from '@/hooks/useCursos';
+
+export interface PanelCursosProps {
+    cicloSeleccionado: string;
+    setCicloSeleccionado: (ciclo: string) => void;
+    cursosSeleccionados: Set<string>;
+    nombreArchivo: string;
+    cargandoArchivo: boolean;
+    obtenerHorariosPorCurso: (curso: string) => any[];
+    onAgregarCurso: (item: CursoItem) => void;
+    onRemoverCurso: (id: string) => void;
+    onDragStart: (e: DragEvent<HTMLElement>, item: any) => void;
+    onAbrirModalCursoPersonalizado: () => void;
+    onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
+    onCargaTalleres: (evento: ChangeEvent<HTMLInputElement>) => void;
+    cargandoTalleres: boolean;
+    nombreArchivoTalleres: string;
+}
 
 function PanelCursos({
     cicloSeleccionado, setCicloSeleccionado,
@@ -18,17 +36,17 @@ function PanelCursos({
     onCargaTalleres,
     cargandoTalleres,
     nombreArchivoTalleres,
-}) {
+}: PanelCursosProps) {
     const { cursosPorCiclo, obtenerCreditos } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
-    const listaRef = useRef(null);
-    const talleresInputRef = useRef(null);
+    const listaRef = useRef<HTMLDivElement>(null);
+    const talleresInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         listaRef.current?.scrollTo({ top: 0 });
     }, [cicloSeleccionado]);
 
-    const esTaller = (nombre) => nombre.toLowerCase().includes('taller');
+    const esTaller = (nombre: string) => nombre.toLowerCase().includes('taller');
 
     const hayAlgunTallerEnExcel = hayArchivo && Object.values(cursosPorCiclo).some(cursos =>
         cursos.some(c => esTaller(c) && obtenerHorariosPorCurso(c).length > 0)
@@ -50,7 +68,7 @@ function PanelCursos({
                     variant="secondary"
                     size="sm"
                     isIconOnly
-                    title="Agregar curso personalizado"
+                    {...{ title: "Agregar curso personalizado" } as any}
                 >
                     <Plus />
                 </Button>
@@ -60,7 +78,7 @@ function PanelCursos({
             <div className="mb-4 md:mb-6">
                 <Select
                     value={cicloSeleccionado}
-                    onChange={(value) => {
+                    onChange={(value: any) => {
                         if (value && value !== cicloSeleccionado) setCicloSeleccionado(value);
                     }}
                     placeholder="Selecciona un ciclo"
@@ -185,4 +203,3 @@ function PanelCursos({
 }
 
 export default PanelCursos;
-

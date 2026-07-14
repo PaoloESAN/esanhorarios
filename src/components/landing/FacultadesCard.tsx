@@ -6,7 +6,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, Lock, X } from "lucide-react";
 import { COLUMNAS } from "./data";
 
-export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }) {
+export interface FacultadesCardProps {
+    expandedFacultad: string | null;
+    setExpandedFacultad: (facultad: string | null) => void;
+}
+
+export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }: FacultadesCardProps) {
     return (
         <div className="bg-transparent p-4 md:p-8 lg:p-12 overflow-hidden mx-auto w-full">
             <AnimatePresence mode="wait">
@@ -54,6 +59,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                 {/* Lista de carreras de la facultad seleccionada */}
                 {expandedFacultad && (() => {
                     const col = COLUMNAS.find((c) => c.facultad === expandedFacultad);
+                    if (!col) return null;
                     return (
                         <motion.div
                             key="list"

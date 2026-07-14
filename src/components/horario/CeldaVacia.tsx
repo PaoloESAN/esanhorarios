@@ -1,11 +1,19 @@
 import { Dropdown, Label } from '@heroui/react';
 import { useConfigHorario } from '@/hooks/useConfigHorario';
+import { NotaCelda } from '@/hooks/useNotas';
+
+export interface CeldaVaciaProps {
+    nota?: NotaCelda;
+    onAbrirNota: () => void;
+    onEditarNota: () => void;
+    onQuitarNota: () => void;
+}
 
 /**
  * Celda vacía del horario. Puede contener una nota de texto opcional.
  * Al hacer click en celda vacía abre el modal de nota.
  */
-function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
+function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }: CeldaVaciaProps) {
     const { config } = useConfigHorario();
     const tieneChaufa = config.fondoChiJauKay || config.fondoTiPaKay;
     const bgClass = tieneChaufa
@@ -17,10 +25,12 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
             {nota ? (
                 <Dropdown key="celda-con-nota">
                     <Dropdown.Trigger
-                        variant="light"
-                        className="w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0"
-                        style={{ backgroundColor: nota.color, color: nota.textColor ?? '#111827' }}
-                        title={nota.texto}
+                        {...{
+                            variant: "light",
+                            className: "w-full max-w-full h-full rounded p-1 border border-divider overflow-hidden relative flex items-center justify-center text-center cursor-pointer min-w-0",
+                            style: { backgroundColor: nota.color, color: nota.textColor ?? '#111827' },
+                            title: nota.texto
+                        } as any}
                     >
                         <div className="text-xs md:text-sm leading-tight px-2 w-full max-w-full whitespace-normal break-words text-center">
                             {nota.texto}
@@ -40,10 +50,12 @@ function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }) {
             ) : (
                 <Dropdown key="celda-sin-nota">
                     <Dropdown.Trigger
-                        variant="light"
-                        className="absolute inset-0 min-w-0 h-full p-0 cursor-pointer"
-                        title="Click para agregar texto"
-                        aria-label="Agregar nota"
+                        {...{
+                            variant: "light",
+                            className: "absolute inset-0 min-w-0 h-full p-0 cursor-pointer",
+                            title: "Click para agregar texto",
+                            "aria-label": "Agregar nota"
+                        } as any}
                     />
                     <Dropdown.Popover className="max-w-sm">
                         <Dropdown.Menu key="menu-sin-nota" aria-label="Opciones de celda vacía">

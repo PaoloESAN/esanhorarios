@@ -1,22 +1,44 @@
 import { read, utils } from 'xlsx';
 
+export interface HorarioExtraido {
+    horario: string;
+    aula: string;
+}
+
+export interface HorarioDia {
+    dia: string;
+    horario: string;
+    aula: string;
+}
+
+export interface SeccionCurso {
+    id: string;
+    profesor: string;
+    seccion: string;
+    horarios: HorarioDia[];
+}
+
+export interface HorariosParseados {
+    [curso: string]: SeccionCurso[];
+}
+
 /** "GARCIA LOPEZ JUAN CARLOS" → "Garcia Lopez Juan Carlos" */
-const capitalizarNombre = (texto) =>
+const capitalizarNombre = (texto: string): string =>
     texto.replace(/\S+/g, (p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase());
 
 /**
  * Correcciones semánticas de nombres de cursos.
  * Solo incluye entradas donde el nombre real difiere del que aparece en el Excel
  */
-export const aliasCorrecciones = {
+export const aliasCorrecciones: Record<string, string> = {
     "INGENIERIA DE PROCESOS DE NEGOCIO": "INGENIERIA DE PROCESOS DE NEGOCIOS",
     "PRECALCULO": "PRE CALCULO",
     "SISTEMAS DE GESTION DE BASES DE DATOS": "SISTEMAS DE GESTION DE BASE DE DATOS",
     "CAPSTONE PROJECT I": "CAPSTONE PROJECT",
 };
 
-export const extraerHorarios = (textoHorario) => {
-    const horarios = [];
+export const extraerHorarios = (textoHorario: string): HorarioExtraido[] => {
+    const horarios: HorarioExtraido[] = [];
 
     const patterns = [
         /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})\s*\(([^)]+)\)/g,
@@ -63,15 +85,15 @@ export const extraerHorarios = (textoHorario) => {
     return horarios;
 };
 
-export const parsearDatosExcel = (datos) => {
-    const horariosParseados = {};
+export const parsearDatosExcel = (datos: any[][]): HorariosParseados => {
+    const horariosParseados: HorariosParseados = {};
 
     let filaEncabezados = -1;
     for (let i = 0; i < Math.min(10, datos.length); i++) {
         const fila = datos[i];
         if (!fila) continue;
         const textos = fila
-            .filter(c => c && typeof c === 'string')
+            .filter((c): c is string => typeof c === 'string')
             .map(c => c.toUpperCase());
         const tieneCurso = textos.some(t =>
             t.includes('CURSO') || t.includes('MATERIA') || t.includes('ASIGNATURA'));
@@ -94,7 +116,7 @@ export const parsearDatosExcel = (datos) => {
     }
 
     const encabezados = datos[filaEncabezados];
-    const indiceColumnas = {};
+    const indiceColumnas: Record<string, number> = {};
 
     encabezados.forEach((encabezado, index) => {
         if (encabezado && typeof encabezado === 'string') {
@@ -138,7 +160,7 @@ export const parsearDatosExcel = (datos) => {
             .replace(/\s+/g, ' ')
             .trim();
 
-        const horarios = [];
+        const horarios: HorarioDia[] = [];
         const diasExcel = [
             { nombre: 'Lunes', indice: indiceColumnas.lunes },
             { nombre: 'Martes', indice: indiceColumnas.martes },
@@ -181,12 +203,12 @@ export const parsearDatosExcel = (datos) => {
     return horariosParseados;
 };
 
-export const procesarArchivoExcel = async (archivo) => {
+export const procesarArchivoExcel = async (archivo: File): Promise<HorariosParseados> => {
     const data = await archivo.arrayBuffer();
     const workbook = read(data);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-    const jsonData = utils.sheet_to_json(worksheet, { header: 1 });
+    const jsonData = utils.sheet_to_json<any[]>(worksheet, { header: 1 });
 
     return parsearDatosExcel(jsonData);
 };

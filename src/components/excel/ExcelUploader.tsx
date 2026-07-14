@@ -1,9 +1,16 @@
-import { useRef } from 'react';
+import { useRef, ChangeEvent } from 'react';
 import { Button } from '@heroui/react';
 import { CloudUpload, FileText } from 'lucide-react';
 
-function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }) {
-    const inputRef = useRef(null);
+export interface ExcelUploaderProps {
+    nombreArchivo: string;
+    nombreArchivoTalleres?: string;
+    cargandoArchivo: boolean;
+    onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
+}
+
+function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }: ExcelUploaderProps) {
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const handleOpenFilePicker = () => {
         if (!inputRef.current || cargandoArchivo) return;
@@ -56,4 +63,3 @@ function ExcelUploader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, 
 }
 
 export default ExcelUploader;
-

@@ -6,6 +6,7 @@ import { useOverlayState } from "@heroui/react";
 import { useTheme } from "next-themes";
 
 import { CarreraProvider } from "./CarreraContext";
+import { Carrera } from "@/data";
 
 import AppHeader from "@/components/header/AppHeader";
 import EncabezadoHorario from "@/components/header/EncabezadoHorario";
@@ -28,7 +29,7 @@ import { ConfigHorarioProvider } from "@/hooks/useConfigHorario";
 
 import { diasSemana } from "@/lib/horario";
 
-export default function HorarioApp({ carrera }) {
+export default function HorarioApp({ carrera }: { carrera: Carrera }) {
     return (
         <CarreraProvider carrera={carrera}>
             <ConfigHorarioProvider>
@@ -50,7 +51,7 @@ function HorarioAppInner() {
     });
 
     const [mensajeModal, setMensajeModal] = useState('');
-    const [celdaSeleccionada, setCeldaSeleccionada] = useState(null);
+    const [celdaSeleccionada, setCeldaSeleccionada] = useState<string | null>(null);
 
     const conflictModal = useOverlayState();
     const successModal = useOverlayState();
@@ -63,11 +64,6 @@ function HorarioAppInner() {
     const limpiarHorario = () => {
         horarios.limpiarHorarioActual();
         notas.limpiarNotasActivas();
-    };
-
-    const limpiarTodosLosHorarios = () => {
-        horarios.limpiarTodosLosHorarios();
-        notas.limpiarTodasLasNotas();
     };
 
     const excel = useExcel({
@@ -93,20 +89,22 @@ function HorarioAppInner() {
 
     const compartir = useCompartir({
         horarioActivo: horarios.horarioActivo,
-        resolvedTheme,
+        resolvedTheme: resolvedTheme ?? 'light',
         onAbrirModal: shareModal.open,
         setMensajeModal,
         onExito: successModal.open,
         onError: errorModal.open,
     });
 
-    const abrirModalNota = (key) => {
+    const abrirModalNota = (key: string) => {
         setCeldaSeleccionada(key);
         noteModal.open();
     };
 
-    const guardarNota = (datos) => {
-        notas.guardarNota(celdaSeleccionada, datos, noteModal.close);
+    const guardarNota = (datos: any) => {
+        if (celdaSeleccionada) {
+            notas.guardarNota(celdaSeleccionada, datos, noteModal.close);
+        }
     };
 
     return (
@@ -148,7 +146,7 @@ function HorarioAppInner() {
                         />
                     </div>
 
-                    {/* Panel lateral de cursos – wrapper para que la tabla dicte la altura */}
+                    {/* Panel lateral de cursos */}
                     <div className="order-1 lg:order-1 w-full lg:w-80 relative">
                         <div className="lg:absolute lg:inset-0">
                             <PanelCursos
@@ -221,7 +219,7 @@ function HorarioAppInner() {
                     isOpen={addCourseModal.isOpen}
                     onClose={addCourseModal.close}
                     onAgregarCurso={cursos.manejarAgregarPersonalizado}
-                    onError={(msg) => { setMensajeModal(msg); errorModal.open(); }}
+                    onError={(msg: string) => { setMensajeModal(msg); errorModal.open(); }}
                     diasSemana={diasSemana}
                 />
                 <ConfigDrawer

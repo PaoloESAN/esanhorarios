@@ -1,4 +1,6 @@
 import { useConfigHorario, acortarNombreProfesor, invertirOrdenProfesor } from '@/hooks/useConfigHorario';
+import { CursoItem } from '@/hooks/useCursos';
+import { ColorCelda } from '@/lib/colores';
 
 const ALIGN_CLASSES = {
     left: { items: 'items-start', text: 'text-left' },
@@ -6,11 +8,17 @@ const ALIGN_CLASSES = {
     right: { items: 'items-end', text: 'text-right' },
 };
 
+export interface CeldaAsignadaProps {
+    clase: CursoItem;
+    color: ColorCelda;
+    onRemover: () => void;
+}
+
 /**
  * Celda del horario que ya tiene un curso asignado.
  * Al hacer click se remueve el curso completo.
  */
-function CeldaAsignada({ clase, color, onRemover }) {
+function CeldaAsignada({ clase, color, onRemover }: CeldaAsignadaProps) {
     const { config } = useConfigHorario();
     const { camposVisibles, nombreCortoProfesor, nombrePrimero, tamanoLetra, alineacion } = config;
 

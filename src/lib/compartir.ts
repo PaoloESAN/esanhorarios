@@ -1,4 +1,13 @@
-export const generarImagenHorario = async ({ tema }) => {
+export interface GenerarImagenParams {
+    tema: string;
+}
+
+export interface CompartirHorarioParams {
+    tema: string;
+    filename?: string;
+}
+
+export const generarImagenHorario = async ({ tema }: GenerarImagenParams): Promise<string | null> => {
     try {
         const { default: html2canvas } = await import('html2canvas-pro');
 
@@ -11,7 +20,7 @@ export const generarImagenHorario = async ({ tema }) => {
         const scrollX = window.scrollX;
         const scrollY = window.scrollY;
 
-        const clon = elemento.cloneNode(true);
+        const clon = elemento.cloneNode(true) as HTMLElement;
 
         Object.assign(clon.style, {
             position: 'fixed',
@@ -40,9 +49,9 @@ export const generarImagenHorario = async ({ tema }) => {
                 const tabla = documentClone.getElementById('tabla-horario');
                 if (tabla) {
                     tabla.classList.remove('min-w-[640px]', 'md:min-w-[900px]');
-                    const spansMobile = tabla.querySelectorAll('.block.md\\:hidden');
-                    const spansDesktop = tabla.querySelectorAll('.hidden.md\\:block');
-                    const textosSize = tabla.querySelectorAll('.text-xs');
+                    const spansMobile = tabla.querySelectorAll('.block.md\\:hidden') as NodeListOf<HTMLElement>;
+                    const spansDesktop = tabla.querySelectorAll('.hidden.md\\:block') as NodeListOf<HTMLElement>;
+                    const textosSize = tabla.querySelectorAll('.text-xs') as NodeListOf<HTMLElement>;
 
                     spansMobile.forEach(el => el.style.display = 'none');
                     spansDesktop.forEach(el => el.style.display = 'block');
@@ -65,7 +74,7 @@ export const generarImagenHorario = async ({ tema }) => {
     }
 };
 
-export const compartirHorario = async ({ tema, filename = 'mi-horario.png' }) => {
+export const compartirHorario = async ({ tema, filename = 'mi-horario.png' }: CompartirHorarioParams): Promise<void> => {
     const dataUrl = await generarImagenHorario({ tema });
     if (!dataUrl) return;
     const link = document.createElement('a');

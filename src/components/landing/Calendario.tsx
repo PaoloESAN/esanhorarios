@@ -11,7 +11,7 @@ import { COLUMNAS } from "./data";
 export default function Calendario() {
     const { resolvedTheme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
-    const [expandedFacultad, setExpandedFacultad] = useState(null);
+    const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);
 
     useEffect(() => {
         setMounted(true);

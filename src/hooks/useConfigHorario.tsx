@@ -1,18 +1,32 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-/**
- * Configuración visual del horario.
- *
- * - camposVisibles: qué campos mostrar en cada celda (mín. 1 activo)
- * - nombreCortoProfesor: si es true, muestra solo "Apellido1 Nombre1"
- * - nombrePrimero: si es true, muestra "Nombre Apellido" en vez de "Apellido Nombre"
- * - tamanoLetra: tamaño de fuente base en las celdas (px)
- * - alineacion: 'left' | 'center' | 'right'
- */
+export interface ConfigHorario {
+    camposVisibles: {
+        curso: boolean;
+        seccion: boolean;
+        profesor: boolean;
+        aula: boolean;
+    };
+    nombreCortoProfesor: boolean;
+    nombrePrimero: boolean;
+    tamanoLetra: number;
+    alineacion: 'left' | 'center' | 'right';
+    ocultarFilasVacias: boolean;
+    fondoChiJauKay: boolean;
+    fondoTiPaKay: boolean;
+    chijaukayDesbloqueado: boolean;
+    tipakayDesbloqueado: boolean;
+}
 
-const DEFAULTS = {
+export interface ConfigHorarioContextType {
+    config: ConfigHorario;
+    actualizarConfig: (patch: Partial<ConfigHorario>) => void;
+    toggleCampo: (campo: keyof ConfigHorario['camposVisibles']) => void;
+}
+
+const DEFAULTS: ConfigHorario = {
     camposVisibles: { curso: true, seccion: true, profesor: true, aula: true },
     nombreCortoProfesor: false,
     nombrePrimero: false,
@@ -25,10 +39,10 @@ const DEFAULTS = {
     tipakayDesbloqueado: false,
 };
 
-const ConfigHorarioContext = createContext(null);
+const ConfigHorarioContext = createContext<ConfigHorarioContextType | null>(null);
 
-export function ConfigHorarioProvider({ children }) {
-    const [config, setConfig] = useState(DEFAULTS);
+export function ConfigHorarioProvider({ children }: { children: ReactNode }) {
+    const [config, setConfig] = useState<ConfigHorario>(DEFAULTS);
 
     // Cargar configuración guardada desde localStorage después del mount
     // para evitar hydration mismatch (servidor siempre renderiza DEFAULTS)
@@ -41,7 +55,7 @@ export function ConfigHorarioProvider({ children }) {
         } catch { }
     }, []);
 
-    const actualizarConfig = (patch) => {
+    const actualizarConfig = (patch: Partial<ConfigHorario>) => {
         setConfig((prev) => {
             const next = { ...prev, ...patch };
             try { localStorage.setItem("configHorario", JSON.stringify(next)); } catch { }
@@ -49,7 +63,7 @@ export function ConfigHorarioProvider({ children }) {
         });
     };
 
-    const toggleCampo = (campo) => {
+    const toggleCampo = (campo: keyof ConfigHorario['camposVisibles']) => {
         setConfig((prev) => {
             const campos = { ...prev.camposVisibles };
             // No permitir desmarcar si solo queda uno activo
@@ -69,7 +83,7 @@ export function ConfigHorarioProvider({ children }) {
     );
 }
 
-export function useConfigHorario() {
+export function useConfigHorario(): ConfigHorarioContextType {
     const ctx = useContext(ConfigHorarioContext);
     if (!ctx) throw new Error("useConfigHorario must be inside ConfigHorarioProvider");
     return ctx;
@@ -79,10 +93,10 @@ export function useConfigHorario() {
  * Utilidad: acorta "APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2" → "Apellido1 Nombre1"
  * Si nombrePrimero = true → "Nombre1 Apellido1"
  */
-export function acortarNombreProfesor(nombre, nombrePrimero = false) {
+export function acortarNombreProfesor(nombre: string, nombrePrimero = false): string {
     if (!nombre) return "";
     const partes = nombre.trim().split(/\s+/);
-    const capitalizar = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    const capitalizar = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
     if (partes.length <= 2) {
         if (nombrePrimero && partes.length === 2) return `${capitalizar(partes[1])} ${capitalizar(partes[0])}`;
         return nombre;
@@ -96,7 +110,7 @@ export function acortarNombreProfesor(nombre, nombrePrimero = false) {
 /**
  * Invierte el orden completo: "APE1 APE2 NOM1 NOM2" → "Nom1 Nom2 Ape1 Ape2"
  */
-export function invertirOrdenProfesor(nombre) {
+export function invertirOrdenProfesor(nombre: string): string {
     if (!nombre) return "";
     const partes = nombre.trim().split(/\s+/);
     if (partes.length <= 2) return partes.reverse().join(" ");
