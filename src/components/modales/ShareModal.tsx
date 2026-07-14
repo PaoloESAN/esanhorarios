@@ -2,6 +2,8 @@ import { Modal, Button } from "@heroui/react";
 import { Share2, Copy, Download, FileSpreadsheet } from 'lucide-react';
 import { diasSemana, generarHorarios } from '@/lib/horario';
 import { useConfigHorario, acortarNombreProfesor, invertirOrdenProfesor } from '@/hooks/useConfigHorario';
+import { CursoItem } from "@/hooks/useCursos";
+import { NotaCelda } from "@/hooks/useNotas";
 
 const horariosDelDia = generarHorarios();
 
@@ -31,7 +33,7 @@ const HORA_STYLE = {
     border: BORDER_STYLE,
 };
 
-function formatearProfesor(nombre, nombreCortoProfesor, nombrePrimero) {
+function formatearProfesor(nombre: string, nombreCortoProfesor: boolean, nombrePrimero: boolean) {
     if (nombreCortoProfesor) {
         return acortarNombreProfesor(nombre, nombrePrimero);
     } else if (nombrePrimero) {
@@ -40,7 +42,12 @@ function formatearProfesor(nombre, nombreCortoProfesor, nombrePrimero) {
     return nombre;
 }
 
-function exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config) {
+function exportarHorarioExcel(
+    horarioPersonal: Record<string, CursoItem>,
+    notasCelda: Record<string, NotaCelda>,
+    horarioActivo: number,
+    config: any
+) {
     const { camposVisibles, nombreCortoProfesor, nombrePrimero } = config;
     import('xlsx-js-style').then((XLSX) => {
         const header = ['Hora', ...diasSemana];
@@ -88,7 +95,7 @@ function exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config
         ws['!cols'] = colWidths;
 
         // Aplicar estilos a todas las celdas
-        const range = XLSX.utils.decode_range(ws['!ref']);
+        const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
         for (let R = range.s.r; R <= range.e.r; R++) {
             for (let C = range.s.c; C <= range.e.c; C++) {
                 const addr = XLSX.utils.encode_cell({ r: R, c: C });
@@ -113,18 +120,30 @@ function exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config
     });
 }
 
+export interface ShareModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    dataUrl: string | null;
+    onCopy: () => void;
+    onDownload: () => void;
+    filename?: string;
+    horarioPersonal: Record<string, CursoItem>;
+    notasCelda: Record<string, NotaCelda>;
+    horarioActivo: number;
+}
+
 export default function ShareModal({
     isOpen, onClose, dataUrl, onCopy, onDownload,
     filename = 'mi-horario.png',
     horarioPersonal, notasCelda, horarioActivo,
-}) {
+}: ShareModalProps) {
     const { config } = useConfigHorario();
     return (
         <Modal>
             <Modal.Trigger className="sr-only">
                 <span />
             </Modal.Trigger>
-            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open: boolean) => !open && onClose?.()}>
                 <Modal.Container size="lg" placement="center">
                     <Modal.Dialog>
                         <Modal.CloseTrigger />

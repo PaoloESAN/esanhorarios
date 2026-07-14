@@ -3,7 +3,11 @@ import {
     Trash2, Share2, BadgeCheck, Brush,
 } from 'lucide-react';
 
-function ContadorCreditos({ total }) {
+export interface ContadorCreditosProps {
+    total: number;
+}
+
+function ContadorCreditos({ total }: ContadorCreditosProps) {
     return (
         <Popover key={total}>
             <Button variant="tertiary" className="h-10 flex items-center gap-2 bg-accent-soft px-3 md:px-4 py-2 rounded-lg border border-accent shadow-sm">
@@ -25,12 +29,17 @@ function ContadorCreditos({ total }) {
     );
 }
 
-function SelectorHorarios({ activo, onChange }) {
+export interface SelectorHorariosProps {
+    activo: number;
+    onChange: (n: number) => void;
+}
+
+function SelectorHorarios({ activo, onChange }: SelectorHorariosProps) {
     return (
         <Tabs
             className='mt-5'
             selectedKey={activo.toString()}
-            onSelectionChange={(k) => onChange(parseInt(String(k), 10))}
+            onSelectionChange={(k: any) => onChange(parseInt(String(k), 10))}
         >
             <Tabs.ListContainer>
                 <Tabs.List aria-label="Opciones de horarios">
@@ -47,13 +56,17 @@ function SelectorHorarios({ activo, onChange }) {
             </Tabs.ListContainer>
             {[1, 2, 3, 4, 5].map((n) => {
                 const id = n.toString();
-                return <Tabs.Panel key={`panel-${id}`} id={id} />;
+                return <Tabs.Panel key={`panel-${id}`} id={id}><span /></Tabs.Panel>;
             })}
         </Tabs>
     );
 }
 
-function BotonLimpiar({ onLimpiarActual }) {
+export interface BotonLimpiarProps {
+    onLimpiarActual: () => void;
+}
+
+function BotonLimpiar({ onLimpiarActual }: BotonLimpiarProps) {
     return (
         <Button
             onPress={onLimpiarActual}
@@ -69,6 +82,15 @@ function BotonLimpiar({ onLimpiarActual }) {
 
 // ── Componente principal ──────────────────────────────────────────────────────
 
+export interface EncabezadoHorarioProps {
+    horarioActivo: number;
+    creditosTotales: number;
+    cambiarHorario: (n: number) => void;
+    limpiarHorario: () => void;
+    abrirShareModal: () => void;
+    abrirConfigDrawer: () => void;
+}
+
 function EncabezadoHorario({
     horarioActivo,
     creditosTotales,
@@ -76,7 +98,7 @@ function EncabezadoHorario({
     limpiarHorario,
     abrirShareModal,
     abrirConfigDrawer,
-}) {
+}: EncabezadoHorarioProps) {
     return (
         <>
             {/* ── MOBILE ───────────────────────────────────────────── */}

@@ -14,7 +14,7 @@ export default function ChifaPromo() {
     const { actualizarConfig } = useConfigHorario();
 
     // Etapas del flujo
-    const [paso, setPaso] = useState(0);
+    const [paso, setPaso] = useState<number>(0);
     // 0 = nada abierto
     // 1 = primer modal "¿Estás seguro?"
     // 2 = segundo modal "¿De verdad estás seguro?"
@@ -26,8 +26,7 @@ export default function ChifaPromo() {
     const aceptarPrimero = () => setPaso(2);
     const aceptarSegundo = () => setPaso(3);
 
-    const seleccionar = (tipo) => {
-        // tipo: 'chijaukay' o 'tipakay'
+    const seleccionar = (tipo: 'chijaukay' | 'tipakay') => {
         if (tipo === "chijaukay") {
             actualizarConfig({
                 fondoChiJauKay: true,
@@ -64,7 +63,7 @@ export default function ChifaPromo() {
                 <Modal.Trigger className="sr-only">
                     <span />
                 </Modal.Trigger>
-                <Modal.Backdrop isOpen={paso === 1} onOpenChange={(open) => !open && cerrar()}>
+                <Modal.Backdrop isOpen={paso === 1} onOpenChange={(open: boolean) => !open && cerrar()}>
                     <Modal.Container size="md" placement="center">
                         <Modal.Dialog>
                             <Modal.CloseTrigger />
@@ -97,7 +96,7 @@ export default function ChifaPromo() {
                 <Modal.Trigger className="sr-only">
                     <span />
                 </Modal.Trigger>
-                <Modal.Backdrop isOpen={paso === 2} onOpenChange={(open) => !open && cerrar()}>
+                <Modal.Backdrop isOpen={paso === 2} onOpenChange={(open: boolean) => !open && cerrar()}>
                     <Modal.Container size="md" placement="center">
                         <Modal.Dialog>
                             <Modal.CloseTrigger />
@@ -132,12 +131,12 @@ export default function ChifaPromo() {
                 </Modal.Trigger>
                 <Modal.Backdrop
                     isOpen={paso === 3}
-                    onOpenChange={(open) => !open && cerrar()}
+                    onOpenChange={(open: boolean) => !open && cerrar()}
                     variant="blur"
                     isDismissable={false}
                 >
                     <Modal.Container
-                        size="xl"
+                        size={"xl" as any}
                         placement="center"
                         className="w-[95vw] max-w-[1080px]"
                     >

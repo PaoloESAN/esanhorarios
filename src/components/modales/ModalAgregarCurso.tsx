@@ -4,11 +4,24 @@ import { useState } from "react";
 import { Button, Select, Label, ListBox, Modal, Input, TextField } from "@heroui/react";
 import { Plus, Trash2 } from 'lucide-react';
 
-function FormSelect({ label, placeholder, value, onChange, options }) {
+interface SelectOption {
+    value: string;
+    label: string;
+}
+
+interface FormSelectProps {
+    label: string;
+    placeholder?: string;
+    value: string;
+    onChange: (val: string) => void;
+    options: SelectOption[];
+}
+
+function FormSelect({ label, placeholder, value, onChange, options }: FormSelectProps) {
     return (
         <Select
             value={value}
-            onChange={(nextValue) => {
+            onChange={(nextValue: any) => {
                 if (nextValue) onChange(nextValue);
             }}
             placeholder={placeholder}
@@ -33,11 +46,11 @@ function FormSelect({ label, placeholder, value, onChange, options }) {
     );
 }
 
-function HoraSelect({ label, placeholder, value, onChange, options }) {
+function HoraSelect({ label, placeholder, value, onChange, options }: FormSelectProps) {
     return (
         <Select
             value={value}
-            onChange={(nextValue) => {
+            onChange={(nextValue: any) => {
                 if (nextValue) onChange(nextValue);
             }}
             placeholder={placeholder}
@@ -62,13 +75,21 @@ function HoraSelect({ label, placeholder, value, onChange, options }) {
     );
 }
 
+export interface ModalAgregarCursoProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onAgregarCurso: (curso: any) => { success: boolean } | any;
+    diasSemana: string[];
+    onError?: (msg: string) => void;
+}
+
 export default function ModalAgregarCurso({
     isOpen,
     onClose,
     onAgregarCurso,
     diasSemana,
     onError
-}) {
+}: ModalAgregarCursoProps) {
     const [cursoPersonalizado, setCursoPersonalizado] = useState({
         nombre: '',
         seccion: 'S-001',
@@ -78,8 +99,8 @@ export default function ModalAgregarCurso({
         horarios: [{ dia: 'Lunes', horaInicio: '07:30', horaFin: '09:15' }]
     });
 
-    const horasInicio = [];
-    const horasFin = [];
+    const horasInicio: string[] = [];
+    const horasFin: string[] = [];
 
     for (let hora = 7; hora <= 22; hora++) {
         const horaStr = hora.toString().padStart(2, '0');
@@ -91,8 +112,8 @@ export default function ModalAgregarCurso({
         horasFin.push(`${horaStr}:15`);
     }
 
-    const generarHorariosAutomaticos = (dia, horaInicio, horaFin) => {
-        const horarios = [];
+    const generarHorariosAutomaticos = (dia: string, horaInicio: string, horaFin: string) => {
+        const horarios: { dia: string; horario: string }[] = [];
         const [horaInicioHr] = horaInicio.split(':').map(Number);
         const [horaFinHr] = horaFin.split(':').map(Number);
 
@@ -119,7 +140,7 @@ export default function ModalAgregarCurso({
         }));
     };
 
-    const eliminarHorarioPersonalizado = (index) => {
+    const eliminarHorarioPersonalizado = (index: number) => {
         if (cursoPersonalizado.horarios.length > 1) {
             setCursoPersonalizado(prev => ({
                 ...prev,
@@ -128,7 +149,7 @@ export default function ModalAgregarCurso({
         }
     };
 
-    const actualizarHorarioPersonalizado = (index, campo, valor) => {
+    const actualizarHorarioPersonalizado = (index: number, campo: string, valor: string) => {
         setCursoPersonalizado(prev => ({
             ...prev,
             horarios: prev.horarios.map((horario, i) =>
@@ -151,7 +172,7 @@ export default function ModalAgregarCurso({
             return;
         }
 
-        const horariosGenerados = [];
+        const horariosGenerados: { dia: string; horario: string }[] = [];
         cursoPersonalizado.horarios.forEach(horarioConfig => {
             horariosGenerados.push(
                 ...generarHorariosAutomaticos(horarioConfig.dia, horarioConfig.horaInicio, horarioConfig.horaFin)
@@ -184,7 +205,7 @@ export default function ModalAgregarCurso({
             <Modal.Trigger className="sr-only">
                 <span />
             </Modal.Trigger>
-            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open: boolean) => !open && handleClose()}>
                 <Modal.Container size="lg" placement="center" scroll="inside">
                     <Modal.Dialog>
                         <Modal.CloseTrigger />

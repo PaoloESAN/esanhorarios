@@ -1,0 +1,12 @@
+export { default as ConflictModal } from './ConflictModal';
+export { default as ShareModal } from './ShareModal';
+export { default as SuccessModal } from './SuccessModal';
+export { default as ErrorModal } from './ErrorModal';
+export { default as ModalAgregarCurso } from './ModalAgregarCurso';
+export { default as ModalNota } from './ModalNota';
+export type { ConflictModalProps } from './ConflictModal';
+export type { ShareModalProps } from './ShareModal';
+export type { SuccessModalProps } from './SuccessModal';
+export type { ErrorModalProps } from './ErrorModal';
+export type { ModalAgregarCursoProps } from './ModalAgregarCurso';
+export type { ModalNotaProps } from './ModalNota';

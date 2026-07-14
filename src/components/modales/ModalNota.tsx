@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Input, TextField, Label, ColorArea, ColorField, ColorSlider, parseColor } from "@heroui/react";
 
-function safeParseColor(value, fallback = "#fde68a") {
+function safeParseColor(value: string | undefined, fallback = "#fde68a") {
     try {
         return parseColor(value || fallback);
     } catch {
@@ -11,7 +11,7 @@ function safeParseColor(value, fallback = "#fde68a") {
     }
 }
 
-function asHexColor(value, fallback = "#fde68a") {
+function asHexColor(value: any, fallback = "#fde68a") {
     if (!value) return asHexColor(fallback, "#fde68a");
     if (typeof value === "string") {
         try {
@@ -27,7 +27,7 @@ function asHexColor(value, fallback = "#fde68a") {
     }
 }
 
-function asCssColor(value, fallback = "#fde68a") {
+function asCssColor(value: any, fallback = "#fde68a") {
     try {
         return value.toString("css");
     } catch {
@@ -35,8 +35,15 @@ function asCssColor(value, fallback = "#fde68a") {
     }
 }
 
-function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, previewText }) {
+interface NoteColorPickerProps {
+    color: any;
+    onChange: (color: any) => void;
+    textColorChoice: string;
+    onTextColorChange: (color: string) => void;
+    previewText: string;
+}
 
+function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, previewText }: NoteColorPickerProps) {
     return (
         <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-start">
             <div className="flex flex-col gap-3">
@@ -61,7 +68,6 @@ function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, 
                         <ColorSlider.Thumb />
                     </ColorSlider.Track>
                 </ColorSlider>
-
             </div>
             <div className="flex min-w-0 w-full flex-col gap-2 sm:w-[180px] sm:shrink-0">
                 <ColorField
@@ -102,6 +108,16 @@ function NoteColorPicker({ color, onChange, textColorChoice, onTextColorChange, 
     );
 }
 
+export interface ModalNotaProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (nota: { texto: string; color: string; textColor: string }) => void;
+    instanceKey: string;
+    textoDefault?: string;
+    colorDefault?: string;
+    textColorDefault?: string;
+}
+
 function ModalNota({
     isOpen,
     onClose,
@@ -110,7 +126,7 @@ function ModalNota({
     textoDefault = "",
     colorDefault = "#fde68a",
     textColorDefault = "#111827",
-}) {
+}: ModalNotaProps) {
     const [texto, setTexto] = useState(textoDefault || "");
     const [color, setColor] = useState(() => safeParseColor(colorDefault || "#fde68a"));
     const [textColor, setTextColor] = useState(textColorDefault || "#111827");
@@ -137,7 +153,7 @@ function ModalNota({
             <Modal.Trigger className="sr-only">
                 <span />
             </Modal.Trigger>
-            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open: boolean) => !open && onClose?.()}>
                 <Modal.Container size="md" placement="center">
                     <Modal.Dialog>
                         <Modal.CloseTrigger />

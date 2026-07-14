@@ -1,11 +1,19 @@
 import Link from 'next/link';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import ExcelUploader from '@/components/excel/ExcelUploader';
+import { ChangeEvent } from 'react';
+
+export interface AppHeaderProps {
+    nombreArchivo: string;
+    nombreArchivoTalleres?: string;
+    cargandoArchivo: boolean;
+    onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
+}
 
 /**
  * Encabezado superior de la aplicación: título, zona de carga de Excel y toggle de tema.
  */
-function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }) {
+function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }: AppHeaderProps) {
     const { nombre } = useCarrera();
 
     return (

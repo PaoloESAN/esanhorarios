@@ -1,13 +1,19 @@
 import { Modal, Button } from "@heroui/react";
 import { X } from 'lucide-react';
 
-export default function ErrorModal({ isOpen, onClose, mensaje }) {
+export interface ErrorModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    mensaje: string;
+}
+
+export default function ErrorModal({ isOpen, onClose, mensaje }: ErrorModalProps) {
     return (
         <Modal>
             <Modal.Trigger className="sr-only">
                 <span />
             </Modal.Trigger>
-            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open: boolean) => !open && onClose?.()}>
                 <Modal.Container size="md" placement="center">
                     <Modal.Dialog>
                         <Modal.CloseTrigger />

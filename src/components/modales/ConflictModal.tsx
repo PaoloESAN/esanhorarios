@@ -1,13 +1,20 @@
 import { Modal, Button } from "@heroui/react";
 import { TriangleAlert } from 'lucide-react';
+import { ConflictoInfo } from "@/hooks/useCursos";
 
-export default function ConflictModal({ isOpen, onClose, conflictoInfo }) {
+export interface ConflictModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    conflictoInfo: ConflictoInfo;
+}
+
+export default function ConflictModal({ isOpen, onClose, conflictoInfo }: ConflictModalProps) {
     return (
         <Modal>
             <Modal.Trigger className="sr-only">
                 <span />
             </Modal.Trigger>
-            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+            <Modal.Backdrop isOpen={isOpen} onOpenChange={(open: boolean) => !open && onClose?.()}>
                 <Modal.Container size="md" placement="center">
                     <Modal.Dialog>
                         <Modal.CloseTrigger />

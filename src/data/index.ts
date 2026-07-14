@@ -1,12 +1,7 @@
-// @ts-ignore
 import { ambiental } from './ambiental';
-// @ts-ignore
 import { ciencia_datos } from './ciencia_datos';
-// @ts-ignore
 import { industrial } from './industrial';
-// @ts-ignore
 import { software } from './software';
-// @ts-ignore
 import { ti } from './ti';
 
 export interface Carrera {
