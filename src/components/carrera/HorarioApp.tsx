@@ -1,7 +1,4 @@
-"use client";
-
-import { useState } from "react";
-import dynamic from "next/dynamic";
+import { useState, lazy, Suspense } from "react";
 import { useOverlayState } from "@heroui/react";
 import { useTheme } from "next-themes";
 
@@ -16,8 +13,9 @@ import PanelCursos from "@/components/cursos/PanelCursos";
 import { ConflictModal, SuccessModal, ErrorModal, ModalAgregarCurso } from "@/components/modales";
 import ConfigDrawer from "@/components/modales/ConfigDrawer";
 import ChifaPromo from "@/components/chifa/ChifaPromo";
-const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
-const ShareModal = dynamic(() => import("@/components/modales/ShareModal"), { ssr: false });
+
+const ModalNota = lazy(() => import("@/components/modales/ModalNota"));
+const ShareModal = lazy(() => import("@/components/modales/ShareModal"));
 
 import { useHorarios } from "@/hooks/useHorarios";
 import { useNotas } from "@/hooks/useNotas";
@@ -195,26 +193,28 @@ function HorarioAppInner() {
                     onClose={errorModal.close}
                     mensaje={mensajeModal}
                 />
-                <ShareModal
-                    isOpen={shareModal.isOpen}
-                    onClose={shareModal.close}
-                    dataUrl={compartir.shareDataUrl}
-                    onCopy={compartir.copiarImagen}
-                    onDownload={compartir.descargarImagen}
-                    filename={compartir.shareFilename}
-                    horarioPersonal={horarios.horarioPersonal}
-                    notasCelda={notas.notasCelda}
-                    horarioActivo={horarios.horarioActivo}
-                />
-                <ModalNota
-                    isOpen={noteModal.isOpen}
-                    onClose={noteModal.close}
-                    onSave={guardarNota}
-                    instanceKey={celdaSeleccionada}
-                    textoDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.texto ?? '') : ''}
-                    colorDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.color ?? '#fde68a') : '#fde68a'}
-                    textColorDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.textColor ?? '#111827') : '#111827'}
-                />
+                <Suspense fallback={null}>
+                    <ShareModal
+                        isOpen={shareModal.isOpen}
+                        onClose={shareModal.close}
+                        dataUrl={compartir.shareDataUrl}
+                        onCopy={compartir.copiarImagen}
+                        onDownload={compartir.descargarImagen}
+                        filename={compartir.shareFilename}
+                        horarioPersonal={horarios.horarioPersonal}
+                        notasCelda={notas.notasCelda}
+                        horarioActivo={horarios.horarioActivo}
+                    />
+                    <ModalNota
+                        isOpen={noteModal.isOpen}
+                        onClose={noteModal.close}
+                        onSave={guardarNota}
+                        instanceKey={celdaSeleccionada}
+                        textoDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.texto ?? '') : ''}
+                        colorDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.color ?? '#fde68a') : '#fde68a'}
+                        textColorDefault={celdaSeleccionada ? (notas.notasCelda[celdaSeleccionada]?.textColor ?? '#111827') : '#111827'}
+                    />
+                </Suspense>
                 <ModalAgregarCurso
                     isOpen={addCourseModal.isOpen}
                     onClose={addCourseModal.close}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { crearHorariosVacios, crearSetsVacios, crearMapasVacios } from '@/constants';
-import { useCarrera } from '@/app/[slug]/CarreraContext';
+import { useCarrera } from '@/components/carrera/CarreraContext';
 import { CursoItem } from './useCursos';
 import { ColorCelda } from '@/lib/colores';
 

@@ -1,6 +1,6 @@
 import { useRef, useEffect, ChangeEvent, DragEvent } from 'react';
 import { Button, Select, Label, ListBox, Chip } from '@heroui/react';
-import { useCarrera } from '@/app/[slug]/CarreraContext';
+import { useCarrera } from '@/components/carrera/CarreraContext';
 import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';

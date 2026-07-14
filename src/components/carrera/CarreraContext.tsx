@@ -1,5 +1,3 @@
-"use client";
-
 import { createContext, useContext, ReactNode } from "react";
 import { getCursosPorCiclo, buildCreditosMap, Carrera } from "@/data";
 

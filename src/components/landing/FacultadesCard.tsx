@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { Card, Button } from "@heroui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, Lock, X } from "lucide-react";
@@ -108,7 +108,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                                 transition={{ duration: 0.12, delay: idx * 0.03 }}
                                             >
                                                 <Link
-                                                    href={`/${carrera.slug}`}
+                                                    to={`/${carrera.slug}`}
                                                     className="flex items-center justify-between h-auto py-4 md:py-5 px-5 text-white text-sm md:text-base font-bold w-full rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
                                                     style={{ backgroundColor: col.color }}
                                                 >

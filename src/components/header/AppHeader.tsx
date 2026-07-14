@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { useCarrera } from '@/app/[slug]/CarreraContext';
+import { Link } from '@tanstack/react-router';
+import { useCarrera } from '@/components/carrera/CarreraContext';
 import ExcelUploader from '@/components/excel/ExcelUploader';
 import { ChangeEvent } from 'react';
 
@@ -21,7 +21,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                 <div className="flex items-center gap-3">
                     <Link
-                        href="/"
+                        to="/"
                         title="Volver al inicio"
                         className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-surface-secondary hover:bg-overlay text-foreground transition-colors"
                     >
