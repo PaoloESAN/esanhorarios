@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router"
 // @ts-ignore
 import appCss from "./globals.css?url"
-import { Providers } from "./providers"
+import { Providers } from "./-providers"
 
 export const Route = createRootRoute({
     head: () => ({
@@ -40,7 +40,7 @@ export const Route = createRootRoute({
 
 function RootLayout() {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="es" suppressHydrationWarning>
             <head>
                 <HeadContent />
             </head>

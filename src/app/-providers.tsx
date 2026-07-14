@@ -1,12 +1,9 @@
-'use client';
-
 import { useEffect, ReactNode } from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { Analytics } from '@vercel/analytics/next';
 
 export function Providers({ children }: { children: ReactNode }) {
     useEffect(() => {
-        // Suprimir warnings de hydration causados por React Aria IDs (cosmético, no afecta funcionalidad)
         const originalError = console.error;
         const originalWarn = console.warn;
         console.error = (...args: any[]) => {
