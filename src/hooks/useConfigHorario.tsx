@@ -14,10 +14,8 @@ export interface ConfigHorario {
     tamanoLetra: number;
     alineacion: 'left' | 'center' | 'right';
     ocultarFilasVacias: boolean;
-    fondoChiJauKay: boolean;
-    fondoTiPaKay: boolean;
-    chijaukayDesbloqueado: boolean;
-    tipakayDesbloqueado: boolean;
+    imagenFondo: string | null;
+    opacidadFondo: number;
 }
 
 export interface ConfigHorarioContextType {
@@ -33,10 +31,8 @@ const DEFAULTS: ConfigHorario = {
     tamanoLetra: 14,
     alineacion: 'left',
     ocultarFilasVacias: false,
-    fondoChiJauKay: false,
-    fondoTiPaKay: false,
-    chijaukayDesbloqueado: false,
-    tipakayDesbloqueado: false,
+    imagenFondo: null,
+    opacidadFondo: 35,
 };
 
 const ConfigHorarioContext = createContext<ConfigHorarioContextType | null>(null);

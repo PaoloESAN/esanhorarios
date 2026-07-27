@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
 import PaletaSelector from "@/components/ui/PaletaSelector";
 import { useConfigHorario } from "@/hooks/useConfigHorario";
-import { Brush, Sun, Moon, Palette, UserRound, LayoutList, X, ChevronDown } from 'lucide-react';
+import { Brush, Sun, Moon, Palette, UserRound, LayoutList, X, ChevronDown, Upload, Trash2 } from 'lucide-react';
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 const CAMPOS_LABELS = {
     curso: "Nombre del curso",
@@ -110,10 +110,9 @@ function ConfigDrawer({
                 {/* Body */}
                 <div className="flex-1 overflow-y-auto overscroll-contain px-2 py-3 flex flex-col gap-2">
 
-                    {/* ═══ GRUPO 1 — Apariencia ═══ */}
-                    <Accordion className="w-full" variant="surface" defaultExpandedKeys={["apariencia"]}>
+                    <Accordion className="w-full" variant="surface" defaultExpandedKeys={['apariencia']}>
                         {/* ═══ GRUPO 1 — Apariencia ═══ */}
-                        <Accordion.Item key="apariencia">
+                        <Accordion.Item id="apariencia">
                             <Accordion.Heading>
                                 <Accordion.Trigger>
                                     <Palette size={18} className="text-accent" />
@@ -162,6 +161,95 @@ function ConfigDrawer({
                                                 onChange={cambiarPaleta}
                                                 className="w-full"
                                             />
+                                        </section>
+
+                                        <Divider />
+
+                                        {/* Imagen de fondo del horario */}
+                                        <section className="space-y-3">
+                                            <h4 className="text-sm font-semibold text-foreground-700">
+                                                Imagen de fondo del horario
+                                            </h4>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                id="input-imagen-fondo"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+                                                    const reader = new FileReader();
+                                                    reader.onload = (evt) => {
+                                                        const result = evt.target?.result as string;
+                                                        if (result) {
+                                                            actualizarConfig({ imagenFondo: result });
+                                                        }
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                    e.target.value = "";
+                                                }}
+                                            />
+                                            {config.imagenFondo ? (
+                                                <div className="space-y-3">
+                                                    <div className="relative w-full h-28 rounded-lg overflow-hidden border border-divider group bg-surface-secondary flex items-center justify-center">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img
+                                                            src={config.imagenFondo}
+                                                            alt="Vista previa fondo"
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                                            <Button
+                                                                size="sm"
+                                                                variant="tertiary"
+                                                                className="bg-white/90 text-black hover:bg-white"
+                                                                onPress={() => document.getElementById("input-imagen-fondo")?.click()}
+                                                            >
+                                                                Cambiar
+                                                            </Button>
+                                                            <Button
+                                                                size="sm"
+                                                                variant="danger"
+                                                                onPress={() => actualizarConfig({ imagenFondo: null })}
+                                                            >
+                                                                Quitar
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Opacidad del fondo */}
+                                                    <Slider
+                                                        aria-label="Opacidad de la imagen de fondo"
+                                                        step={5}
+                                                        minValue={10}
+                                                        maxValue={100}
+                                                        value={config.opacidadFondo ?? 35}
+                                                        onChange={(v) => {
+                                                            const nextValue = Array.isArray(v) ? v[0] : v;
+                                                            actualizarConfig({ opacidadFondo: nextValue });
+                                                        }}
+                                                        className="max-w-full"
+                                                    >
+                                                        <div className="mb-1 flex items-center justify-between gap-2">
+                                                            <Label className="text-xs text-foreground-600">Opacidad del fondo</Label>
+                                                            <Slider.Output className="text-xs text-foreground-500" />
+                                                        </div>
+                                                        <Slider.Track>
+                                                            <Slider.Fill />
+                                                            <Slider.Thumb />
+                                                        </Slider.Track>
+                                                    </Slider>
+                                                </div>
+                                            ) : (
+                                                <Button
+                                                    variant="tertiary"
+                                                    className="w-full flex items-center justify-center gap-2 border border-dashed border-divider py-3 text-foreground-600 hover:text-foreground hover:border-accent"
+                                                    onPress={() => document.getElementById("input-imagen-fondo")?.click()}
+                                                >
+                                                    <Upload size={16} />
+                                                    <span>Seleccionar imagen de fondo</span>
+                                                </Button>
+                                            )}
                                         </section>
 
                                         <Divider />
@@ -241,65 +329,13 @@ function ConfigDrawer({
                                                 Ocultar filas vacías al final
                                             </Switch.Content>
                                         </Switch>
-
-                                        {/* ═══ Fondos de Chaufa (ocultos hasta desbloqueo) ═══ */}
-                                        {(config.chijaukayDesbloqueado || config.tipakayDesbloqueado) && (
-                                            <>
-                                                <Divider />
-                                                <section>
-                                                    <h4 className="text-sm font-semibold text-foreground-700 mb-2">
-                                                        Fondo de chaufa
-                                                    </h4>
-                                                    <div className='flex flex-row gap-3'>
-                                                        {config.chijaukayDesbloqueado && (
-                                                            <Switch
-                                                                isSelected={config.fondoChiJauKay}
-                                                                onChange={(v) =>
-                                                                    actualizarConfig({
-                                                                        fondoChiJauKay: v,
-                                                                        ...(v ? { fondoTiPaKay: false } : {}),
-                                                                    })
-                                                                }
-                                                                size="md"
-                                                            >
-                                                                <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
-                                                                    <Switch.Thumb />
-                                                                </Switch.Control>
-                                                                <Switch.Content>
-                                                                    <Label className="text-sm">Chi Jau Kay</Label>
-                                                                </Switch.Content>
-                                                            </Switch>
-                                                        )}
-                                                        {config.tipakayDesbloqueado && (
-                                                            <Switch
-                                                                isSelected={config.fondoTiPaKay}
-                                                                onChange={(v) =>
-                                                                    actualizarConfig({
-                                                                        fondoTiPaKay: v,
-                                                                        ...(v ? { fondoChiJauKay: false } : {}),
-                                                                    })
-                                                                }
-                                                                size="md"
-                                                            >
-                                                                <Switch.Control className="data-[selected=true]:bg-warning data-[selected=true]:border-warning">
-                                                                    <Switch.Thumb />
-                                                                </Switch.Control>
-                                                                <Switch.Content>
-                                                                    <Label className="text-sm">Ti Pa Kay</Label>
-                                                                </Switch.Content>
-                                                            </Switch>
-                                                        )}
-                                                    </div>
-                                                </section>
-                                            </>
-                                        )}
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Panel>
                         </Accordion.Item>
 
                         {/* ═══ GRUPO 2 — Campos visibles ═══ */}
-                        <Accordion.Item key="campos">
+                        <Accordion.Item id="campos">
                             <Accordion.Heading>
                                 <Accordion.Trigger>
                                     <LayoutList size={18} className="text-success" />
@@ -342,7 +378,7 @@ function ConfigDrawer({
                         </Accordion.Item>
 
                         {/* ═══ GRUPO 3 — Formato del profesor ═══ */}
-                        <Accordion.Item key="profesor">
+                        <Accordion.Item id="profesor">
                             <Accordion.Heading>
                                 <Accordion.Trigger>
                                     <UserRound size={18} className="text-warning" />

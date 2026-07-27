@@ -27,8 +27,8 @@ function PaletaSelector({ paletaSeleccionada, coloresActuales, onChange, size = 
             onChange={handleChange}
             aria-label="Selecciona paleta de colores"
             className={className}
+            variant='secondary'
         >
-            <Label>Paleta de colores</Label>
             <Select.Trigger className={`border border-divider shadow-sm ${size === 'sm' ? 'min-h-9' : ''}`}>
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                     <Select.Value className="truncate" />

@@ -62,16 +62,13 @@ function TablaHorario({
     }
 
     // Determinar imagen de fondo de la tabla
-    const fondoImagen = config.fondoChiJauKay
-        ? '/chaufachijaukay.webp'
-        : config.fondoTiPaKay
-            ? '/chaufatipakay.webp'
-            : null;
+    const fondoImagen = config.imagenFondo;
+    const opacidad = (config.opacidadFondo ?? 35) / 100;
 
-    const tieneChaufa = !!fondoImagen;
-    // Clases condicionales: transparente cuando hay chaufa, normal si no
-    const bgHeader = tieneChaufa ? 'bg-transparent' : 'bg-surface-secondary';
-    const bgBody = tieneChaufa ? 'bg-transparent' : '';
+    const tieneFondo = !!fondoImagen;
+    // Clases condicionales: transparente cuando hay imagen de fondo, normal si no
+    const bgHeader = tieneFondo ? 'bg-transparent' : 'bg-surface-secondary';
+    const bgBody = tieneFondo ? 'bg-transparent' : '';
 
     return (
         <div id="tabla-horario" className="overflow-x-auto overflow-hidden relative">
@@ -83,12 +80,12 @@ function TablaHorario({
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        opacity: 0.35,
+                        opacity: opacidad,
                     }}
                 />
             )}
             <table
-                className={`w-full min-w-[640px] md:min-w-[900px] table-fixed border-collapse text-xs md:text-sm relative z-[1] ${tieneChaufa ? 'bg-transparent' : ''}`}
+                className={`w-full min-w-[640px] md:min-w-[900px] table-fixed border-collapse text-xs md:text-sm relative z-[1] ${tieneFondo ? 'bg-transparent' : ''}`}
             >
                 <thead>
                     <tr>

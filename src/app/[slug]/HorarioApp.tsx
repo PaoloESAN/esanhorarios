@@ -15,7 +15,6 @@ import PanelCursos from "@/components/cursos/PanelCursos";
 
 import { ConflictModal, SuccessModal, ErrorModal, ModalAgregarCurso } from "@/components/modales";
 import ConfigDrawer from "@/components/modales/ConfigDrawer";
-import ChifaPromo from "@/components/chifa/ChifaPromo";
 const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
 const ShareModal = dynamic(() => import("@/components/modales/ShareModal"), { ssr: false });
 
@@ -168,9 +167,6 @@ function HorarioAppInner() {
                         </div>
                     </div>
                 </div>
-
-                {/* Promo Chifa la Unión */}
-                <ChifaPromo />
 
                 {/* Pie de página */}
                 <h3 className="text-xs md:text-sm text-foreground-500 text-center mt-4 md:mt-6">

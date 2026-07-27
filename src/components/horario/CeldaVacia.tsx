@@ -15,8 +15,8 @@ export interface CeldaVaciaProps {
  */
 function CeldaVacia({ nota, onAbrirNota, onEditarNota, onQuitarNota }: CeldaVaciaProps) {
     const { config } = useConfigHorario();
-    const tieneChaufa = config.fondoChiJauKay || config.fondoTiPaKay;
-    const bgClass = tieneChaufa
+    const tieneFondo = !!config.imagenFondo;
+    const bgClass = tieneFondo
         ? 'bg-transparent hover:bg-white/10'
         : 'bg-surface hover:bg-surface-secondary';
 
