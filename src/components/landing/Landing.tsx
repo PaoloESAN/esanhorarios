@@ -3,19 +3,17 @@
 import { Button } from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FacultadesCard from "./FacultadesCard";
 import { COLUMNAS } from "./data";
 
+const emptySubscribe = () => () => {};
+
 export default function Landing() {
     const { resolvedTheme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
     const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const activeFacultad = COLUMNAS.find(c => c.facultad === expandedFacultad);
     const bgImage = activeFacultad ? activeFacultad.bgImage : "/esancampus.webp";

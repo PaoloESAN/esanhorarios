@@ -50,7 +50,10 @@ export function ConfigHorarioProvider({ children }: { children: ReactNode }) {
         try {
             const saved = localStorage.getItem("configHorario");
             if (saved) {
-                setConfig((prev) => ({ ...prev, ...JSON.parse(saved) }));
+                const parsed = JSON.parse(saved);
+                queueMicrotask(() => {
+                    setConfig((prev) => ({ ...prev, ...parsed }));
+                });
             }
         } catch { }
     }, []);

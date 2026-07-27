@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
@@ -8,6 +8,7 @@ import PaletaSelector from "@/components/ui/PaletaSelector";
 import { useConfigHorario } from "@/hooks/useConfigHorario";
 import { Brush, Sun, Moon, Palette, UserRound, LayoutList, X, ChevronDown } from 'lucide-react';
 
+const emptySubscribe = () => () => {};
 
 const CAMPOS_LABELS = {
     curso: "Nombre del curso",
@@ -49,8 +50,7 @@ function ConfigDrawer({
 }) {
     const { config, actualizarConfig } = useConfigHorario();
     const { setTheme, resolvedTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
+    const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
     const esDark = mounted && resolvedTheme === 'dark';
 
     // Prevenir scroll del body cuando está abierto

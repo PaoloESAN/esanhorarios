@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Modal, Button, Input, TextField, Label, ColorArea, ColorField, ColorSlider, parseColor } from "@heroui/react";
 
 function safeParseColor(value: string | undefined, fallback = "#fde68a") {
@@ -130,15 +130,16 @@ function ModalNota({
     const [texto, setTexto] = useState(textoDefault || "");
     const [color, setColor] = useState(() => safeParseColor(colorDefault || "#fde68a"));
     const [textColor, setTextColor] = useState(textColorDefault || "#111827");
+    const [prevKey, setPrevKey] = useState({ isOpen, instanceKey });
 
-    useEffect(() => {
+    if (prevKey.isOpen !== isOpen || prevKey.instanceKey !== instanceKey) {
+        setPrevKey({ isOpen, instanceKey });
         if (isOpen) {
             setTexto(textoDefault || "");
             setColor(safeParseColor(colorDefault || "#fde68a"));
             setTextColor(textColorDefault || "#111827");
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, instanceKey]);
+    }
 
     const handleSave = () => {
         onSave?.({

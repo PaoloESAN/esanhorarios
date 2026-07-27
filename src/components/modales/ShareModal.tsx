@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Modal, Button } from "@heroui/react";
 import { Share2, Copy, Download, FileSpreadsheet } from 'lucide-react';
 import { diasSemana, generarHorarios } from '@/lib/horario';
