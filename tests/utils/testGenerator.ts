@@ -1,20 +1,25 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, beforeAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { read, utils } from 'xlsx';
-import { parsearDatosExcel, aliasCorrecciones } from '../../src/lib/excel.js';
-import { normalizar } from '../../src/lib/horario.js';
+import { parsearDatosExcel, aliasCorrecciones, HorariosParseados } from '../../src/lib/excel';
+import { normalizar } from '../../src/lib/horario';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function generarTestCarrera(carreraData) {
-    describe(`CARRERA: ${carreraData.nombre}`, () => {
-        let horariosParseados = {};
+export interface CarreraData {
+    nombre: string;
+    cursos: Record<string, Record<string, any>>;
+}
 
-        let mapaHorariosNormalizados;
-        let mapaAliasNormalizados;
+export function generarTestCarrera(carreraData: CarreraData) {
+    describe(`CARRERA: ${carreraData.nombre}`, () => {
+        let horariosParseados: HorariosParseados = {};
+
+        let mapaHorariosNormalizados: Map<string, any[]>;
+        let mapaAliasNormalizados: Map<string, string>;
 
         beforeAll(() => {
             // Encontrar Excel en la carpeta tests/excel
@@ -37,7 +42,7 @@ export function generarTestCarrera(carreraData) {
             const workbook = read(buffer);
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            const jsonData = utils.sheet_to_json(worksheet, { header: 1 });
+            const jsonData = utils.sheet_to_json<any[]>(worksheet, { header: 1 });
 
             horariosParseados = parsearDatosExcel(jsonData);
 
@@ -46,7 +51,7 @@ export function generarTestCarrera(carreraData) {
             }
 
             mapaHorariosNormalizados = (() => {
-                const map = new Map();
+                const map = new Map<string, any[]>();
                 for (const [clave, valor] of Object.entries(horariosParseados)) {
                     map.set(normalizar(clave), valor);
                 }
@@ -54,7 +59,7 @@ export function generarTestCarrera(carreraData) {
             })();
 
             mapaAliasNormalizados = (() => {
-                const map = new Map();
+                const map = new Map<string, string>();
                 for (const [k, v] of Object.entries(aliasCorrecciones)) {
                     map.set(normalizar(k), normalizar(v));
                 }
@@ -62,7 +67,7 @@ export function generarTestCarrera(carreraData) {
             })();
         });
 
-        const obtenerHorariosPorCurso = (nombreCurso) => {
+        const obtenerHorariosPorCurso = (nombreCurso: string) => {
             const key = normalizar(nombreCurso);
             if (mapaHorariosNormalizados.has(key)) return mapaHorariosNormalizados.get(key);
             const alias = mapaAliasNormalizados.get(key);
@@ -72,11 +77,11 @@ export function generarTestCarrera(carreraData) {
 
         it(`Verificando todos los cursos de la carrera`, () => {
             const ciclos = Object.keys(carreraData.cursos);
-            let erroresAgrupados = [];
+            const erroresAgrupados: string[] = [];
 
             ciclos.forEach(ciclo => {
                 const cursosDelCiclo = Object.keys(carreraData.cursos[ciclo]);
-                const cursosFaltantes = [];
+                const cursosFaltantes: string[] = [];
 
                 for (const curso of cursosDelCiclo) {
                     const nombreMinuscula = curso.toLowerCase();
@@ -93,7 +98,7 @@ export function generarTestCarrera(carreraData) {
 
                 if (cursosFaltantes.length > 0) {
                     const errorMsg = `En ${ciclo}, no se ha encontrado NINGÚN horario en el Excel para:\n` +
-                        cursosFaltantes.map(c => `  ❌ ${c}`).join('\n');
+                        cursosFaltantes.map(c => `  - ${c}`).join('\n');
                     erroresAgrupados.push(errorMsg);
                 }
             });

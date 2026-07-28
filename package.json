@@ -9,11 +9,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
-    "test:software": "vitest software",
-    "test:ti": "vitest ti",
-    "test:ambiental": "vitest ambiental",
-    "test:ciencia_datos": "vitest ciencia_datos",
-    "test:industrial": "vitest industrial"
+    "test:horario": "vitest tests/horario",
+    "test:cursos": "vitest tests/cursos",
+    "test:ingenieria": "vitest tests/cursos/ingenieria.test.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@heroui/react": "^3.2.2",
@@ -31,10 +31,12 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "26.1.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "@vitest/ui": "4.1.10",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "16.2.12",
