@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from 'react';
-import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion } from "@heroui/react";
+import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion, NumberField, Description, FieldError } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
 import PaletaSelector from "@/components/configdrawer/PaletaSelector";
@@ -255,28 +255,30 @@ function ConfigDrawer({
                                         <Divider />
 
                                         {/* Tamaño de letra */}
-                                        <section>
-                                            <Slider
-                                                aria-label="Tamaño de letra"
-                                                step={1}
+                                        <section className="flex items-center justify-between gap-2">
+                                            <h4 className="text-sm font-semibold text-foreground-700">
+                                                Tamaño de letra
+                                            </h4>
+                                            <NumberField
                                                 minValue={10}
                                                 maxValue={18}
+                                                step={1}
                                                 value={config.tamanoLetra}
-                                                onChange={(v) => {
-                                                    const nextValue = Array.isArray(v) ? v[0] : v;
-                                                    actualizarConfig({ tamanoLetra: nextValue });
+                                                onChange={(val) => {
+                                                    if (typeof val === 'number' && !isNaN(val)) {
+                                                        actualizarConfig({ tamanoLetra: val });
+                                                    }
                                                 }}
-                                                className="max-w-full"
+                                                className="max-w-35"
+                                                variant="secondary"
                                             >
-                                                <div className="mb-2 flex items-center justify-between gap-2">
-                                                    <Label className="text-sm font-semibold text-foreground-700">Tamaño de letra en celdas</Label>
-                                                    <Slider.Output className="text-xs text-foreground-500" />
-                                                </div>
-                                                <Slider.Track>
-                                                    <Slider.Fill />
-                                                    <Slider.Thumb />
-                                                </Slider.Track>
-                                            </Slider>
+                                                <NumberField.Group>
+                                                    <NumberField.DecrementButton />
+                                                    <NumberField.Input className="text-center" />
+                                                    <NumberField.IncrementButton />
+                                                </NumberField.Group>
+                                                <FieldError />
+                                            </NumberField>
                                         </section>
 
                                         <Divider />
