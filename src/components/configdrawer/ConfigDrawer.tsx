@@ -4,7 +4,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { Switch, Checkbox, CheckboxGroup, Slider, Button, ButtonGroup, Label, Accordion } from "@heroui/react";
 import { useTheme } from 'next-themes';
 
-import PaletaSelector from "@/components/ui/PaletaSelector";
+import PaletaSelector from "@/components/configdrawer/PaletaSelector";
 import { useConfigHorario } from "@/hooks/useConfigHorario";
 import { Brush, Sun, Moon, Palette, UserRound, LayoutList, X, ChevronDown, Upload, Trash2 } from 'lucide-react';
 
@@ -198,7 +198,7 @@ function ConfigDrawer({
                                                             alt="Vista previa fondo"
                                                             className="w-full h-full object-cover"
                                                         />
-                                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                                        <div className="absolute inset-0 bg-black/50 transition-opacity flex items-center justify-center gap-2">
                                                             <Button
                                                                 size="sm"
                                                                 variant="tertiary"

@@ -173,21 +173,21 @@ export default function ShareModal({
                                     <Button
                                         className="w-full sm:w-auto"
                                         variant="secondary"
-                                        onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
+                                        onPress={onCopy}
                                         isDisabled={!dataUrl}
                                     >
-                                        <FileSpreadsheet size={18} />
-                                        Excel
+                                        <Copy size={18} />
+                                        Copiar imagen
                                     </Button>
                                     <div className="flex gap-2 w-full sm:w-auto">
                                         <Button
                                             className="w-full sm:w-auto"
                                             variant="secondary"
-                                            onPress={onCopy}
+                                            onPress={() => exportarHorarioExcel(horarioPersonal, notasCelda, horarioActivo, config)}
                                             isDisabled={!dataUrl}
                                         >
-                                            <Copy size={18} />
-                                            Copiar imagen
+                                            <FileSpreadsheet size={18} />
+                                            Excel
                                         </Button>
                                         <Button
                                             className="w-full sm:w-auto"

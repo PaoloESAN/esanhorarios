@@ -14,7 +14,7 @@ import TablaHorario from "@/components/horario/TablaHorario";
 import PanelCursos from "@/components/cursos/PanelCursos";
 
 import { ConflictModal, SuccessModal, ErrorModal, ModalAgregarCurso } from "@/components/modales";
-import ConfigDrawer from "@/components/modales/ConfigDrawer";
+import ConfigDrawer from "@/components/configdrawer/ConfigDrawer";
 const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
 const ShareModal = dynamic(() => import("@/components/modales/ShareModal"), { ssr: false });
 
