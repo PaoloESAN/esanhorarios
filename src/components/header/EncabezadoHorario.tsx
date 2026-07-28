@@ -19,7 +19,7 @@ function ContadorCreditos({ total }: ContadorCreditosProps) {
                 offset={10}
                 className="rounded-xl border border-divider bg-content1 shadow-lg"
             >
-                <Popover.Dialog className="px-3 py-2.5 max-w-[240px]">
+                <Popover.Dialog className="px-3 py-2.5 max-w-60">
                     <Popover.Heading className="text-sm font-semibold text-foreground leading-snug text-center">
                         Los créditos máximos son 24
                     </Popover.Heading>
@@ -115,7 +115,7 @@ function EncabezadoHorario({
                     <Button
                         onPress={abrirConfigDrawer}
                         size="sm"
-                        variant="tertiary"
+                        variant="secondary"
                         className="flex-1 border border-warning-200 shadow-sm inline-flex items-center justify-center gap-2"
                     >
                         <Brush size={18} />
@@ -124,7 +124,7 @@ function EncabezadoHorario({
                     <Button
                         onPress={abrirShareModal}
                         size="sm"
-                        variant="tertiary"
+                        variant="secondary"
                         className="flex-1 shadow-sm border border-success-200 inline-flex items-center justify-center gap-2"
                     >
                         <Share2 size={18} />
