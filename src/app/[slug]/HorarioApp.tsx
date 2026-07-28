@@ -120,7 +120,7 @@ function HorarioAppInner() {
                 {/* Layout principal */}
                 <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
                     {/* Tabla de horario */}
-                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-surface rounded-lg shadow-md p-3 md:p-6">
+                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-surface rounded-2xl shadow-md p-3 md:p-6">
                         <EncabezadoHorario
                             horarioActivo={horarios.horarioActivo}
                             creditosTotales={horarios.creditosTotales}

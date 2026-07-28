@@ -59,7 +59,7 @@ function PanelCursos({
     };
 
     return (
-        <div className="bg-surface rounded-lg shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
+        <div className="bg-surface rounded-2xl shadow-md p-3 md:p-6 flex flex-col max-h-[70vh] lg:max-h-none h-full overflow-hidden">
             {/* Cabecera del panel */}
             <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h2 className="text-lg md:text-xl font-semibold text-foreground">Cursos Disponibles</h2>
@@ -155,7 +155,7 @@ function PanelCursos({
                                                     <div className="flex flex-col items-center gap-1">
                                                         <div className="flex items-center gap-1">
                                                             <FileText className="w-3 h-3 text-foreground-500" />
-                                                            <span className="text-xs text-foreground-500 truncate max-w-[140px]">
+                                                            <span className="text-xs text-foreground-500 truncate max-w-35">
                                                                 {nombreArchivoTalleres}
                                                             </span>
                                                         </div>

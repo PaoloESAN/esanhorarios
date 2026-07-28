@@ -14,10 +14,10 @@ export interface AppHeaderProps {
  * Encabezado superior de la aplicación: título, zona de carga de Excel y toggle de tema.
  */
 function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }: AppHeaderProps) {
-    const { nombre } = useCarrera();
+    const { nombre, slug } = useCarrera();
 
     return (
-        <div className="bg-surface rounded-lg shadow-md p-3 md:p-6 mb-3 md:mb-6">
+        <div className="bg-surface rounded-2xl shadow-md p-3 md:p-6 mb-3 md:mb-6">
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                 <div className="flex items-center gap-3">
                     <Link
@@ -40,6 +40,13 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                 </div>
 
                 <div className="flex flex-wrap gap-2 md:gap-3 items-center justify-end">
+                    <Link
+                        href={`/${slug}/malla`}
+                        className="inline-flex items-center gap-2 px-3 py-2 text-xs md:text-sm font-semibold rounded-lg bg-surface-secondary hover:bg-overlay text-foreground border border-overlay transition-colors shadow-sm"
+                        title="Ver Malla Curricular"
+                    >
+                        <span>🎓 Malla Curricular</span>
+                    </Link>
                     <ExcelUploader
                         nombreArchivo={nombreArchivo}
                         nombreArchivoTalleres={nombreArchivoTalleres}
