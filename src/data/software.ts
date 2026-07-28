@@ -1,4 +1,6 @@
-export const software = {
+import { Carrera } from "./index";
+
+export const software: Carrera = {
     nombre: "Ingeniería de Software",
     slug: "software",
     facultad: "Ingeniería",
@@ -9,7 +11,7 @@ export const software = {
             "Precálculo": 4,
             "Programación": 5,
             "Sistemas Operativos I": 3,
-            "Taller: Desarrollo de Competencias Personales I": 1
+            "Taller: Desarrollo de Competencias Personales I": 1,
         },
         "Segundo Ciclo": {
             "Algoritmos y Estructura de Datos": 3,
@@ -18,7 +20,7 @@ export const software = {
             "Estadística I": 4,
             "Ingeniería de Requerimientos": 3,
             "Matemática Discreta": 3,
-            "Taller: Desarrollo de Competencias Profesionales I": 1
+            "Taller: Desarrollo de Competencias Profesionales I": 1,
         },
         "Tercer Ciclo": {
             "Análisis y Diseño de Algoritmos": 3,
@@ -27,7 +29,7 @@ export const software = {
             "Física I": 4,
             "Ingeniería de Procesos de Negocio": 3,
             "Programación Orientada a Objetos": 3,
-            "Taller: Desarrollo de Competencias Personales II": 1
+            "Taller: Desarrollo de Competencias Personales II": 1,
         },
         "Cuarto Ciclo": {
             "Álgebra Lineal I": 5,
@@ -36,7 +38,7 @@ export const software = {
             "Robótica": 3,
             "Sistemas de Gestión de Bases de Datos": 4,
             "UX/UI": 3,
-            "Taller: Desarrollo de Competencias Profesionales II": 1
+            "Taller: Desarrollo de Competencias Profesionales II": 1,
         },
         "Quinto Ciclo": {
             "Análisis Multivariado": 4,
@@ -45,7 +47,7 @@ export const software = {
             "Desarrollo de Aplicaciones Web": 3,
             "Diseño de Patrones de Software": 3,
             "Prueba de Software": 3,
-            "Taller: Desarrollo de Competencias Personales III": 1
+            "Taller: Desarrollo de Competencias Personales III": 1,
         },
         "Sexto Ciclo": {
             "Arquitectura de Software y Soluciones": 3,
@@ -56,7 +58,7 @@ export const software = {
             "Technological Entrepreneurship": 3,
             "Electivo Internacional I": 1.5,
             "Electivo Internacional II": 1.5,
-            "Taller: Desarrollo de Competencias Personales IV": 1
+            "Taller: Desarrollo de Competencias Personales IV": 1,
         },
         "Séptimo Ciclo": {
             "Calidad de Software": 3,
@@ -65,7 +67,7 @@ export const software = {
             "Estrategia Comercial y Legal de Software": 3,
             "Finanzas para Startups Tecnológicas": 3,
             "Gerencia de Proyectos de Software": 3,
-            "Inteligencia Artificial Generativa": 3
+            "Inteligencia Artificial Generativa": 3,
         },
         "Octavo Ciclo": {
             "Capstone Project I": 3,
@@ -73,7 +75,7 @@ export const software = {
             "Diseño de Sistemas Inteligentes": 3,
             "Marketing Digital para Tecnologías": 3,
             "Realidad Virtual e Inmersiva": 3,
-            "Electivo I": 3
+            "Electivo I": 3,
         },
         "Noveno Ciclo": {
             "Proyecto StartUp": 3,
@@ -81,14 +83,76 @@ export const software = {
             "Trabajo de Tesis I": 3,
             "Electivo II": 3,
             "Electivo III": 3,
-            "Electivo IV": 3
+            "Electivo IV": 3,
         },
         "Décimo Ciclo": {
             "Trabajo de Tesis II": 3,
             "Electivo V": 3,
             "Electivo VI": 3,
             "Electivo VII": 3,
-            "Electivo VIII": 3
-        }
-    }
+            "Electivo VIII": 3,
+        },
+    },
+    prerrequisitos: {
+        "Algoritmos y Estructura de Datos": { prerequisitos: ["Programación"] },
+        "Arquitectura del Computador I": { prerequisitos: ["Programación"] },
+        "Cálculo I": { prerequisitos: ["Precálculo"] },
+        "Estadística I": { prerequisitos: ["Precálculo"] },
+        "Ingeniería de Requerimientos": { prerequisitos: ["Programación"] },
+        "Matemática Discreta": { prerequisitos: ["Precálculo"] },
+        "Análisis y Diseño de Algoritmos": { prerequisitos: ["Algoritmos y Estructura de Datos"] },
+        "Cálculo II": { prerequisitos: ["Cálculo I"] },
+        "Estadística II": { prerequisitos: ["Estadística I"] },
+        "Física I": { prerequisitos: ["Precálculo"] },
+        "Ingeniería de Procesos de Negocio": { prerequisitos: ["Ingeniería de Requerimientos"] },
+        "Programación Orientada a Objetos": { prerequisitos: ["Algoritmos y Estructura de Datos"] },
+        "Taller: Desarrollo de Competencias Personales II": { prerequisitos: ["Taller: Desarrollo de Competencias Personales I"] },
+        "Álgebra Lineal I": { prerequisitos: ["Cálculo II"] },
+        "Ingeniería de Software I": { prerequisitos: ["Programación Orientada a Objetos"] },
+        "Redes de Comunicaciones": { prerequisitos: ["Sistemas Operativos I", "Taller: Desarrollo de Competencias Personales II"] },
+        "Robótica": { prerequisitos: ["Arquitectura del Computador I"] },
+        "Sistemas de Gestión de Bases de Datos": { prerequisitos: ["Programación Orientada a Objetos"] },
+        "UX/UI": { prerequisitos: ["Ingeniería de Requerimientos"] },
+        "Taller: Desarrollo de Competencias Profesionales II": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales I"] },
+        "Análisis Multivariado": { prerequisitos: ["Estadística II"] },
+        "Bases de Datos Avanzadas": { prerequisitos: ["Sistemas de Gestión de Bases de Datos"] },
+        "Desarrollo de Aplicaciones Móviles": { prerequisitos: ["Programación Orientada a Objetos"] },
+        "Desarrollo de Aplicaciones Web": { prerequisitos: ["Programación Orientada a Objetos", "Taller: Desarrollo de Competencias Profesionales II"] },
+        "Diseño de Patrones de Software": { prerequisitos: ["Ingeniería de Software I"] },
+        "Prueba de Software": { prerequisitos: ["Ingeniería de Procesos de Negocio", "Ingeniería de Software I"] },
+        "Taller: Desarrollo de Competencias Personales III": { prerequisitos: ["Taller: Desarrollo de Competencias Personales II"] },
+        "Arquitectura de Software y Soluciones": { prerequisitos: ["Ingeniería de Software I"] },
+        "Computación en la Nube": { prerequisitos: ["Desarrollo de Aplicaciones Web", "Redes de Comunicaciones"] },
+        "Ethical Hacking y Ciberseguridad": { prerequisitos: ["Análisis y Diseño de Algoritmos", "Arquitectura del Computador I"] },
+        "Machine Learning": { prerequisitos: ["Análisis Multivariado"] },
+        "Software Factory & Gestión de Proyectos Ágiles": { prerequisitos: ["Ingeniería de Software I"] },
+        "Technological Entrepreneurship": { creditosRequeridos: 100 },
+        "Electivo Internacional I": { segunElectivo: true },
+        "Electivo Internacional II": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Personales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Personales III"] },
+        "Calidad de Software": { prerequisitos: ["Ingeniería de Software I"] },
+        "Desarrollo de Videojuegos": { prerequisitos: ["Diseño de Patrones de Software"] },
+        "DevOps & DevSecOps": { prerequisitos: ["Computación en la Nube"] },
+        "Estrategia Comercial y Legal de Software": { prerequisitos: ["Technological Entrepreneurship"] },
+        "Finanzas para Startups Tecnológicas": { prerequisitos: ["Cálculo II"] },
+        "Gerencia de Proyectos de Software": { prerequisitos: ["Software Factory & Gestión de Proyectos Ágiles"] },
+        "Inteligencia Artificial Generativa": { prerequisitos: ["Machine Learning"] },
+        "Capstone Project I": { prerequisitos: ["DevOps & DevSecOps"] },
+        "Diseño de Componentes y APIs": { prerequisitos: ["Arquitectura de Software y Soluciones"] },
+        "Diseño de Sistemas Inteligentes": { prerequisitos: ["Inteligencia Artificial Generativa"] },
+        "Marketing Digital para Tecnologías": { prerequisitos: ["Gerencia de Proyectos de Software"] },
+        "Realidad Virtual e Inmersiva": { prerequisitos: ["Inteligencia Artificial Generativa"] },
+        "Electivo I": { segunElectivo: true },
+        "Proyecto StartUp": { prerequisitos: ["Technological Entrepreneurship"] },
+        "Sistemas Distribuidos": { prerequisitos: ["DevOps & DevSecOps"] },
+        "Trabajo de Tesis I": { creditosRequeridos: 140 },
+        "Electivo II": { segunElectivo: true },
+        "Electivo III": { segunElectivo: true },
+        "Electivo IV": { segunElectivo: true },
+        "Trabajo de Tesis II": { prerequisitos: ["Trabajo de Tesis I"] },
+        "Electivo V": { segunElectivo: true },
+        "Electivo VI": { segunElectivo: true },
+        "Electivo VII": { segunElectivo: true },
+        "Electivo VIII": { segunElectivo: true },
+    },
 };

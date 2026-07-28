@@ -1,4 +1,6 @@
-export const ambiental = {
+import { Carrera } from "./index";
+
+export const ambiental: Carrera = {
     nombre: "Ingeniería Ambiental",
     slug: "ambiental",
     facultad: "Ingeniería",
@@ -10,7 +12,7 @@ export const ambiental = {
             "Introducción a la Ingeniería Ambiental": 3,
             "Precálculo": 4,
             "Programación": 5,
-            "Taller: Desarrollo de Competencias Personales I": 1
+            "Taller: Desarrollo de Competencias Personales I": 1,
         },
         "Segundo Ciclo": {
             "Biología": 4,
@@ -19,7 +21,7 @@ export const ambiental = {
             "Economía y Medio Ambiente": 3,
             "Física I": 4,
             "Química I": 4,
-            "Taller: Desarrollo de Competencias Profesionales I": 1
+            "Taller: Desarrollo de Competencias Profesionales I": 1,
         },
         "Tercer Ciclo": {
             "Cálculo II": 5,
@@ -27,7 +29,7 @@ export const ambiental = {
             "Física II": 4,
             "Microbiología Ambiental": 4,
             "Química II": 4,
-            "Taller: Desarrollo de Competencias Personales II": 1
+            "Taller: Desarrollo de Competencias Personales II": 1,
         },
         "Cuarto Ciclo": {
             "Cálculo Avanzado": 4,
@@ -36,7 +38,7 @@ export const ambiental = {
             "Química Ambiental": 4,
             "Termodinámica": 4,
             "Electivo I": 3,
-            "Taller: Desarrollo de Competencias Profesionales II": 1
+            "Taller: Desarrollo de Competencias Profesionales II": 1,
         },
         "Quinto Ciclo": {
             "Data Analytics": 3,
@@ -45,7 +47,7 @@ export const ambiental = {
             "Meteorología y Climatología": 4,
             "Operaciones y Procesos en la Ingeniería Ambiental I": 4,
             "Electivo II": 3,
-            "Taller: Desarrollo de Competencias Personales III": 1
+            "Taller: Desarrollo de Competencias Personales III": 1,
         },
         "Sexto Ciclo": {
             "Derecho y Legislación Ambiental": 3,
@@ -54,7 +56,7 @@ export const ambiental = {
             "Tecnologías para la Gestión Ambiental: Aire, Agua y Suelo": 5,
             "Electivo Internacional I": 1.5,
             "Electivo Internacional II": 1.5,
-            "Taller: Desarrollo de Competencias Profesionales III": 1
+            "Taller: Desarrollo de Competencias Profesionales III": 1,
         },
         "Séptimo Ciclo": {
             "Economía Circular y Negocios Sostenibles": 3,
@@ -63,7 +65,7 @@ export const ambiental = {
             "Operaciones y Procesos en la Ingeniería Ambiental II": 4,
             "Sustainable Tech: Herramientas para la Ecoeficiencia": 3,
             "Electivo III": 3,
-            "Taller: Desarrollo de Competencias Personales IV": 1
+            "Taller: Desarrollo de Competencias Personales IV": 1,
         },
         "Octavo Ciclo": {
             "Diseño y Evaluación de Proyectos Sostenibles": 3,
@@ -71,21 +73,77 @@ export const ambiental = {
             "Negociación y Manejo de Conflictos Socioambientales": 3,
             "Tecnologías de Energías Renovables": 4,
             "Electivo IV": 3,
-            "Taller: Desarrollo de Competencias Profesionales IV": 1
+            "Taller: Desarrollo de Competencias Profesionales IV": 1,
         },
         "Noveno Ciclo": {
             "Sustainable Capstone Project": 3,
             "Trabajo de Tesis I": 3,
             "Electivo V": 3,
             "Electivo VI": 3,
-            "Electivo VII": 3
+            "Electivo VII": 3,
         },
         "Décimo Ciclo": {
             "Trabajo de Tesis II": 3,
             "Electivo VIII": 3,
             "Electivo IX": 3,
             "Electivo X": 3,
-            "Taller: Desarrollo de Competencias Profesionales V": 1
-        }
-    }
+            "Taller: Desarrollo de Competencias Profesionales V": 1,
+        },
+    },
+    prerrequisitos: {
+        "Cálculo I": { prerequisitos: ["Precálculo"] },
+        "Ciencias del Suelo": { prerequisitos: ["Geografía Física"] },
+        "Economía y Medio Ambiente": { prerequisitos: ["Precálculo"] },
+        "Física I": { prerequisitos: ["Precálculo"] },
+        "Cálculo II": { prerequisitos: ["Cálculo I"] },
+        "Ecología y Educación Ambiental": { prerequisitos: ["Biología", "Ciencias del Suelo"] },
+        "Física II": { prerequisitos: ["Física I"] },
+        "Microbiología Ambiental": { prerequisitos: ["Química I", "Biología"] },
+        "Química II": { prerequisitos: ["Química I"] },
+        "Taller: Desarrollo de Competencias Personales II": { prerequisitos: ["Taller: Desarrollo de Competencias Personales I"] },
+        "Cálculo Avanzado": { prerequisitos: ["Cálculo II"] },
+        "Estadística II": { prerequisitos: ["Estadística I", "Cálculo I"] },
+        "Fundamentos de Inteligencia Artificial": { prerequisitos: ["Programación"] },
+        "Química Ambiental": { prerequisitos: ["Química II"] },
+        "Termodinámica": { prerequisitos: ["Física I", "Cálculo II"] },
+        "Electivo I": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales II": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales I"] },
+        "Data Analytics": { prerequisitos: ["Estadística II"] },
+        "Geographic Information System": { prerequisitos: ["Fundamentos de Inteligencia Artificial", "Estadística II"] },
+        "Mecánica de Fluidos": { prerequisitos: ["Física II"] },
+        "Meteorología y Climatología": { prerequisitos: ["Termodinámica"] },
+        "Operaciones y Procesos en la Ingeniería Ambiental I": { prerequisitos: ["Cálculo Avanzado", "Termodinámica"] },
+        "Electivo II": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Personales III": { prerequisitos: ["Taller: Desarrollo de Competencias Personales II"] },
+        "Derecho y Legislación Ambiental": { creditosRequeridos: 60 },
+        "Hidrología": { prerequisitos: ["Meteorología y Climatología", "Mecánica de Fluidos"] },
+        "Ordenamiento Territorial": { prerequisitos: ["Geographic Information System", "Data Analytics"] },
+        "Tecnologías para la Gestión Ambiental: Aire, Agua y Suelo": { prerequisitos: ["Química Ambiental", "Ciencias del Suelo", "Microbiología Ambiental", "Data Analytics"] },
+        "Electivo Internacional I": { segunElectivo: true },
+        "Electivo Internacional II": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales III": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales II"] },
+        "Economía Circular y Negocios Sostenibles": { prerequisitos: ["Economía y Medio Ambiente"] },
+        "Evaluación del Impacto Ambiental": { prerequisitos: ["Derecho y Legislación Ambiental", "Geographic Information System"] },
+        "Gestión Integral de Residuos Sólidos": { prerequisitos: ["Operaciones y Procesos en la Ingeniería Ambiental I"] },
+        "Operaciones y Procesos en la Ingeniería Ambiental II": { prerequisitos: ["Operaciones y Procesos en la Ingeniería Ambiental I", "Hidrología"] },
+        "Sustainable Tech: Herramientas para la Ecoeficiencia": { prerequisitos: ["Operaciones y Procesos en la Ingeniería Ambiental I", "Fundamentos de Inteligencia Artificial"] },
+        "Electivo III": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Personales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Personales III"] },
+        "Diseño y Evaluación de Proyectos Sostenibles": { prerequisitos: ["Economía Circular y Negocios Sostenibles", "Evaluación del Impacto Ambiental"] },
+        "Gestión de Recursos Hídricos": { prerequisitos: ["Ordenamiento Territorial", "Hidrología", "Evaluación del Impacto Ambiental", "Sustainable Tech: Herramientas para la Ecoeficiencia"] },
+        "Negociación y Manejo de Conflictos Socioambientales": { prerequisitos: ["Derecho y Legislación Ambiental", "Evaluación del Impacto Ambiental"] },
+        "Tecnologías de Energías Renovables": { prerequisitos: ["Operaciones y Procesos en la Ingeniería Ambiental II"] },
+        "Electivo IV": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales III"] },
+        "Sustainable Capstone Project": { prerequisitos: ["Negociación y Manejo de Conflictos Socioambientales", "Diseño y Evaluación de Proyectos Sostenibles", "Tecnologías de Energías Renovables"] },
+        "Trabajo de Tesis I": { creditosRequeridos: 140 },
+        "Electivo V": { segunElectivo: true },
+        "Electivo VI": { segunElectivo: true },
+        "Electivo VII": { segunElectivo: true },
+        "Trabajo de Tesis II": { prerequisitos: ["Trabajo de Tesis I"] },
+        "Electivo VIII": { segunElectivo: true },
+        "Electivo IX": { segunElectivo: true },
+        "Electivo X": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales V": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales IV"] },
+    },
 };

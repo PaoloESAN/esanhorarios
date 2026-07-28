@@ -22,10 +22,10 @@ export const COLUMNAS: FacultadColumna[] = [
         colorLight: "#fee2e2",
         icon: "/toro.webp",
         carreras: [
-            { nombre: "Economía", activa: false },
-            { nombre: "Economía y Finanzas", activa: false },
-            { nombre: "Economía y Neg. Internacionales", activa: false },
-            { nombre: "Contabilidad", activa: false },
+            { nombre: "Economía", slug: "economia_pura", activa: true },
+            { nombre: "Economía y Finanzas", slug: "economia_finanzas", activa: true },
+            { nombre: "Economía y Neg. Internacionales", slug: "economia", activa: true },
+            { nombre: "Contabilidad", slug: "contabilidad", activa: true },
         ],
     },
     {
@@ -35,11 +35,11 @@ export const COLUMNAS: FacultadColumna[] = [
         colorLight: "#dbeafe",
         icon: "/lobo.webp",
         carreras: [
-            { nombre: "Administración", activa: false },
-            { nombre: "Adm. y Finanzas", activa: false },
+            { nombre: "Administración", slug: "administracion", activa: true },
+            { nombre: "Adm. y Finanzas", slug: "adm_finanzas", activa: true },
             { nombre: "Adm. y Marketing", activa: false },
-            { nombre: "Adm. y Neg. Internacionales", activa: false },
-            { nombre: "Com. Empresarial y Mkt. Digital", activa: false },
+            { nombre: "Adm. y Neg. Internacionales", slug: "adm_negocios", activa: true },
+            { nombre: "Com. Empresarial y Mkt. Digital", slug: "comunicacion_mkt", activa: true },
         ],
     },
     {
@@ -54,7 +54,7 @@ export const COLUMNAS: FacultadColumna[] = [
             { nombre: "Ciencia de Datos", slug: "ciencia_datos", activa: true },
             { nombre: "Ing. Ambiental", slug: "ambiental", activa: true },
             { nombre: "Ing. Industrial y Comercial", slug: "industrial", activa: true },
-            { nombre: "Ing. en Inteligencia Artificial", activa: false },
+            { nombre: "Ing. en Inteligencia Artificial", slug: "ia", activa: true },
         ],
     },
     {
@@ -64,9 +64,9 @@ export const COLUMNAS: FacultadColumna[] = [
         colorLight: "#fef08a",
         icon: "/leon.webp",
         carreras: [
-            { nombre: "Derecho Corporativo", activa: false },
-            { nombre: "Psicología", activa: false },
-            { nombre: "Derecho", activa: false },
+            { nombre: "Derecho Corporativo", slug: "derecho_corporativo", activa: true },
+            { nombre: "Psicología", slug: "psicologia", activa: true },
+            { nombre: "Derecho", slug: "derecho", activa: true },
         ],
     },
 ];

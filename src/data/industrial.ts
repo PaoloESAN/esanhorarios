@@ -1,4 +1,6 @@
-export const industrial = {
+import { Carrera } from "./index";
+
+export const industrial: Carrera = {
     nombre: "Ingeniería Industrial y Comercial",
     slug: "industrial",
     facultad: "Ingeniería",
@@ -11,16 +13,16 @@ export const industrial = {
             "Introducción a la Ingeniería Industrial y Comercial": 3,
             "Pensamiento Crítico": 2,
             "Pre Cálculo": 3,
-            "Taller: Desarrollo de competencias personales I": 1
+            "Taller: Desarrollo de competencias personales I": 1,
         },
         "Segundo Ciclo": {
-            "Análisis de Datos I (ING)": 3,
+            "Análisis de Datos I": 3,
             "Cálculo I": 4,
             "Comunicación y literatura II": 3,
             "Contabilidad General": 3,
             "Diseño de Ingeniería I": 3,
             "Química I": 4,
-            "Taller: Desarrollo de competencias profesionales I": 1
+            "Taller: Desarrollo de competencias profesionales I": 1,
         },
         "Tercer Ciclo": {
             "Cálculo II": 4,
@@ -28,7 +30,7 @@ export const industrial = {
             "Estadística Inferencial": 5,
             "Física I": 4,
             "Química II": 4,
-            "Taller: Desarrollo de Competencias Personales II": 1
+            "Taller: Desarrollo de Competencias Personales II": 1,
         },
         "Cuarto Ciclo": {
             "Cálculo Avanzado": 4,
@@ -36,7 +38,7 @@ export const industrial = {
             "Economía General": 4,
             "Física II": 4,
             "Investigación Operativa I": 4,
-            "Taller: Desarrollo de Competencias profesionales II": 1
+            "Taller: Desarrollo de Competencias profesionales II": 1,
         },
         "Quinto Ciclo": {
             "Electivo I": 3,
@@ -45,7 +47,7 @@ export const industrial = {
             "Ingeniería de Materiales": 4,
             "Investigación Operativa II": 4,
             "Planeamiento y Control de la Producción": 4,
-            "Taller: Desarrollo de Competencias Personales III": 1
+            "Taller: Desarrollo de Competencias Personales III": 1,
         },
         "Sexto Ciclo": {
             "Análisis de Datos II": 3,
@@ -55,7 +57,7 @@ export const industrial = {
             "Metodología de la Investigación": 3,
             "Procesos de Fabricación": 3,
             "Resistencia de Materiales": 4,
-            "Taller: Desarrollo de Competencias Profesionales III": 1
+            "Taller: Desarrollo de Competencias Profesionales III": 1,
         },
         "Séptimo Ciclo": {
             "Electivo IV": 3,
@@ -65,7 +67,7 @@ export const industrial = {
             "Procesos de Fabricación Digital": 3,
             "Quality Management and Customer Services": 4,
             "Strategic Planning for Engineering": 3,
-            "Taller: Desarrollo de Competencias Personales IV": 1
+            "Taller: Desarrollo de Competencias Personales IV": 1,
         },
         "Octavo Ciclo": {
             "Diseño y Evaluación de Proyectos": 4,
@@ -74,7 +76,7 @@ export const industrial = {
             "Entrepreneurship": 4,
             "Operations and Supply Chain Management II": 3,
             "Product Engineering": 4,
-            "Taller: Desarrollo de Competencias Profesionales IV": 1
+            "Taller: Desarrollo de Competencias Profesionales IV": 1,
         },
         "Noveno Ciclo": {
             "Electivo VII": 3,
@@ -83,7 +85,7 @@ export const industrial = {
             "Project Management": 3,
             "Simulación de Procesos": 4,
             "Taller: Desarrollo de Competencias Personales V": 1,
-            "Trabajo de Tesis I": 3
+            "Trabajo de Tesis I": 3,
         },
         "Décimo Ciclo": {
             "Capstone Project": 5,
@@ -92,7 +94,68 @@ export const industrial = {
             "Electivo X": 3,
             "Electivo XI": 3,
             "Taller: Desarrollo de Competencias Profesionales V": 1,
-            "Trabajo de Tesis II": 3
-        }
-    }
+            "Trabajo de Tesis II": 3,
+        },
+    },
+    prerrequisitos: {
+        "Análisis de Datos I": { prerequisitos: ["Estadística y Probabilidades"] },
+        "Cálculo I": { prerequisitos: ["Pre Cálculo"] },
+        "Comunicación y literatura II": { prerequisitos: ["Comunicación y literatura I"] },
+        "Cálculo II": { prerequisitos: ["Cálculo I"] },
+        "Diseño de Ingeniería II": { prerequisitos: ["Diseño de Ingeniería I"] },
+        "Estadística Inferencial": { prerequisitos: ["Estadística y Probabilidades", "Cálculo I"] },
+        "Física I": { prerequisitos: ["Cálculo I"] },
+        "Química II": { prerequisitos: ["Química I"] },
+        "Taller: Desarrollo de Competencias Personales II": { prerequisitos: ["Taller: Desarrollo de competencias personales I"] },
+        "Cálculo Avanzado": { prerequisitos: ["Cálculo II"] },
+        "Costos y Presupuestos": { prerequisitos: ["Contabilidad General"] },
+        "Economía General": { prerequisitos: ["Globalización y Realidad Nacional"] },
+        "Física II": { prerequisitos: ["Física I"] },
+        "Investigación Operativa I": { prerequisitos: ["Cálculo II"] },
+        "Taller: Desarrollo de Competencias profesionales II": { prerequisitos: ["Taller: Desarrollo de competencias profesionales I"] },
+        "Electivo I": { segunElectivo: true },
+        "Estática": { prerequisitos: ["Física I", "Cálculo II"] },
+        "Finanzas para Ingeniería I": { prerequisitos: ["Contabilidad General"] },
+        "Ingeniería de Materiales": { prerequisitos: ["Física II", "Química II"] },
+        "Investigación Operativa II": { prerequisitos: ["Investigación Operativa I"] },
+        "Planeamiento y Control de la Producción": { prerequisitos: ["Investigación Operativa I"] },
+        "Taller: Desarrollo de Competencias Personales III": { prerequisitos: ["Taller: Desarrollo de Competencias Personales II"] },
+        "Análisis de Datos II": { prerequisitos: ["Estadística Inferencial", "Análisis de Datos I"] },
+        "Electivo II": { segunElectivo: true },
+        "Electivo III": { segunElectivo: true },
+        "Ingeniería de Procesos": { prerequisitos: ["Planeamiento y Control de la Producción"] },
+        "Metodología de la Investigación": { creditosRequeridos: 105 },
+        "Procesos de Fabricación": { prerequisitos: ["Diseño de Ingeniería I", "Ingeniería de Materiales"] },
+        "Resistencia de Materiales": { prerequisitos: ["Estática"] },
+        "Taller: Desarrollo de Competencias Profesionales III": { prerequisitos: ["Taller: Desarrollo de Competencias profesionales II"] },
+        "Electivo IV": { segunElectivo: true },
+        "Estudio del Impacto Ambiental": { prerequisitos: ["Ingeniería de Materiales"] },
+        "Finanzas para Ingeniería II": { prerequisitos: ["Finanzas para Ingeniería I"] },
+        "Operations and Supply Chain Management I": { prerequisitos: ["Investigación Operativa I"] },
+        "Procesos de Fabricación Digital": { prerequisitos: ["Procesos de Fabricación"] },
+        "Quality Management and Customer Services": { prerequisitos: ["Estadística Inferencial"] },
+        "Strategic Planning for Engineering": { prerequisitos: ["Planeamiento y Control de la Producción", "Finanzas para Ingeniería I"], creditosRequeridos: 110 },
+        "Taller: Desarrollo de Competencias Personales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Personales III"] },
+        "Diseño y Evaluación de Proyectos": { prerequisitos: ["Finanzas para Ingeniería II", "Estudio del Impacto Ambiental"] },
+        "Electivo V": { segunElectivo: true },
+        "Electivo VI": { segunElectivo: true },
+        "Entrepreneurship": { creditosRequeridos: 110 },
+        "Operations and Supply Chain Management II": { prerequisitos: ["Operations and Supply Chain Management I"] },
+        "Product Engineering": { prerequisitos: ["Procesos de Fabricación Digital"] },
+        "Taller: Desarrollo de Competencias Profesionales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales III"] },
+        "Electivo VII": { segunElectivo: true },
+        "Electivo VIII": { segunElectivo: true },
+        "Electivo IX": { segunElectivo: true },
+        "Project Management": { prerequisitos: ["Operations and Supply Chain Management II"] },
+        "Simulación de Procesos": { creditosRequeridos: 160 },
+        "Taller: Desarrollo de Competencias Personales V": { prerequisitos: ["Taller: Desarrollo de Competencias Personales IV"] },
+        "Trabajo de Tesis I": { creditosRequeridos: 140 },
+        "Capstone Project": { prerequisitos: ["Diseño y Evaluación de Proyectos"] },
+        "Electivo Internacional I": { segunElectivo: true },
+        "Electivo Internacional II": { segunElectivo: true },
+        "Electivo X": { segunElectivo: true },
+        "Electivo XI": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales V": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales IV"] },
+        "Trabajo de Tesis II": { prerequisitos: ["Trabajo de Tesis I"] },
+    },
 };

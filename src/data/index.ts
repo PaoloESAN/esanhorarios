@@ -1,14 +1,33 @@
+import { adm_finanzas } from './adm_finanzas';
+import { adm_negocios } from './adm_negocios';
+import { administracion } from './administracion';
 import { ambiental } from './ambiental';
 import { ciencia_datos } from './ciencia_datos';
+import { comunicacion_mkt } from './comunicacion_mkt';
+import { contabilidad } from './contabilidad';
+import { derecho } from './derecho';
+import { derecho_corporativo } from './derecho_corporativo';
+import { economia } from './economia';
+import { economia_finanzas } from './economia_finanzas';
+import { economia_pura } from './economia_pura';
+import { ia } from './ia';
 import { industrial } from './industrial';
+import { psicologia } from './psicologia';
 import { software } from './software';
 import { ti } from './ti';
+
+export interface RequisitoCurso {
+    prerequisitos?: string[];
+    creditosRequeridos?: number;
+    segunElectivo?: boolean;
+}
 
 export interface Carrera {
     nombre: string;
     slug: string;
     facultad: string;
     cursos: Record<string, Record<string, number>>;
+    prerrequisitos?: Record<string, RequisitoCurso>;
 }
 
 /**
@@ -17,9 +36,21 @@ export interface Carrera {
  * e impórtalo aquí.
  */
 export const carreras: Record<string, Carrera> = {
+    adm_finanzas,
+    adm_negocios,
+    administracion,
     ambiental,
     ciencia_datos,
+    comunicacion_mkt,
+    contabilidad,
+    derecho,
+    derecho_corporativo,
+    economia,
+    economia_finanzas,
+    economia_pura,
+    ia,
     industrial,
+    psicologia,
     software,
     ti,
 };

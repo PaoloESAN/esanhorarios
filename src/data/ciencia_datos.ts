@@ -1,4 +1,6 @@
-export const ciencia_datos = {
+import { Carrera } from "./index";
+
+export const ciencia_datos: Carrera = {
     nombre: "Ingeniería en Ciencia de Datos",
     slug: "ciencia_datos",
     facultad: "Ingeniería",
@@ -10,7 +12,7 @@ export const ciencia_datos = {
             "Introducción a la Gestión de Datos": 3,
             "Precálculo": 4,
             "Programación": 5,
-            "Taller: Desarrollo de Competencias Personales I": 1
+            "Taller: Desarrollo de Competencias Personales I": 1,
         },
         "Segundo Ciclo": {
             "Cálculo I": 5,
@@ -18,7 +20,7 @@ export const ciencia_datos = {
             "Estadística I": 4,
             "Filosofía y Ética": 3,
             "Programación para Ciencia de Datos": 3,
-            "Taller: Desarrollo de Competencias Profesionales I": 1
+            "Taller: Desarrollo de Competencias Profesionales I": 1,
         },
         "Tercer Ciclo": {
             "Algoritmos y Estructura de Datos": 3,
@@ -27,7 +29,7 @@ export const ciencia_datos = {
             "Estadística II": 4,
             "Sistemas de Gestión de Bases de Datos": 4,
             "Visualización de Datos": 3,
-            "Taller: Desarrollo de Competencias Personales II": 1
+            "Taller: Desarrollo de Competencias Personales II": 1,
         },
         "Cuarto Ciclo": {
             "Álgebra Lineal I": 5,
@@ -35,7 +37,7 @@ export const ciencia_datos = {
             "Fundamentos de Gestión de Proyectos": 3,
             "Matemática Discreta": 3,
             "Probabilidad": 4,
-            "Taller: Desarrollo de Competencias Profesionales II": 1
+            "Taller: Desarrollo de Competencias Profesionales II": 1,
         },
         "Quinto Ciclo": {
             "Análisis de Regresión": 3,
@@ -44,7 +46,7 @@ export const ciencia_datos = {
             "Integración e Ingeniería de Datos": 3,
             "Investigación Operativa I": 4,
             "Sistemas Operativos I": 3,
-            "Taller: Desarrollo de Competencias Personales III": 1
+            "Taller: Desarrollo de Competencias Personales III": 1,
         },
         "Sexto Ciclo": {
             "Almacenamiento y Recuperación de Datos": 3,
@@ -53,7 +55,7 @@ export const ciencia_datos = {
             "Machine Learning": 5,
             "Seguridad y Privacidad de Datos": 3,
             "Electivo Internacional I": 1.5,
-            "Taller: Desarrollo de Competencias Profesionales III": 1
+            "Taller: Desarrollo de Competencias Profesionales III": 1,
         },
         "Séptimo Ciclo": {
             "Análisis Exploratorio de Datos": 5,
@@ -62,7 +64,7 @@ export const ciencia_datos = {
             "Evaluación de Proyectos": 4,
             "Ingeniería de Procesos de Negocio": 3,
             "Electivo Internacional II": 1.5,
-            "Taller: Desarrollo de Competencias Personales IV": 1
+            "Taller: Desarrollo de Competencias Personales IV": 1,
         },
         "Octavo Ciclo": {
             "Fundamentos de Big Data": 5,
@@ -70,7 +72,7 @@ export const ciencia_datos = {
             "Inteligencia Artificial": 3,
             "Electivo I": 3,
             "Electivo II": 3,
-            "Taller: Desarrollo de Competencias Profesionales IV": 1
+            "Taller: Desarrollo de Competencias Profesionales IV": 1,
         },
         "Noveno Ciclo": {
             "Trabajo de Tesis para Ciencia de Datos I": 5,
@@ -78,14 +80,68 @@ export const ciencia_datos = {
             "Electivo IV": 3,
             "Electivo V": 3,
             "Electivo VI": 3,
-            "Taller: Desarrollo de Competencias Personales V": 1
+            "Taller: Desarrollo de Competencias Personales V": 1,
         },
         "Décimo Ciclo": {
             "Trabajo de Tesis para Ciencia de Datos II": 5,
             "Electivo VII": 3,
             "Electivo VIII": 3,
             "Electivo IX": 3,
-            "Electivo X": 3
-        }
-    }
+            "Electivo X": 3,
+        },
+    },
+    prerrequisitos: {
+        "Cálculo I": { prerequisitos: ["Precálculo"] },
+        "Curaduría y Gobernanza de Datos": { prerequisitos: ["Introducción a la Ciencia de Datos"] },
+        "Estadística I": { prerequisitos: ["Precálculo"] },
+        "Programación para Ciencia de Datos": { prerequisitos: ["Programación"] },
+        "Algoritmos y Estructura de Datos": { prerequisitos: ["Programación"] },
+        "Cálculo II": { prerequisitos: ["Cálculo I"] },
+        "Economía para Ingeniería": { prerequisitos: ["Cálculo I"] },
+        "Estadística II": { prerequisitos: ["Estadística I", "Cálculo I"] },
+        "Sistemas de Gestión de Bases de Datos": { prerequisitos: ["Programación"] },
+        "Visualización de Datos": { prerequisitos: ["Estadística I"] },
+        "Taller: Desarrollo de Competencias Personales II": { prerequisitos: ["Taller: Desarrollo de Competencias Personales I"] },
+        "Álgebra Lineal I": { prerequisitos: ["Cálculo II"] },
+        "Arquitectura de Datos": { prerequisitos: ["Programación", "Sistemas de Gestión de Bases de Datos"] },
+        "Matemática Discreta": { prerequisitos: ["Precálculo"] },
+        "Probabilidad": { prerequisitos: ["Estadística II"] },
+        "Taller: Desarrollo de Competencias Profesionales II": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales I"] },
+        "Análisis de Regresión": { prerequisitos: ["Estadística II"] },
+        "Análisis Multivariado": { prerequisitos: ["Estadística II"] },
+        "Integración e Ingeniería de Datos": { prerequisitos: ["Algoritmos y Estructura de Datos"] },
+        "Investigación Operativa I": { prerequisitos: ["Álgebra Lineal I"] },
+        "Taller: Desarrollo de Competencias Personales III": { prerequisitos: ["Taller: Desarrollo de Competencias Personales II"] },
+        "Almacenamiento y Recuperación de Datos": { prerequisitos: ["Integración e Ingeniería de Datos"] },
+        "Gerencia para Ingeniería": { creditosRequeridos: 100 },
+        "Ingeniería de Requerimientos": { prerequisitos: ["Programación"] },
+        "Machine Learning": { prerequisitos: ["Programación para Ciencia de Datos", "Probabilidad"] },
+        "Seguridad y Privacidad de Datos": { prerequisitos: ["Integración e Ingeniería de Datos"] },
+        "Electivo Internacional I": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales III": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales II"] },
+        "Análisis Exploratorio de Datos": { prerequisitos: ["Estadística I"] },
+        "Cloud Computing": { prerequisitos: ["Sistemas de Gestión de Bases de Datos"] },
+        "Deep Learning": { prerequisitos: ["Machine Learning"] },
+        "Evaluación de Proyectos": { prerequisitos: ["Economía para Ingeniería", "Gerencia para Ingeniería"] },
+        "Ingeniería de Procesos de Negocio": { prerequisitos: ["Ingeniería de Requerimientos"] },
+        "Electivo Internacional II": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Personales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Personales III"] },
+        "Fundamentos de Big Data": { prerequisitos: ["Deep Learning"] },
+        "Gestión del Cambio": { prerequisitos: ["Gerencia para Ingeniería"] },
+        "Inteligencia Artificial": { prerequisitos: ["Deep Learning"] },
+        "Electivo I": { segunElectivo: true },
+        "Electivo II": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Profesionales IV": { prerequisitos: ["Taller: Desarrollo de Competencias Profesionales III"] },
+        "Trabajo de Tesis para Ciencia de Datos I": { creditosRequeridos: 140 },
+        "Electivo III": { segunElectivo: true },
+        "Electivo IV": { segunElectivo: true },
+        "Electivo V": { segunElectivo: true },
+        "Electivo VI": { segunElectivo: true },
+        "Taller: Desarrollo de Competencias Personales V": { prerequisitos: ["Taller: Desarrollo de Competencias Personales IV"] },
+        "Trabajo de Tesis para Ciencia de Datos II": { prerequisitos: ["Trabajo de Tesis para Ciencia de Datos I"] },
+        "Electivo VII": { segunElectivo: true },
+        "Electivo VIII": { segunElectivo: true },
+        "Electivo IX": { segunElectivo: true },
+        "Electivo X": { segunElectivo: true },
+    },
 };
