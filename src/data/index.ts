@@ -1,4 +1,5 @@
 import { adm_finanzas } from './adm_finanzas';
+import { adm_marketing } from './adm_marketing';
 import { adm_negocios } from './adm_negocios';
 import { administracion } from './administracion';
 import { ambiental } from './ambiental';
@@ -37,6 +38,7 @@ export interface Carrera {
  */
 export const carreras: Record<string, Carrera> = {
     adm_finanzas,
+    adm_marketing,
     adm_negocios,
     administracion,
     ambiental,

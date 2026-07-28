@@ -24,7 +24,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                     <Link
                         href="/"
                         title="Volver al inicio"
-                        className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-surface-secondary hover:bg-overlay text-foreground transition-colors"
+                        className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-xl bg-surface-secondary hover:bg-overlay text-foreground transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

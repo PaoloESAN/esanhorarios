@@ -11,7 +11,10 @@
     "test": "vitest",
     "test:horario": "vitest tests/horario",
     "test:cursos": "vitest tests/cursos",
+    "test:economia": "vitest tests/cursos/economia.test.ts",
+    "test:administracion": "vitest tests/cursos/administracion.test.ts",
     "test:ingenieria": "vitest tests/cursos/ingenieria.test.ts",
+    "test:derecho": "vitest tests/cursos/psicologia_derecho.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },

@@ -37,7 +37,7 @@ export const COLUMNAS: FacultadColumna[] = [
         carreras: [
             { nombre: "Administración", slug: "administracion", activa: true },
             { nombre: "Adm. y Finanzas", slug: "adm_finanzas", activa: true },
-            { nombre: "Adm. y Marketing", activa: false },
+            { nombre: "Adm. y Marketing", slug: "adm_marketing", activa: true },
             { nombre: "Adm. y Neg. Internacionales", slug: "adm_negocios", activa: true },
             { nombre: "Com. Empresarial y Mkt. Digital", slug: "comunicacion_mkt", activa: true },
         ],

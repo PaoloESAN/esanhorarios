@@ -14,7 +14,7 @@ interface MallaAppProps {
     carrera: Carrera;
 }
 
-export const normalizarTexto = (str: string): string => {
+const normalizarTexto = (str: string): string => {
     return str
         .toLowerCase()
         .normalize("NFD")
@@ -22,9 +22,9 @@ export const normalizarTexto = (str: string): string => {
         .trim();
 };
 
-export type EstadoCurso = "APROBADO" | "DISPONIBLE" | "BLOQUEADO";
+type EstadoCurso = "APROBADO" | "DISPONIBLE" | "BLOQUEADO";
 
-export interface InfoCursoMalla {
+interface InfoCursoMalla {
     nombre: string;
     ciclo: string;
     creditos: number;
@@ -324,16 +324,18 @@ export default function MallaApp({ carrera }: MallaAppProps) {
             <div className="max-w-[1800px] mx-auto space-y-4 md:space-y-6">
 
                 {/* AppHeader idéntico al de Horarios con Tarjetas de Progreso alineadas en la misma línea */}
-                <div className="bg-surface rounded-lg shadow-md p-3 md:p-6 mb-3 md:mb-6">
+                <div className="bg-surface rounded-2xl shadow-md p-3 md:p-6 mb-3 md:mb-6">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 w-full">
                         {/* Título e información */}
                         <div className="flex items-center gap-3 shrink-0">
                             <Link
                                 href={`/${carrera.slug}`}
                                 title="Volver a Horarios"
-                                className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-surface-secondary hover:bg-overlay text-foreground transition-colors"
+                                className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-xl bg-surface-secondary hover:bg-overlay text-foreground transition-colors"
                             >
-                                <ArrowLeft size={16} />
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
                             </Link>
                             <div>
                                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-1">
@@ -393,9 +395,8 @@ export default function MallaApp({ carrera }: MallaAppProps) {
                 <div
                     ref={scrollContainerRef}
                     onMouseDown={handleMouseDown}
-                    className={`w-full overflow-x-auto pb-6 pt-2 custom-scrollbar select-none ${
-                        isMouseDown ? "cursor-grabbing" : "cursor-grab"
-                    }`}
+                    className={`w-full overflow-x-auto pb-6 pt-2 custom-scrollbar select-none ${isMouseDown ? "cursor-grabbing" : "cursor-grab"
+                        }`}
                 >
                     <div className="flex flex-row gap-4 md:gap-6 min-w-max items-start">
                         {listaCiclos.map((ciclo) => {
