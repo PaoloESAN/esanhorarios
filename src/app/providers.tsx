@@ -14,6 +14,7 @@ export function Providers({ children }: { children: ReactNode }) {
             if (msg.includes('A tree hydrated but some attributes') ||
                 msg.includes('did not match') ||
                 msg.includes('aria-') ||
+                msg.includes('Encountered a script tag') ||
                 msg.includes('Hydration')) return;
             originalError.apply(console, args);
         };

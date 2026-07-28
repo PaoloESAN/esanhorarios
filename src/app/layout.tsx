@@ -23,6 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="es" suppressHydrationWarning data-vibrant-palette="true">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <Providers>{children}</Providers>
       </body>

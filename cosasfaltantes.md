@@ -3,4 +3,3 @@
 - Paleta de colores personalizada
 - Cursos seleccionados guardados en localstorage
 - EXTRA: notificacion cuando esté el horario disponible(al igual que sus versiones posteriores) y boton para descargarlo
-- EXTRA: apartado en el cual poder ver los cursos que te faltan para acabar la carrera

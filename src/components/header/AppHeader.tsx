@@ -18,8 +18,9 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
 
     return (
         <div className="bg-surface rounded-2xl shadow-md p-3 md:p-6 mb-3 md:mb-6">
-            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
-                <div className="flex items-center gap-3">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                {/* Izquierda: Título y descripción */}
+                <div className="flex items-center gap-3 shrink-0">
                     <Link
                         href="/"
                         title="Volver al inicio"
@@ -39,14 +40,24 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2 md:gap-3 items-center justify-end">
+                {/* Centro: Card de Malla Curricular centrada (ajustada al contenido) */}
+                <div className="flex-1 flex justify-center mx-auto lg:mx-0">
                     <Link
                         href={`/${slug}/malla`}
-                        className="inline-flex items-center gap-2 px-3 py-2 text-xs md:text-sm font-semibold rounded-lg bg-surface-secondary hover:bg-overlay text-foreground border border-overlay transition-colors shadow-sm"
+                        className="group bg-surface-secondary/80 hover:bg-emerald-500/10 border border-overlay/80 hover:border-emerald-500/50 rounded-2xl px-4 py-2.5 flex flex-col text-left items-start justify-center transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-fit max-w-full"
                         title="Ver Malla Curricular"
                     >
-                        <span>🎓 Malla Curricular</span>
+                        <span className="text-xs font-bold text-foreground group-hover:text-emerald-500 transition-colors">
+                            Malla Curricular
+                        </span>
+                        <span className="text-[11px] text-muted leading-tight mt-0.5">
+                            Marca tus cursos aprobados para organizar tu horario más fácilmente.
+                        </span>
                     </Link>
+                </div>
+
+                {/* Derecha: Botón de Cargar Excel */}
+                <div className="shrink-0 flex items-center justify-end">
                     <ExcelUploader
                         nombreArchivo={nombreArchivo}
                         nombreArchivoTalleres={nombreArchivoTalleres}
@@ -55,7 +66,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                     />
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 

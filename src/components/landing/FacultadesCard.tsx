@@ -24,7 +24,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.12, ease: "easeOut" }}
-                        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-[280px] sm:max-w-sm lg:max-w-5xl mx-auto w-full"
+                        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-70 sm:max-w-sm lg:max-w-5xl mx-auto w-full"
                     >
                         {COLUMNAS.map((col) => {
                             return (
@@ -45,7 +45,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                                 <img src={col.icon} alt={col.facultad} className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain drop-shadow-md" />
                                             </div>
                                             <h2
-                                                className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-center leading-tight px-1 w-full break-words"
+                                                className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-center leading-tight px-1 w-full wrap-break-word"
                                             >
                                                 {col.facultad}
                                             </h2>
@@ -68,7 +68,7 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.15, ease: "easeOut" }}
-                            className="max-w-[280px] sm:max-w-sm md:max-w-3xl lg:max-w-5xl mx-auto w-full py-2 md:py-6"
+                            className="max-w-70 sm:max-w-sm md:max-w-3xl lg:max-w-5xl mx-auto w-full py-2 md:py-6"
                         >
                             {/* Encabezado con botón cerrar */}
                             <div className="flex items-center justify-between mb-6">
