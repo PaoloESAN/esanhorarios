@@ -124,12 +124,12 @@ function ConfigDrawer({
                             </Accordion.Heading>
                             <Accordion.Panel>
                                 <Accordion.Body>
-                                    <div className="flex flex-col gap-5">
+                                    <div className="flex flex-col gap-5 mt-2">
                                         {/* Modo claro / oscuro */}
                                         <Switch
                                             isSelected={esDark}
                                             onChange={(v) => setTheme(v ? 'dark' : 'light')}
-                                            size="md"
+                                            size="lg"
                                         >
                                             <Switch.Content>
                                                 <Switch.Control>
@@ -357,6 +357,7 @@ function ConfigDrawer({
                                             name="campos-visibles"
                                             value={camposActivos}
                                             onChange={handleCamposChange}
+                                            variant='secondary'
                                         >
                                             <Label>Selecciona los campos visibles</Label>
                                             {Object.entries(CAMPOS_LABELS).map(([key, label]) => (

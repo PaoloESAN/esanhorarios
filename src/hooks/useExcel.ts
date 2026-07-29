@@ -48,11 +48,26 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         return claves.length > 0 && claves.every(k => k.toUpperCase().includes('TALLER'));
     };
 
-    const manejarCargaArchivo = async (evento: ChangeEvent<HTMLInputElement>) => {
-        const files = evento.target.files;
-        if (!files) return;
-        const archivos = Array.from(files);
-        if (archivos.length === 0) return;
+    const extraerVersion = (nombreArchivo: string): number => {
+        const matchVer = nombreArchivo.match(/v[-._\s]*(\d+)/i);
+        if (matchVer) {
+            return parseInt(matchVer[1], 10);
+        }
+        const matchNum = nombreArchivo.match(/(\d+)/);
+        if (matchNum) {
+            return parseInt(matchNum[1], 10);
+        }
+        return 0;
+    };
+
+    const cargarArchivos = async (archivosInput: File[]) => {
+        if (!archivosInput || archivosInput.length === 0) return;
+
+        const excelFiles = archivosInput.filter(f =>
+            f.name.endsWith('.xlsx') || f.name.endsWith('.xls') || f.name.endsWith('.csv')
+        );
+
+        if (excelFiles.length === 0) return;
 
         limpiarHorarioActual?.();
         setCargandoArchivo(true);
@@ -60,35 +75,38 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
 
         try {
             const resultados = await Promise.all(
-                archivos.map(async (archivo) => ({
+                excelFiles.map(async (archivo) => ({
                     nombre: archivo.name,
                     horarios: await procesarArchivoExcel(archivo),
                 }))
             );
 
-            let base: HorariosParseados = {};
-            let talleres: HorariosParseados = {};
-            let nombreBase = '';
-            let nombreTalleres = '';
+            const baseResultados: { nombre: string; horarios: HorariosParseados; version: number }[] = [];
+            const talleresResultados: { nombre: string; horarios: HorariosParseados; version: number }[] = [];
 
             for (const r of resultados) {
+                const ver = extraerVersion(r.nombre);
                 if (esTallerExcel(r.horarios)) {
-                    talleres = { ...talleres, ...r.horarios };
-                    nombreTalleres = r.nombre;
+                    talleresResultados.push({ ...r, version: ver });
                 } else {
-                    base = { ...base, ...r.horarios };
-                    nombreBase = r.nombre;
+                    baseResultados.push({ ...r, version: ver });
                 }
             }
 
-            if (nombreBase) {
-                setHorariosBase(base);
-                setNombreArchivo(nombreBase);
+            // Ordenar descendentemente por número de versión ("V" más alta primero)
+            baseResultados.sort((a, b) => b.version - a.version);
+            talleresResultados.sort((a, b) => b.version - a.version);
+
+            if (baseResultados.length > 0) {
+                const masReciente = baseResultados[0];
+                setHorariosBase(masReciente.horarios);
+                setNombreArchivo(masReciente.nombre);
             }
 
-            if (nombreTalleres) {
-                setHorariosTalleres(talleres);
-                setNombreArchivoTalleres(nombreTalleres);
+            if (talleresResultados.length > 0) {
+                const masReciente = talleresResultados[0];
+                setHorariosTalleres(masReciente.horarios);
+                setNombreArchivoTalleres(masReciente.nombre);
             }
             onExito?.();
         } catch (error) {
@@ -99,6 +117,12 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
             setCargandoArchivo(false);
             setCargandoTalleres(false);
         }
+    };
+
+    const manejarCargaArchivo = async (evento: ChangeEvent<HTMLInputElement>) => {
+        const files = evento.target.files;
+        if (!files) return;
+        await cargarArchivos(Array.from(files));
     };
 
     const manejarCargaTalleres = async (evento: ChangeEvent<HTMLInputElement>) => {
@@ -125,6 +149,6 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         nombreArchivo, cargandoArchivo,
         nombreArchivoTalleres, cargandoTalleres,
         horariosDisponibles, obtenerHorariosPorCurso,
-        manejarCargaArchivo, manejarCargaTalleres,
+        manejarCargaArchivo, manejarCargaTalleres, cargarArchivos,
     };
 }

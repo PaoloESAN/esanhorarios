@@ -20,6 +20,7 @@ export interface PanelCursosProps {
     onAbrirModalCursoPersonalizado: () => void;
     onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
     onCargaTalleres: (evento: ChangeEvent<HTMLInputElement>) => void;
+    onCargaArchivosDirectos?: (archivos: File[]) => void;
     cargandoTalleres: boolean;
     nombreArchivoTalleres: string;
 }
@@ -35,6 +36,7 @@ function PanelCursos({
     onAbrirModalCursoPersonalizado,
     onCargaArchivo,
     onCargaTalleres,
+    onCargaArchivosDirectos,
     cargandoTalleres,
     nombreArchivoTalleres,
 }: PanelCursosProps) {
@@ -241,9 +243,11 @@ function PanelCursos({
                     </Link>
 
                     {/* Card de Subir Excel */}
-                    <div className="bg-surface rounded-2xl shadow-md p-3 md:p-6 flex flex-col overflow-hidden h-auto lg:min-h-[360px] justify-center border-2 border-accent">
-                        <PantallaSubirExcel cargandoArchivo={cargandoArchivo} onCargaArchivo={onCargaArchivo} />
-                    </div>
+                    <PantallaSubirExcel
+                        cargandoArchivo={cargandoArchivo}
+                        onCargaArchivo={onCargaArchivo}
+                        onCargaArchivosDirectos={onCargaArchivosDirectos}
+                    />
                 </div>
             )}
         </>

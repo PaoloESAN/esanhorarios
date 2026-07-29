@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useOverlayState } from "@heroui/react";
 import { useTheme } from "next-themes";
@@ -105,8 +105,67 @@ function HorarioAppInner() {
         }
     };
 
+    const [isDraggingFileOnWindow, setIsDraggingFileOnWindow] = useState(false);
+
+    useEffect(() => {
+        const handleDragOver = (e: DragEvent) => {
+            if (e.dataTransfer?.types?.includes('Files')) {
+                e.preventDefault();
+                setIsDraggingFileOnWindow(true);
+            }
+        };
+
+        const handleDragLeave = (e: DragEvent) => {
+            if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
+                setIsDraggingFileOnWindow(false);
+            }
+        };
+
+        const handleDragEnd = () => {
+            setIsDraggingFileOnWindow(false);
+        };
+
+        const handleDrop = (e: DragEvent) => {
+            // Garantizar que el overlay se oculte siempre al soltar cualquier archivo
+            setIsDraggingFileOnWindow(false);
+
+            if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+                const files = Array.from(e.dataTransfer.files);
+                const tieneExcel = files.some(f => f.name.endsWith('.xlsx') || f.name.endsWith('.xls') || f.name.endsWith('.csv'));
+                if (tieneExcel) {
+                    e.preventDefault();
+                    excel.cargarArchivos(files);
+                }
+            }
+        };
+
+        window.addEventListener('dragover', handleDragOver);
+        window.addEventListener('dragleave', handleDragLeave);
+        window.addEventListener('dragend', handleDragEnd);
+        window.addEventListener('drop', handleDrop);
+
+        return () => {
+            window.removeEventListener('dragover', handleDragOver);
+            window.removeEventListener('dragleave', handleDragLeave);
+            window.removeEventListener('dragend', handleDragEnd);
+            window.removeEventListener('drop', handleDrop);
+        };
+    }, [excel]);
+
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-background p-2 md:p-4">
+        <div className="min-h-screen bg-gray-50 dark:bg-background p-2 md:p-4 relative">
+            {/* Overlay visual al arrastrar archivos sobre la ventana */}
+            {isDraggingFileOnWindow && (
+                <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm border-4 border-dashed border-accent flex flex-col items-center justify-center p-6 text-center pointer-events-none">
+                    <div className="bg-accent text-surface rounded-full p-6 mb-4 animate-bounce">
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">¡Suelta los archivos Excel aquí!</h2>
+                </div>
+            )}
+
             <div className="max-w-[1800px] mx-auto">
                 {/* Encabezado superior con título y carga de Excel */}
                 <AppHeader
@@ -160,6 +219,7 @@ function HorarioAppInner() {
                                 onAbrirModalCursoPersonalizado={addCourseModal.open}
                                 onCargaArchivo={excel.manejarCargaArchivo}
                                 onCargaTalleres={excel.manejarCargaTalleres}
+                                onCargaArchivosDirectos={excel.cargarArchivos}
                                 cargandoTalleres={excel.cargandoTalleres}
                                 nombreArchivoTalleres={excel.nombreArchivoTalleres}
                             />

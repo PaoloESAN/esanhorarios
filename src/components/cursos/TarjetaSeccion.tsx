@@ -31,7 +31,7 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, esBloqueado = fa
             onClick={() => estaSeleccionado ? onRemover(seccionData.id) : onAgregar({
                 curso, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
             })}
-            className={`p-2 border rounded transition-colors ${estaSeleccionado
+            className={`p-2 border rounded-xl transition-colors ${estaSeleccionado
                 ? 'bg-surface border-divider cursor-pointer hover:bg-overlay'
                 : esBloqueado
                     ? 'bg-danger-soft border-danger cursor-move hover:bg-danger-soft'
