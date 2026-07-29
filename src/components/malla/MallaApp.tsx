@@ -269,30 +269,56 @@ export default function MallaApp({ carrera }: MallaAppProps) {
     const totalAprobados = aprobadosEfectivos.size;
     const porcentajeProgreso = Math.min(100, Math.round((totalCreditosAprobados / (totalCreditosCarrera || 1)) * 100));
 
-    // Drag-to-scroll (panning suave a 60fps sin vibraciones)
+    // Inertia & RAF Panning (Desplazamiento ultra fluido estilo Figma/Miro con inercia)
     const scrollContainerRef = React.useRef<HTMLDivElement>(null);
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const isDraggingRef = React.useRef(false);
+    const rafIdRef = React.useRef<number | null>(null);
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.button !== 0) return; // Solo clic izquierdo
+        // Clic izquierdo (button 0) o rueda central del mouse (button 1)
+        if (e.button !== 0 && e.button !== 1) return;
+
+        if (e.button === 1) {
+            e.preventDefault(); // Prevenir ícono de autoscroll por defecto del navegador
+        }
+
         const container = scrollContainerRef.current;
         if (!container) return;
 
-        setIsMouseDown(true);
+        if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+        }
+
+        // Resetear inmediatamente el estado de arrastre previo al presionar la pantalla
         isDraggingRef.current = false;
+        setIsDragging(false);
+        setIsMouseDown(true);
 
         const startX = e.clientX;
         const startY = e.clientY;
-        const startScrollLeft = container.scrollLeft;
-        const startScrollTop = window.scrollY;
+        let lastX = e.clientX;
+        let lastY = e.clientY;
+        let lastTime = performance.now();
+        let vx = 0;
+        let vy = 0;
+
+        let currentScrollLeft = container.scrollLeft;
+        let currentScrollTop = window.scrollY;
 
         const onMouseMove = (moveEvent: MouseEvent) => {
-            const deltaX = moveEvent.clientX - startX;
-            const deltaY = moveEvent.clientY - startY;
+            const now = performance.now();
+            const dt = Math.max(1, now - lastTime);
 
-            if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+            const dx = moveEvent.clientX - lastX;
+            const dy = moveEvent.clientY - lastY;
+
+            const totalDeltaX = moveEvent.clientX - startX;
+            const totalDeltaY = moveEvent.clientY - startY;
+
+            if (Math.abs(totalDeltaX) > 4 || Math.abs(totalDeltaY) > 4) {
                 if (!isDraggingRef.current) {
                     isDraggingRef.current = true;
                     setIsDragging(true);
@@ -300,19 +326,62 @@ export default function MallaApp({ carrera }: MallaAppProps) {
             }
 
             if (isDraggingRef.current) {
-                container.scrollLeft = startScrollLeft - deltaX;
-                window.scrollTo({ top: startScrollTop - deltaY, behavior: "instant" });
+                // Calcular velocidad instantánea con amortiguación
+                vx = (dx / dt) * 16;
+                vy = (dy / dt) * 16;
+
+                currentScrollLeft -= dx;
+                currentScrollTop -= dy;
+
+                container.scrollLeft = currentScrollLeft;
+                window.scrollTo(0, currentScrollTop);
             }
+
+            lastX = moveEvent.clientX;
+            lastY = moveEvent.clientY;
+            lastTime = now;
         };
 
-        const onMouseUp = () => {
+        const onMouseUp = (upEvent: MouseEvent) => {
+            if (upEvent.button === 1) {
+                upEvent.preventDefault();
+            }
+
             setIsMouseDown(false);
             window.removeEventListener("mousemove", onMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
-            setTimeout(() => {
+
+            if (isDraggingRef.current && (Math.abs(vx) > 0.5 || Math.abs(vy) > 0.5)) {
+                // Animación de inercia / desaceleración suave (momentum)
+                let momentumVx = vx;
+                let momentumVy = vy;
+
+                const stepInertia = () => {
+                    if (!container) return;
+
+                    momentumVx *= 0.92;
+                    momentumVy *= 0.92;
+
+                    if (Math.abs(momentumVx) > 0.2 || Math.abs(momentumVy) > 0.2) {
+                        currentScrollLeft -= momentumVx;
+                        currentScrollTop -= momentumVy;
+
+                        container.scrollLeft = currentScrollLeft;
+                        window.scrollTo(0, currentScrollTop);
+
+                        rafIdRef.current = requestAnimationFrame(stepInertia);
+                    } else {
+                        rafIdRef.current = null;
+                        isDraggingRef.current = false;
+                        setIsDragging(false);
+                    }
+                };
+
+                rafIdRef.current = requestAnimationFrame(stepInertia);
+            } else {
                 isDraggingRef.current = false;
                 setIsDragging(false);
-            }, 80);
+            }
         };
 
         window.addEventListener("mousemove", onMouseMove);
@@ -395,6 +464,9 @@ export default function MallaApp({ carrera }: MallaAppProps) {
                 <div
                     ref={scrollContainerRef}
                     onMouseDown={handleMouseDown}
+                    onAuxClick={(e) => {
+                        if (e.button === 1) e.preventDefault();
+                    }}
                     className={`w-full overflow-x-auto pb-6 pt-2 custom-scrollbar select-none ${isMouseDown ? "cursor-grabbing" : "cursor-grab"
                         }`}
                 >
