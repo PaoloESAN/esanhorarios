@@ -10,6 +10,7 @@ export interface TarjetaSeccionProps {
         horarios: any[];
     };
     estaSeleccionado: boolean;
+    esBloqueado?: boolean;
     onAgregar: (item: any) => void;
     onRemover: (id: string) => void;
     onDragStart: (e: DragEvent<HTMLElement>, item: any) => void;
@@ -19,7 +20,7 @@ export interface TarjetaSeccionProps {
  * Tarjeta individual de una sección de curso.
  * Permite agregar/remover la sección y drag&drop.
  */
-function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRemover, onDragStart }: TarjetaSeccionProps) {
+function TarjetaSeccion({ curso, seccionData, estaSeleccionado, esBloqueado = false, onAgregar, onRemover, onDragStart }: TarjetaSeccionProps) {
 
     return (
         <div
@@ -32,7 +33,9 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
             })}
             className={`p-2 border rounded transition-colors ${estaSeleccionado
                 ? 'bg-surface border-divider cursor-pointer hover:bg-overlay'
-                : 'bg-accent-soft border-accent cursor-move hover:bg-accent-soft'
+                : esBloqueado
+                    ? 'bg-danger-soft border-danger cursor-move hover:bg-danger-soft'
+                    : 'bg-accent-soft border-accent cursor-move hover:bg-accent-soft'
                 }`}
         >
             <div className={`text-xs font-medium mb-1 ${estaSeleccionado ? 'text-foreground-600' : 'text-foreground'}`}>
@@ -47,11 +50,11 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, onAgregar, onRem
                     className="p-0.5 hover:bg-overlay rounded transition-colors bg-surface border border-divider shadow-sm"
                     title={`Buscar información sobre ${seccionData.profesor}`}
                 >
-                    <Search className="w-3 h-3 text-foreground-500 hover:text-accent" />
+                    <Search className={`w-3 h-3 text-foreground-500 ${esBloqueado ? 'hover:text-danger' : 'hover:text-accent'}`} />
                 </button>
                 <span>Prof: {seccionData.profesor}</span>
             </div>
-            <div className={`text-xs ${estaSeleccionado ? 'text-foreground-500' : 'text-accent'}`}>
+            <div className={`text-xs ${estaSeleccionado ? 'text-foreground-500' : esBloqueado ? 'text-danger' : 'text-accent'}`}>
                 Horarios: {seccionData.horarios.length} clase{seccionData.horarios.length !== 1 ? 's' : ''}
             </div>
         </div>

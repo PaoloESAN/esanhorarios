@@ -2,12 +2,16 @@
 
 import { createContext, useContext, ReactNode } from "react";
 import { getCursosPorCiclo, buildCreditosMap, Carrera } from "@/data";
+import { useMallaRequisitos } from "@/hooks/useMallaRequisitos";
 
 export interface CarreraContextType {
     nombre: string;
     slug: string;
+    carrera: Carrera;
     cursosPorCiclo: Record<string, string[]>;
     obtenerCreditos: (nombreCurso: string) => number;
+    esCursoBloqueado: (nombreCurso: string) => boolean;
+    esCursoAprobado: (nombreCurso: string) => boolean;
 }
 
 const CarreraContext = createContext<CarreraContextType | null>(null);
@@ -19,6 +23,7 @@ const CarreraContext = createContext<CarreraContextType | null>(null);
 export function CarreraProvider({ carrera, children }: { carrera: Carrera; children: ReactNode }) {
     const cursosPorCiclo = getCursosPorCiclo(carrera);
     const creditosMap = buildCreditosMap(carrera);
+    const { esCursoBloqueado, esCursoAprobado } = useMallaRequisitos(carrera);
 
     const obtenerCreditos = (nombreCurso: string): number => {
         if (!nombreCurso) return 0;
@@ -37,8 +42,11 @@ export function CarreraProvider({ carrera, children }: { carrera: Carrera; child
     const value: CarreraContextType = {
         nombre: carrera.nombre,
         slug: carrera.slug,
+        carrera,
         cursosPorCiclo,
         obtenerCreditos,
+        esCursoBloqueado,
+        esCursoAprobado,
     };
 
     return (

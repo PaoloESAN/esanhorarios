@@ -17,7 +17,7 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo }: PantallaSubirEx
     };
 
     return (
-        <div className="flex flex-col items-center justify-center py-8 md:py-12 text-center">
+        <div className="w-full flex flex-col items-center justify-center text-center py-4 lg:py-6">
             <div className="bg-accent-soft rounded-full p-4 mb-4">
                 <FileText className="w-8 h-8 md:w-12 md:h-12 text-accent" />
             </div>

@@ -68,7 +68,6 @@ function HorarioAppInner() {
     const excel = useExcel({
         limpiarHorarioActual: limpiarHorario,
         setMensajeModal,
-        onExito: successModal.open,
         onError: errorModal.open,
     });
 
