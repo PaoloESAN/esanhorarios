@@ -11,10 +11,11 @@ export interface AppHeaderProps {
 }
 
 /**
- * Encabezado superior de la aplicación: título, zona de carga de Excel y toggle de tema.
+ * Encabezado superior de la aplicación: título, card de Malla y card de Excel cargado.
  */
 function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }: AppHeaderProps) {
     const { nombre, slug } = useCarrera();
+    const hayArchivo = Boolean(nombreArchivo);
 
     return (
         <div className="mb-3 md:mb-6">
@@ -42,15 +43,15 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                         </div>
                     </div>
 
-                    {/* Centro (Desktop): Card de Malla Curricular (solo si ya hay un archivo cargado) */}
-                    {Boolean(nombreArchivo) && (
-                        <div className="hidden lg:flex flex-1 justify-center">
+                    {/* Centro (Desktop XL): Card de Malla Curricular */}
+                    {hayArchivo && (
+                        <div className="hidden xl:flex flex-1 justify-center mx-2">
                             <Link
                                 href={`/${slug}/malla`}
                                 className="group bg-surface-secondary/80 hover:bg-emerald-500/10 border border-overlay/80 hover:border-emerald-500/50 rounded-2xl px-4 py-2.5 flex flex-col text-left items-start justify-center transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-fit"
                                 title="Ver Malla Curricular"
                             >
-                                <span className="text-sm md:text-base font-bold text-foreground group-hover:text-emerald-500 transition-colors">
+                                <span className="text-sm md:text-base font-bold text-foreground group-hover:text-emerald-500 transition-colors whitespace-nowrap">
                                     Malla Curricular
                                 </span>
                                 <span className="text-xs md:text-sm text-muted mt-1">
@@ -60,23 +61,25 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                         </div>
                     )}
 
-                    {/* Derecha: Botón de Cargar Excel (solo si ya hay un archivo cargado) */}
-                    {Boolean(nombreArchivo) && (
-                        <div className="shrink-0 flex items-center justify-end w-full lg:w-auto">
+                    {/* Derecha (Desktop XL): Card de Excel Activo */}
+                    {hayArchivo && (
+                        <div className="hidden xl:flex shrink-0">
                             <ExcelUploader
                                 nombreArchivo={nombreArchivo}
                                 nombreArchivoTalleres={nombreArchivoTalleres}
                                 cargandoArchivo={cargandoArchivo}
                                 onCargaArchivo={onCargaArchivo}
+                                variant="desktop"
                             />
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Mobile: Card propia de Malla Curricular debajo del header (solo si ya hay un archivo cargado) */}
-            {Boolean(nombreArchivo) && (
-                <div className="block lg:hidden mt-3">
+            {/* Laptop Mediana / Tablet / Mobile (debajo del header principal): Card de Malla Curricular y Card de Excel */}
+            {hayArchivo && (
+                <div className="block xl:hidden space-y-3 mt-3">
+                    {/* Card 1: Malla Curricular */}
                     <Link
                         href={`/${slug}/malla`}
                         className="group bg-emerald-500/10 border border-emerald-500/50 hover:bg-emerald-500/20 rounded-2xl shadow-md p-4 flex items-center justify-between transition-all w-full"
@@ -96,6 +99,15 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                             </svg>
                         </div>
                     </Link>
+
+                    {/* Card 2: Excel Cargado y opción para cargar nuevo Excel */}
+                    <ExcelUploader
+                        nombreArchivo={nombreArchivo}
+                        nombreArchivoTalleres={nombreArchivoTalleres}
+                        cargandoArchivo={cargandoArchivo}
+                        onCargaArchivo={onCargaArchivo}
+                        variant="mobile"
+                    />
                 </div>
             )}
         </div>

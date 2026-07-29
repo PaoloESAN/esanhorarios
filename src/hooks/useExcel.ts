@@ -1,6 +1,7 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { procesarArchivoExcel, aliasCorrecciones, HorariosParseados } from '@/lib/excel';
 import { normalizar } from '@/lib/horario';
+import { useCarrera } from '@/app/[slug]/CarreraContext';
 
 export interface UseExcelParams {
     limpiarHorarioActual?: () => void;
@@ -10,12 +11,45 @@ export interface UseExcelParams {
 }
 
 export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onError }: UseExcelParams) {
+    const { slug } = useCarrera();
+    const storageKey = `esan_excel_data_${slug}`;
+
     const [horariosBase, setHorariosBase] = useState<HorariosParseados>({});
     const [horariosTalleres, setHorariosTalleres] = useState<HorariosParseados>({});
     const [cargandoArchivo, setCargandoArchivo] = useState(false);
     const [cargandoTalleres, setCargandoTalleres] = useState(false);
     const [nombreArchivo, setNombreArchivo] = useState('');
     const [nombreArchivoTalleres, setNombreArchivoTalleres] = useState('');
+
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.nombreArchivo && data.horariosBase) {
+                    setNombreArchivo(data.nombreArchivo || '');
+                    setNombreArchivoTalleres(data.nombreArchivoTalleres || '');
+                    setHorariosBase(data.horariosBase || {});
+                    setHorariosTalleres(data.horariosTalleres || {});
+                }
+            }
+        } catch (e) {
+            console.error('Error al restaurar Excel desde localStorage:', e);
+        }
+    }, [storageKey]);
+
+    const guardarEnStorage = (base: HorariosParseados, nBase: string, talleres: HorariosParseados, nTalleres: string) => {
+        try {
+            localStorage.setItem(storageKey, JSON.stringify({
+                nombreArchivo: nBase,
+                nombreArchivoTalleres: nTalleres,
+                horariosBase: base,
+                horariosTalleres: talleres,
+            }));
+        } catch (e) {
+            console.error('Error al guardar Excel en localStorage:', e);
+        }
+    };
 
     const horariosDisponibles: HorariosParseados = { ...horariosBase, ...horariosTalleres };
 
@@ -97,17 +131,28 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
             baseResultados.sort((a, b) => b.version - a.version);
             talleresResultados.sort((a, b) => b.version - a.version);
 
+            let nBase = nombreArchivo;
+            let nTalleres = nombreArchivoTalleres;
+            let bHorarios = horariosBase;
+            let tHorarios = horariosTalleres;
+
             if (baseResultados.length > 0) {
                 const masReciente = baseResultados[0];
-                setHorariosBase(masReciente.horarios);
-                setNombreArchivo(masReciente.nombre);
+                bHorarios = masReciente.horarios;
+                nBase = masReciente.nombre;
+                setHorariosBase(bHorarios);
+                setNombreArchivo(nBase);
             }
 
             if (talleresResultados.length > 0) {
                 const masReciente = talleresResultados[0];
-                setHorariosTalleres(masReciente.horarios);
-                setNombreArchivoTalleres(masReciente.nombre);
+                tHorarios = masReciente.horarios;
+                nTalleres = masReciente.nombre;
+                setHorariosTalleres(tHorarios);
+                setNombreArchivoTalleres(nTalleres);
             }
+
+            guardarEnStorage(bHorarios, nBase, tHorarios, nTalleres);
             onExito?.();
         } catch (error) {
             console.error('Error al procesar archivos Excel:', error);
@@ -135,6 +180,7 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
             const nuevosHorarios = await procesarArchivoExcel(archivo);
             setHorariosTalleres(nuevosHorarios);
             setNombreArchivoTalleres(archivo.name);
+            guardarEnStorage(horariosBase, nombreArchivo, nuevosHorarios, archivo.name);
             onExito?.();
         } catch (error) {
             console.error('Error al procesar archivo Excel de talleres:', error);
