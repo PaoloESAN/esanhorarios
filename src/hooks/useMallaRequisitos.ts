@@ -83,7 +83,7 @@ export function useMallaRequisitos(carrera: Carrera) {
 
     const esCursoBloqueado = useMemo(() => {
         return (nombreCurso: string): boolean => {
-            if (!aprobadosData.tieneMalla) return false;
+            if (!aprobadosData.tieneMalla || aprobadosData.aprobados.size === 0) return false;
 
             const normNombre = normalizarTexto(nombreCurso);
             const prerreqMap = carrera.prerrequisitos || {};
@@ -124,9 +124,51 @@ export function useMallaRequisitos(carrera: Carrera) {
         };
     }, [aprobadosData]);
 
+    const obtenerRequisitosFaltantes = useMemo(() => {
+        return (nombreCurso: string): { requisitosFaltantes: string[]; creditosFaltantes: number } => {
+            if (!aprobadosData.tieneMalla || aprobadosData.aprobados.size === 0) {
+                return { requisitosFaltantes: [], creditosFaltantes: 0 };
+            }
+
+            const normNombre = normalizarTexto(nombreCurso);
+            const prerreqMap = carrera.prerrequisitos || {};
+
+            const reqInfo =
+                prerreqMap[nombreCurso] ||
+                prerreqMap[
+                    Object.keys(prerreqMap).find((k) => normalizarTexto(k) === normNombre) || ""
+                ];
+
+            if (!reqInfo) {
+                return { requisitosFaltantes: [], creditosFaltantes: 0 };
+            }
+
+            let creditosFaltantes = 0;
+            if (
+                reqInfo.creditosRequeridos &&
+                totalCreditosAprobados < reqInfo.creditosRequeridos
+            ) {
+                creditosFaltantes = reqInfo.creditosRequeridos - totalCreditosAprobados;
+            }
+
+            const requisitosFaltantes: string[] = [];
+            if (reqInfo.prerequisitos && reqInfo.prerequisitos.length > 0) {
+                for (const pre of reqInfo.prerequisitos) {
+                    const normPre = normalizarTexto(pre);
+                    if (!aprobadosData.aprobados.has(normPre)) {
+                        requisitosFaltantes.push(pre);
+                    }
+                }
+            }
+
+            return { requisitosFaltantes, creditosFaltantes };
+        };
+    }, [aprobadosData, carrera.prerrequisitos, totalCreditosAprobados]);
+
     return {
         tieneMalla: aprobadosData.tieneMalla,
         esCursoBloqueado,
         esCursoAprobado,
+        obtenerRequisitosFaltantes,
     };
 }

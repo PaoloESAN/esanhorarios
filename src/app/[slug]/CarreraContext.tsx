@@ -12,6 +12,7 @@ export interface CarreraContextType {
     obtenerCreditos: (nombreCurso: string) => number;
     esCursoBloqueado: (nombreCurso: string) => boolean;
     esCursoAprobado: (nombreCurso: string) => boolean;
+    obtenerRequisitosFaltantes: (nombreCurso: string) => { requisitosFaltantes: string[]; creditosFaltantes: number };
 }
 
 const CarreraContext = createContext<CarreraContextType | null>(null);
@@ -23,7 +24,7 @@ const CarreraContext = createContext<CarreraContextType | null>(null);
 export function CarreraProvider({ carrera, children }: { carrera: Carrera; children: ReactNode }) {
     const cursosPorCiclo = getCursosPorCiclo(carrera);
     const creditosMap = buildCreditosMap(carrera);
-    const { esCursoBloqueado, esCursoAprobado } = useMallaRequisitos(carrera);
+    const { esCursoBloqueado, esCursoAprobado, obtenerRequisitosFaltantes } = useMallaRequisitos(carrera);
 
     const obtenerCreditos = (nombreCurso: string): number => {
         if (!nombreCurso) return 0;
@@ -47,6 +48,7 @@ export function CarreraProvider({ carrera, children }: { carrera: Carrera; child
         obtenerCreditos,
         esCursoBloqueado,
         esCursoAprobado,
+        obtenerRequisitosFaltantes,
     };
 
     return (

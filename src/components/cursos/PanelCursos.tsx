@@ -1,6 +1,6 @@
-import { useRef, useEffect, useMemo, ChangeEvent, DragEvent } from 'react';
+import { useRef, useEffect, useMemo, useState, ChangeEvent, DragEvent } from 'react';
 import Link from 'next/link';
-import { Button, Select, Label, ListBox, Chip } from '@heroui/react';
+import { Button, Select, Label, ListBox, Chip, ScrollShadow, Tooltip } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
@@ -40,10 +40,11 @@ function PanelCursos({
     cargandoTalleres,
     nombreArchivoTalleres,
 }: PanelCursosProps) {
-    const { slug, cursosPorCiclo, obtenerCreditos, esCursoBloqueado, esCursoAprobado } = useCarrera();
+    const { slug, cursosPorCiclo, obtenerCreditos, esCursoBloqueado, esCursoAprobado, obtenerRequisitosFaltantes } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
     const listaRef = useRef<HTMLDivElement>(null);
     const talleresInputRef = useRef<HTMLInputElement>(null);
+    const [tooltipAbierto, setTooltipAbierto] = useState<string | null>(null);
 
     // Obtener ciclos que tienen al menos un curso pendiente (no aprobado)
     const ciclosVisibles = useMemo(() => {
@@ -61,6 +62,7 @@ function PanelCursos({
     }, [ciclosVisibles, cicloSeleccionado, setCicloSeleccionado]);
 
     useEffect(() => {
+        setTooltipAbierto(null);
         listaRef.current?.scrollTo({ top: 0 });
     }, [cicloSeleccionado]);
 
@@ -123,7 +125,13 @@ function PanelCursos({
                     </div>
 
                     {/* Lista de cursos */}
-                    <div ref={listaRef} className="space-y-3 flex-1 min-h-0 overflow-y-auto">
+                    <ScrollShadow
+                        ref={listaRef}
+                        onScroll={() => {
+                            if (tooltipAbierto) setTooltipAbierto(null);
+                        }}
+                        className="space-y-3 flex-1 min-h-0"
+                    >
                         {cursosPorCiclo[cicloSeleccionado]
                             ?.filter((curso) => !esCursoAprobado(curso))
                             .map((curso, idx) => {
@@ -132,27 +140,73 @@ function PanelCursos({
                             const esElectivo = curso.toLowerCase().includes('electivo');
                             const cursoEsTaller = esTaller(curso);
                             const esBloqueado = esCursoBloqueado(curso);
+                            const { requisitosFaltantes, creditosFaltantes } = esBloqueado
+                                ? obtenerRequisitosFaltantes(curso)
+                                : { requisitosFaltantes: [], creditosFaltantes: 0 };
+
+                            const cabeceraCurso = (
+                                <h4 className={`font-semibold text-foreground text-xs md:text-sm mb-2 md:mb-3 border-b border-divider pb-2 ${esBloqueado ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <span className="flex-1 text-left">{curso}</span>
+                                        <div className="flex items-center gap-2">
+                                            <Chip
+                                                color={esBloqueado ? 'danger' : 'accent'}
+                                                variant='tertiary'
+                                                size='sm'
+                                            >
+                                                <div className="flex items-center gap-1">
+                                                    <BadgeCheck className={`w-3 h-3 ${esBloqueado ? 'text-danger' : 'text-accent'}`} />
+                                                    {creditos}
+                                                </div>
+                                            </Chip>
+                                        </div>
+                                    </div>
+                                </h4>
+                            );
 
                             return (
                                 <div key={idx} className="border border-divider rounded-lg p-2 md:p-3 bg-surface-secondary">
                                     {/* Cabecera del curso */}
-                                    <h4 className="font-semibold text-foreground text-xs md:text-sm mb-2 md:mb-3 border-b border-divider pb-2">
-                                        <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <span className="flex-1">{curso}</span>
-                                            <div className="flex items-center gap-2">
-                                                <Chip
-                                                    color={esBloqueado ? 'danger' : 'accent'}
-                                                    variant='tertiary'
-                                                    size='sm'
-                                                >
-                                                    <div className="flex items-center gap-1">
-                                                        <BadgeCheck className={`w-3 h-3 ${esBloqueado ? 'text-danger' : 'text-accent'}`} />
-                                                        {creditos}
+                                    {esBloqueado ? (
+                                        <Tooltip
+                                            delay={0}
+                                            closeDelay={0}
+                                            isOpen={tooltipAbierto === curso}
+                                            onOpenChange={(open) => setTooltipAbierto(open ? curso : null)}
+                                        >
+                                            <Tooltip.Trigger
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setTooltipAbierto((prev) => (prev === curso ? null : curso));
+                                                }}
+                                                className="w-full text-left bg-transparent p-0 border-0 cursor-pointer"
+                                            >
+                                                {cabeceraCurso}
+                                            </Tooltip.Trigger>
+                                            <Tooltip.Content placement="top" className="max-w-64 p-3">
+                                                <Tooltip.Arrow />
+                                                <div className="text-xs space-y-1">
+                                                    <div className="font-bold text-danger">
+                                                        Requisitos no cumplidos
                                                     </div>
-                                                </Chip>
-                                            </div>
-                                        </div>
-                                    </h4>
+                                                    {creditosFaltantes > 0 && (
+                                                        <p className="text-danger font-semibold">• Faltan {creditosFaltantes} créditos</p>
+                                                    )}
+                                                    {requisitosFaltantes.map((req) => (
+                                                        <p key={req} className="flex items-start gap-1 text-foreground">
+                                                            <span className="text-danger font-bold shrink-0">•</span>
+                                                            <span>{req}</span>
+                                                        </p>
+                                                    ))}
+                                                    {creditosFaltantes === 0 && requisitosFaltantes.length === 0 && (
+                                                        <p className="italic text-muted">Requisitos del curso pendientes</p>
+                                                    )}
+                                                </div>
+                                            </Tooltip.Content>
+                                        </Tooltip>
+                                    ) : (
+                                        cabeceraCurso
+                                    )}
 
                                     {/* Secciones */}
                                     {secciones.length > 0 ? (
@@ -199,7 +253,7 @@ function PanelCursos({
                                                             <input
                                                                 ref={talleresInputRef}
                                                                 type="file"
-                                                                accept=".xlsx,.xls"
+                                                                accept=".xls,.xlsx"
                                                                 onChange={onCargaTalleres}
                                                                 className="hidden"
                                                                 disabled={cargandoTalleres}
@@ -217,7 +271,7 @@ function PanelCursos({
                                 </div>
                             );
                         })}
-                    </div>
+                    </ScrollShadow>
                 </div>
             ) : (
                 <div className="flex flex-col gap-3 md:gap-4">
