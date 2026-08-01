@@ -94,7 +94,7 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         if (key.includes('ELECTIV')) {
             const carreraNorm = normalizar(nombreCarreraActiva || '');
             const seccionesElectivas: any[] = [];
-            const origenElectivos = Object.keys(horariosElectivos).length > 0 ? horariosElectivos : horariosDisponibles;
+            const origenElectivos = horariosElectivos; // Únicamente los electivos del Excel de electivos
 
             for (const [cursoNombreReal, secciones] of Object.entries(origenElectivos)) {
                 for (const seccion of secciones) {
