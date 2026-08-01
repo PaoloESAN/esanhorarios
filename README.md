@@ -108,6 +108,49 @@ o si usas yarn/pnpm/bun:
 yarn test:curso
 ```
 
+## Sistema de Notificaciones (Web Push)
+
+El proyecto tiene dos partes para las notificaciones: el **frontend** (Next.js, desplegado en Vercel) y un **servidor independiente** (Bun + Elysia, desplegado en Railway) ubicado en `notificaciones/`.
+
+### Flujo
+1. El usuario pulsa "Notifícame" en la landing.
+2. El frontend pide permiso, registra el service worker (`public/sw.js`) y se suscribe al push usando la clave VAPID pública que obtiene del servidor (`GET /vapid-public-key`).
+3. La suscripción se registra en el servidor (`POST /subscribe`).
+4. El servidor hace polling cada 5 minutos al panel de la universidad (`TARGET_URL`) buscando archivos `.xlsx` nuevos y notifica a todos los suscriptores vía Web Push.
+
+### Variables de entorno — Servidor (Railway)
+Deploy del servicio `notificaciones/` con Bun (`bun install && bun run start`).
+
+| Variable | Descripción |
+| --- | --- |
+| `VAPID_PUBLIC_KEY` | Clave pública VAPID (se comparte con el frontend para suscribirse) |
+| `VAPID_PRIVATE_KEY` | Clave privada VAPID (secreta) |
+| `VAPID_SUBJECT` | Opcional. `mailto:...` usado en el VAPID (por defecto `mailto:admin@esanhorarios.com`) |
+| `TARGET_URL` | URL del panel de la universidad donde se publican los `.xlsx` |
+| `SESSION_COOKIE` | Cookie de sesión para autenticarse en `TARGET_URL` |
+| `DATA_FILE` | Opcional. Ruta del JSON de persistencia. Para que sobreviva entre deploys, monta un **Volume** de Railway y apunta aquí (ej. `/data/notificaciones.json`) |
+| `PORT` | Lo asigna Railway automáticamente |
+
+### Variables de entorno — Frontend (Vercel)
+
+| Variable | Descripción |
+| --- | --- |
+| `NEXT_PUBLIC_NOTIFICACIONES_URL` | URL pública del servidor de Railway (sin barra final), ej. `https://notificaciones.up.railway.app` |
+
+### Generar llaves VAPID
+Si necesitas generar un par nuevo:
+```bash
+cd notificaciones
+bun -e "const w = require('web-push'); console.log(JSON.stringify(w.generateVAPIDKeys(), null, 2))"
+```
+
+### Endpoints del servidor
+- `GET /health` → estado del servidor
+- `GET /check` → ejecuta el scraper al instante y devuelve `{ allFiles, newFiles }` (los `.xlsx` encontrados en la página)
+- `GET /vapid-public-key` → `{ publicKey }`
+- `POST /subscribe` → registra una suscripción push `{ endpoint, keys: { p256dh, auth } }`
+- `POST /unsubscribe` → elimina una suscripción `{ endpoint }`
+
 ## Comandos Disponibles
 
 ```bash

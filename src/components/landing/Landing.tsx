@@ -7,6 +7,9 @@ import { useSyncExternalStore, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FacultadesCard from "./FacultadesCard";
 import NotificacionModal from "../modales/NotificacionModal";
+import SuccessModal from "../modales/SuccessModal";
+import ErrorModal from "../modales/ErrorModal";
+import { useNotificaciones } from "@/hooks/useNotificaciones";
 import { COLUMNAS } from "./data";
 
 const emptySubscribe = () => () => { };
@@ -16,6 +19,14 @@ export default function Landing() {
     const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
     const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);
     const [modalNotificacionesOpen, setModalNotificacionesOpen] = useState(false);
+    const [feedbackModal, setFeedbackModal] = useState<{ success: boolean; mensaje: string } | null>(null);
+    const { suscribir } = useNotificaciones();
+
+    const handleContinuarNotificaciones = async () => {
+        setModalNotificacionesOpen(false);
+        const resultado = await suscribir();
+        setFeedbackModal({ success: resultado.success, mensaje: resultado.message });
+    };
 
     const activeFacultad = COLUMNAS.find(c => c.facultad === expandedFacultad);
     const bgImage = activeFacultad ? activeFacultad.bgImage : "/esancampus.webp";
@@ -78,8 +89,22 @@ export default function Landing() {
             <NotificacionModal
                 isOpen={modalNotificacionesOpen}
                 onClose={() => setModalNotificacionesOpen(false)}
-                onContinue={() => setModalNotificacionesOpen(false)}
+                onContinue={handleContinuarNotificaciones}
             />
+            {feedbackModal?.success && (
+                <SuccessModal
+                    isOpen={feedbackModal.success}
+                    onClose={() => setFeedbackModal(null)}
+                    mensaje={feedbackModal.mensaje}
+                />
+            )}
+            {feedbackModal && !feedbackModal.success && (
+                <ErrorModal
+                    isOpen={!feedbackModal.success}
+                    onClose={() => setFeedbackModal(null)}
+                    mensaje={feedbackModal.mensaje}
+                />
+            )}
         </div>
     );
 }

@@ -1,0 +1,21 @@
+{
+  "name": "elysia",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@elysia/cors": "^1.4.2",
+    "@elysia/cron": "^1.4.2",
+    "cheerio": "^1.2.0",
+    "elysia": "latest",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@types/web-push": "^3.6.4",
+    "bun-types": "latest"
+  },
+  "module": "src/index.js"
+}
