@@ -6,6 +6,7 @@ import { ChangeEvent } from 'react';
 export interface AppHeaderProps {
     nombreArchivo: string;
     nombreArchivoTalleres?: string;
+    nombreArchivoElectivos?: string;
     cargandoArchivo: boolean;
     onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -13,7 +14,7 @@ export interface AppHeaderProps {
 /**
  * Encabezado superior de la aplicación: título, card de Malla y card de Excel cargado.
  */
-function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCargaArchivo }: AppHeaderProps) {
+function AppHeader({ nombreArchivo, nombreArchivoTalleres, nombreArchivoElectivos, cargandoArchivo, onCargaArchivo }: AppHeaderProps) {
     const { nombre, slug } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
 
@@ -67,6 +68,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                             <ExcelUploader
                                 nombreArchivo={nombreArchivo}
                                 nombreArchivoTalleres={nombreArchivoTalleres}
+                                nombreArchivoElectivos={nombreArchivoElectivos}
                                 cargandoArchivo={cargandoArchivo}
                                 onCargaArchivo={onCargaArchivo}
                                 variant="desktop"
@@ -104,6 +106,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, cargandoArchivo, onCa
                     <ExcelUploader
                         nombreArchivo={nombreArchivo}
                         nombreArchivoTalleres={nombreArchivoTalleres}
+                        nombreArchivoElectivos={nombreArchivoElectivos}
                         cargandoArchivo={cargandoArchivo}
                         onCargaArchivo={onCargaArchivo}
                         variant="mobile"

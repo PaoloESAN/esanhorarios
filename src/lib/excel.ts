@@ -15,6 +15,7 @@ export interface SeccionCurso {
     id: string;
     profesor: string;
     seccion: string;
+    carrera?: string;
     horarios: HorarioDia[];
 }
 
@@ -127,6 +128,8 @@ export const parsearDatosExcel = (datos: any[][]): HorariosParseados => {
                 indiceColumnas.profesor = index;
             } else if (enc.includes('SECCION') || enc.includes('SECCIÓN') || enc.includes('SECC')) {
                 indiceColumnas.seccion = index;
+            } else if (enc.includes('CARRERA') || enc.includes('PROGRAMA') || enc.includes('ESPECIALIDAD')) {
+                indiceColumnas.carrera = index;
             } else if (enc.includes('LUNES')) {
                 indiceColumnas.lunes = index;
             } else if (enc.includes('MARTES')) {
@@ -150,6 +153,7 @@ export const parsearDatosExcel = (datos: any[][]): HorariosParseados => {
         const curso = fila[indiceColumnas.curso];
         const profesor = fila[indiceColumnas.profesor];
         const seccion = fila[indiceColumnas.seccion];
+        const carreraVal = indiceColumnas.carrera !== undefined ? fila[indiceColumnas.carrera] : undefined;
 
         if (!curso || !profesor) continue;
 
@@ -195,6 +199,7 @@ export const parsearDatosExcel = (datos: any[][]): HorariosParseados => {
                 id: `${cursoNormalizado.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                 profesor: capitalizarNombre(profesor.toString().trim()),
                 seccion: seccion ? seccion.toString().trim() : 'S-001',
+                carrera: carreraVal ? carreraVal.toString().trim() : undefined,
                 horarios: horarios
             });
         }

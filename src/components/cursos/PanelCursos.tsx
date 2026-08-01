@@ -20,9 +20,12 @@ export interface PanelCursosProps {
     onAbrirModalCursoPersonalizado: () => void;
     onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
     onCargaTalleres: (evento: ChangeEvent<HTMLInputElement>) => void;
+    onCargaElectivos?: (evento: ChangeEvent<HTMLInputElement>) => void;
     onCargaArchivosDirectos?: (archivos: File[]) => void;
     cargandoTalleres: boolean;
+    cargandoElectivos?: boolean;
     nombreArchivoTalleres: string;
+    nombreArchivoElectivos?: string;
 }
 
 function PanelCursos({
@@ -36,14 +39,18 @@ function PanelCursos({
     onAbrirModalCursoPersonalizado,
     onCargaArchivo,
     onCargaTalleres,
+    onCargaElectivos,
     onCargaArchivosDirectos,
     cargandoTalleres,
+    cargandoElectivos = false,
     nombreArchivoTalleres,
+    nombreArchivoElectivos = '',
 }: PanelCursosProps) {
     const { slug, cursosPorCiclo, obtenerCreditos, esCursoBloqueado, esCursoAprobado, obtenerRequisitosFaltantes } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
     const listaRef = useRef<HTMLDivElement>(null);
     const talleresInputRef = useRef<HTMLInputElement>(null);
+    const electivosInputRef = useRef<HTMLInputElement>(null);
     const [tooltipAbierto, setTooltipAbierto] = useState<string | null>(null);
 
     // Obtener ciclos que tienen al menos un curso pendiente (no aprobado)
@@ -62,6 +69,7 @@ function PanelCursos({
     }, [ciclosVisibles, cicloSeleccionado, setCicloSeleccionado]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setTooltipAbierto(null);
         listaRef.current?.scrollTo({ top: 0 });
     }, [cicloSeleccionado]);
@@ -76,6 +84,12 @@ function PanelCursos({
         if (!talleresInputRef.current || cargandoTalleres) return;
         talleresInputRef.current.value = '';
         talleresInputRef.current.click();
+    };
+
+    const handleOpenElectivosPicker = () => {
+        if (!electivosInputRef.current || cargandoElectivos) return;
+        electivosInputRef.current.value = '';
+        electivosInputRef.current.click();
     };
 
     return (
@@ -132,8 +146,16 @@ function PanelCursos({
                         }}
                         className="space-y-3 flex-1 min-h-0"
                     >
-                        {cursosPorCiclo[cicloSeleccionado]
-                            ?.filter((curso) => !esCursoAprobado(curso))
+                        {(cursosPorCiclo[cicloSeleccionado] ?? [])
+                            .filter((curso) => !esCursoAprobado(curso))
+                            .slice()
+                            .sort((a, b) => {
+                                const aElec = a.toLowerCase().includes('electivo');
+                                const bElec = b.toLowerCase().includes('electivo');
+                                if (aElec && !bElec) return 1;
+                                if (!aElec && bElec) return -1;
+                                return 0;
+                            })
                             .map((curso, idx) => {
                             const secciones = obtenerHorariosPorCurso(curso);
                             const creditos = obtenerCreditos(curso);
@@ -225,47 +247,82 @@ function PanelCursos({
                                             ))}
                                         </div>
                                     ) : (
-                                        !esElectivo && (
-                                            cursoEsTaller && !hayAlgunTallerEnExcel ? (
-                                                <div className="p-2 bg-overlay border border-divider rounded text-center">
-                                                    {nombreArchivoTalleres ? (
-                                                        <div className="flex flex-col items-center gap-1">
-                                                            <div className="flex items-center gap-1">
-                                                                <FileText className="w-3 h-3 text-foreground-500" />
-                                                                <span className="text-xs text-foreground-500 truncate max-w-35">
-                                                                    {nombreArchivoTalleres}
-                                                                </span>
-                                                            </div>
-                                                            <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
+                                        cursoEsTaller && !hayAlgunTallerEnExcel ? (
+                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
+                                                {nombreArchivoTalleres ? (
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <div className="flex items-center gap-1">
+                                                            <FileText className="w-3 h-3 text-foreground-500" />
+                                                            <span className="text-xs text-foreground-500 truncate max-w-35">
+                                                                {nombreArchivoTalleres}
+                                                            </span>
                                                         </div>
-                                                    ) : (
-                                                        <>
-                                                            <Button
-                                                                variant="tertiary"
-                                                                size="sm"
-                                                                className="cursor-pointer"
-                                                                isPending={cargandoTalleres}
-                                                                onPress={handleOpenTalleresPicker}
-                                                            >
-                                                                {!cargandoTalleres && <CloudUpload size={14} />}
-                                                                {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}
-                                                            </Button>
-                                                            <input
-                                                                ref={talleresInputRef}
-                                                                type="file"
-                                                                accept=".xls,.xlsx"
-                                                                onChange={onCargaTalleres}
-                                                                className="hidden"
-                                                                disabled={cargandoTalleres}
-                                                            />
-                                                        </>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className="p-2 bg-overlay border border-divider rounded text-center">
+                                                        <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <Button
+                                                            variant="tertiary"
+                                                            size="sm"
+                                                            className="cursor-pointer"
+                                                            isPending={cargandoTalleres}
+                                                            onPress={handleOpenTalleresPicker}
+                                                        >
+                                                            {!cargandoTalleres && <CloudUpload size={14} />}
+                                                            {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}
+                                                        </Button>
+                                                        <input
+                                                            ref={talleresInputRef}
+                                                            type="file"
+                                                            accept=".xls,.xlsx"
+                                                            onChange={onCargaTalleres}
+                                                            className="hidden"
+                                                            disabled={cargandoTalleres}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
+                                        ) : esElectivo ? (
+                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
+                                                {nombreArchivoElectivos ? (
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <div className="flex items-center gap-1">
+                                                            <FileText className="w-3 h-3 text-foreground-500" />
+                                                            <span className="text-xs text-foreground-500 truncate max-w-35">
+                                                                {nombreArchivoElectivos}
+                                                            </span>
+                                                        </div>
+                                                        <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
+                                                    </div>
+                                                ) : onCargaElectivos ? (
+                                                    <>
+                                                        <Button
+                                                            variant="tertiary"
+                                                            size="sm"
+                                                            className="cursor-pointer"
+                                                            isPending={cargandoElectivos}
+                                                            onPress={handleOpenElectivosPicker}
+                                                        >
+                                                            {!cargandoElectivos && <CloudUpload size={14} />}
+                                                            {cargandoElectivos ? 'Cargando...' : 'Subir Excel de Electivos'}
+                                                        </Button>
+                                                        <input
+                                                            ref={electivosInputRef}
+                                                            type="file"
+                                                            accept=".xls,.xlsx"
+                                                            onChange={onCargaElectivos}
+                                                            className="hidden"
+                                                            disabled={cargandoElectivos}
+                                                        />
+                                                    </>
+                                                ) : (
                                                     <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
-                                                </div>
-                                            )
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
+                                                <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
+                                            </div>
                                         )
                                     )}
                                 </div>

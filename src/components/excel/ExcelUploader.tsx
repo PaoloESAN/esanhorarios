@@ -5,6 +5,7 @@ import { CloudUpload, FileText } from 'lucide-react';
 export interface ExcelUploaderProps {
     nombreArchivo: string;
     nombreArchivoTalleres?: string;
+    nombreArchivoElectivos?: string;
     cargandoArchivo: boolean;
     onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
     variant?: 'desktop' | 'mobile';
@@ -13,6 +14,7 @@ export interface ExcelUploaderProps {
 function ExcelUploader({
     nombreArchivo,
     nombreArchivoTalleres,
+    nombreArchivoElectivos,
     cargandoArchivo,
     onCargaArchivo,
     variant = 'desktop',
@@ -46,6 +48,14 @@ function ExcelUploader({
                                 <FileText className="w-4 h-4 text-warning-500 mr-1.5 shrink-0" />
                                 <span className="text-xs md:text-sm text-warning-700 font-medium truncate max-w-[200px] sm:max-w-none">
                                     {nombreArchivoTalleres}
+                                </span>
+                            </div>
+                        )}
+                        {nombreArchivoElectivos && (
+                            <div className="flex items-center bg-purple-50 dark:bg-purple-950/40 px-2.5 py-1 rounded-lg border border-purple-200 dark:border-purple-800">
+                                <FileText className="w-4 h-4 text-purple-500 mr-1.5 shrink-0" />
+                                <span className="text-xs md:text-sm text-purple-700 dark:text-purple-300 font-medium truncate max-w-[200px] sm:max-w-none">
+                                    {nombreArchivoElectivos}
                                 </span>
                             </div>
                         )}
@@ -86,15 +96,23 @@ function ExcelUploader({
                         {nombreArchivo}
                     </span>
                 </div>
-                {nombreArchivoTalleres ? (
-                    <span className="text-[11px] text-warning-600 font-medium truncate mt-0.5">
-                        Talleres: {nombreArchivoTalleres}
-                    </span>
-                ) : (
-                    <span className="text-[11px] text-muted leading-tight mt-0.5">
-                        Excel de horarios activo
-                    </span>
-                )}
+                <div className="flex flex-col gap-0.5 mt-0.5">
+                    {nombreArchivoTalleres && (
+                        <span className="text-[11px] text-warning-600 font-medium truncate">
+                            Talleres: {nombreArchivoTalleres}
+                        </span>
+                    )}
+                    {nombreArchivoElectivos && (
+                        <span className="text-[11px] text-purple-600 dark:text-purple-400 font-medium truncate">
+                            Electivos: {nombreArchivoElectivos}
+                        </span>
+                    )}
+                    {!nombreArchivoTalleres && !nombreArchivoElectivos && (
+                        <span className="text-[11px] text-muted leading-tight">
+                            Excel de horarios activo
+                        </span>
+                    )}
+                </div>
             </div>
 
             <Button
