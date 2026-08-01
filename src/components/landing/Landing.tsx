@@ -19,12 +19,16 @@ export default function Landing() {
     const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
     const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);
     const [modalNotificacionesOpen, setModalNotificacionesOpen] = useState(false);
+    const [suscripcionCargando, setSuscripcionCargando] = useState(false);
     const [feedbackModal, setFeedbackModal] = useState<{ success: boolean; mensaje: string } | null>(null);
     const { suscribir } = useNotificaciones();
 
     const handleContinuarNotificaciones = async () => {
-        setModalNotificacionesOpen(false);
+        if (suscripcionCargando) return;
+        setSuscripcionCargando(true);
         const resultado = await suscribir();
+        setSuscripcionCargando(false);
+        setModalNotificacionesOpen(false);
         setFeedbackModal({ success: resultado.success, mensaje: resultado.message });
     };
 
@@ -90,6 +94,7 @@ export default function Landing() {
                 isOpen={modalNotificacionesOpen}
                 onClose={() => setModalNotificacionesOpen(false)}
                 onContinue={handleContinuarNotificaciones}
+                cargando={suscripcionCargando}
             />
             {feedbackModal?.success && (
                 <SuccessModal
