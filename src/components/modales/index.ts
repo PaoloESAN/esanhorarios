@@ -9,4 +9,5 @@ export type { ShareModalProps } from './ShareModal';
 export type { SuccessModalProps } from './SuccessModal';
 export type { ErrorModalProps } from './ErrorModal';
 export type { ModalAgregarCursoProps } from './ModalAgregarCurso';
-export type { ModalNotaProps } from './ModalNota';
+export { default as ModalGestionExcels } from './ModalGestionExcels';
+export type { ModalGestionExcelsProps } from './ModalGestionExcels';

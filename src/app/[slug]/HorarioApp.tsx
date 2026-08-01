@@ -13,7 +13,7 @@ import EncabezadoHorario from "@/components/header/EncabezadoHorario";
 import TablaHorario from "@/components/horario/TablaHorario";
 import PanelCursos from "@/components/cursos/PanelCursos";
 
-import { ConflictModal, SuccessModal, ErrorModal, ModalAgregarCurso } from "@/components/modales";
+import { ConflictModal, SuccessModal, ErrorModal, ModalAgregarCurso, ModalGestionExcels } from "@/components/modales";
 import ConfigDrawer from "@/components/configdrawer/ConfigDrawer";
 const ModalNota = dynamic(() => import("@/components/modales/ModalNota"), { ssr: false });
 const ShareModal = dynamic(() => import("@/components/modales/ShareModal"), { ssr: false });
@@ -59,6 +59,7 @@ function HorarioAppInner() {
     const shareModal = useOverlayState();
     const noteModal = useOverlayState();
     const configDrawer = useOverlayState();
+    const excelModal = useOverlayState();
 
     const limpiarHorario = () => {
         horarios.limpiarHorarioActual();
@@ -174,6 +175,7 @@ function HorarioAppInner() {
                     nombreArchivoElectivos={excel.nombreArchivoElectivos}
                     cargandoArchivo={excel.cargandoArchivo}
                     onCargaArchivo={excel.manejarCargaArchivo}
+                    onAbrirModalGestion={excelModal.open}
                 />
 
                 {/* Layout principal */}
@@ -287,6 +289,22 @@ function HorarioAppInner() {
                     paletaSeleccionada={paleta.paletaSeleccionada}
                     coloresActuales={paleta.coloresActuales}
                     cambiarPaleta={paleta.cambiarPaleta}
+                />
+                <ModalGestionExcels
+                    isOpen={excelModal.isOpen}
+                    onClose={excelModal.close}
+                    nombreArchivo={excel.nombreArchivo}
+                    nombreArchivoTalleres={excel.nombreArchivoTalleres}
+                    nombreArchivoElectivos={excel.nombreArchivoElectivos}
+                    cargandoArchivo={excel.cargandoArchivo}
+                    cargandoTalleres={excel.cargandoTalleres}
+                    cargandoElectivos={excel.cargandoElectivos}
+                    onEliminarBase={excel.eliminarExcelBase}
+                    onEliminarTalleres={excel.eliminarExcelTalleres}
+                    onEliminarElectivos={excel.eliminarExcelElectivos}
+                    onCargaArchivo={excel.manejarCargaArchivo}
+                    onCargaTalleres={excel.manejarCargaTalleres}
+                    onCargaElectivos={excel.manejarCargaElectivos}
                 />
             </div>
         </div>

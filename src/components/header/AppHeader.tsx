@@ -9,12 +9,13 @@ export interface AppHeaderProps {
     nombreArchivoElectivos?: string;
     cargandoArchivo: boolean;
     onCargaArchivo: (evento: ChangeEvent<HTMLInputElement>) => void;
+    onAbrirModalGestion?: () => void;
 }
 
 /**
  * Encabezado superior de la aplicación: título, card de Malla y card de Excel cargado.
  */
-function AppHeader({ nombreArchivo, nombreArchivoTalleres, nombreArchivoElectivos, cargandoArchivo, onCargaArchivo }: AppHeaderProps) {
+function AppHeader({ nombreArchivo, nombreArchivoTalleres, nombreArchivoElectivos, cargandoArchivo, onCargaArchivo, onAbrirModalGestion }: AppHeaderProps) {
     const { nombre, slug } = useCarrera();
     const hayArchivo = Boolean(nombreArchivo);
 
@@ -71,6 +72,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, nombreArchivoElectivo
                                 nombreArchivoElectivos={nombreArchivoElectivos}
                                 cargandoArchivo={cargandoArchivo}
                                 onCargaArchivo={onCargaArchivo}
+                                onAbrirModalGestion={onAbrirModalGestion}
                                 variant="desktop"
                             />
                         </div>
@@ -109,6 +111,7 @@ function AppHeader({ nombreArchivo, nombreArchivoTalleres, nombreArchivoElectivo
                         nombreArchivoElectivos={nombreArchivoElectivos}
                         cargandoArchivo={cargandoArchivo}
                         onCargaArchivo={onCargaArchivo}
+                        onAbrirModalGestion={onAbrirModalGestion}
                         variant="mobile"
                     />
                 </div>

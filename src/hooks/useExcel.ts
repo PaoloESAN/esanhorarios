@@ -275,11 +275,30 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         }
     };
 
+    const eliminarExcelBase = () => {
+        setHorariosBase({});
+        setNombreArchivo('');
+        guardarEnStorage({}, '', horariosTalleres, nombreArchivoTalleres, horariosElectivos, nombreArchivoElectivos);
+    };
+
+    const eliminarExcelTalleres = () => {
+        setHorariosTalleres({});
+        setNombreArchivoTalleres('');
+        guardarEnStorage(horariosBase, nombreArchivo, {}, '', horariosElectivos, nombreArchivoElectivos);
+    };
+
+    const eliminarExcelElectivos = () => {
+        setHorariosElectivos({});
+        setNombreArchivoElectivos('');
+        guardarEnStorage(horariosBase, nombreArchivo, horariosTalleres, nombreArchivoTalleres, {}, '');
+    };
+
     return {
         nombreArchivo, cargandoArchivo,
         nombreArchivoTalleres, cargandoTalleres,
         nombreArchivoElectivos, cargandoElectivos,
         horariosDisponibles, obtenerHorariosPorCurso,
         manejarCargaArchivo, manejarCargaTalleres, manejarCargaElectivos, cargarArchivos,
+        eliminarExcelBase, eliminarExcelTalleres, eliminarExcelElectivos,
     };
 }
