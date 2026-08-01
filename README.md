@@ -151,6 +151,9 @@ bun -e "const w = require('web-push'); console.log(JSON.stringify(w.generateVAPI
 - `POST /subscribe` → registra una suscripción push `{ endpoint, keys: { p256dh, auth } }`
 - `POST /unsubscribe` → elimina una suscripción `{ endpoint }`
 
+### Créditos de iconos
+favicon, icono y badge: <a href="https://www.flaticon.es/iconos-gratis/calendario" title="calendario iconos">Calendario iconos creados por Magnific - Flaticon</a>
+
 ## Comandos Disponibles
 
 ```bash
