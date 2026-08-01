@@ -1,19 +1,21 @@
 "use client";
 
 import { Button } from "@heroui/react";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Bell } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useSyncExternalStore, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FacultadesCard from "./FacultadesCard";
+import NotificacionModal from "../modales/NotificacionModal";
 import { COLUMNAS } from "./data";
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 export default function Landing() {
     const { resolvedTheme, setTheme } = useTheme();
     const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
     const [expandedFacultad, setExpandedFacultad] = useState<string | null>(null);
+    const [modalNotificacionesOpen, setModalNotificacionesOpen] = useState(false);
 
     const activeFacultad = COLUMNAS.find(c => c.facultad === expandedFacultad);
     const bgImage = activeFacultad ? activeFacultad.bgImage : "/esancampus.webp";
@@ -37,21 +39,8 @@ export default function Landing() {
             {/* Overlay oscurecedor para leer el contenido */}
             <div className="absolute inset-0 z-[-1] bg-black/30 transition-colors duration-500" />
 
-            {/* Botón cambiar tema */}
-            {mounted && (
-                <Button
-                    isIconOnly
-                    variant="tertiary"
-                    className="fixed top-4 right-4 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg border border-gray-200/60 dark:border-gray-700/60 text-gray-600 dark:text-gray-300 hover:scale-110 transition-transform"
-                    onPress={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                    aria-label="Cambiar tema"
-                >
-                    {resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-                </Button>
-            )}
-
             {/* Contenedor Principal */}
-            <div className="relative z-10 w-full max-w-[1300px] calendar-enter my-auto flex flex-col items-center">
+            <div className="relative z-10 w-full max-w-325 calendar-enter my-auto flex flex-col items-center">
                 {/* Título Superior (se oculta al seleccionar una facultad) */}
                 {!expandedFacultad && (
                     <div className="mb-8 md:mb-12 text-center px-4">
@@ -68,13 +57,29 @@ export default function Landing() {
                 )}
 
                 {/* Vista principal responsiva (Grilla de facultades / Lista de carreras) */}
-                <div className="w-full">
+                <div className="w-full flex flex-col items-center">
+                    {!expandedFacultad && (
+                        <Button
+                            onPress={() => setModalNotificacionesOpen(true)}
+                            className="mb-2 md:mb-4 bg-black/70 dark:bg-black/80 backdrop-blur-md text-white hover:bg-black/90 hover:scale-105 transition-all shadow-lg border border-white/20 px-6 py-6 text-base md:text-lg font-bold rounded-full"
+                            aria-label="Notifícame"
+                        >
+                            <Bell size={20} />
+                            Notifícame
+                        </Button>
+                    )}
                     <FacultadesCard
                         expandedFacultad={expandedFacultad}
                         setExpandedFacultad={setExpandedFacultad}
                     />
                 </div>
             </div>
+
+            <NotificacionModal
+                isOpen={modalNotificacionesOpen}
+                onClose={() => setModalNotificacionesOpen(false)}
+                onContinue={() => setModalNotificacionesOpen(false)}
+            />
         </div>
     );
 }
