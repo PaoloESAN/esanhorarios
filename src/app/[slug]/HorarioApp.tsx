@@ -171,6 +171,7 @@ function HorarioAppInner() {
                 <AppHeader
                     nombreArchivo={excel.nombreArchivo}
                     nombreArchivoTalleres={excel.nombreArchivoTalleres}
+                    nombreArchivoElectivos={excel.nombreArchivoElectivos}
                     cargandoArchivo={excel.cargandoArchivo}
                     onCargaArchivo={excel.manejarCargaArchivo}
                 />
@@ -219,9 +220,12 @@ function HorarioAppInner() {
                                 onAbrirModalCursoPersonalizado={addCourseModal.open}
                                 onCargaArchivo={excel.manejarCargaArchivo}
                                 onCargaTalleres={excel.manejarCargaTalleres}
+                                onCargaElectivos={excel.manejarCargaElectivos}
                                 onCargaArchivosDirectos={excel.cargarArchivos}
                                 cargandoTalleres={excel.cargandoTalleres}
+                                cargandoElectivos={excel.cargandoElectivos}
                                 nombreArchivoTalleres={excel.nombreArchivoTalleres}
+                                nombreArchivoElectivos={excel.nombreArchivoElectivos}
                             />
                         </div>
                     </div>

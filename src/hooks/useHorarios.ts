@@ -23,6 +23,7 @@ export function useHorarios() {
             const saved = localStorage.getItem(storageKey);
             if (saved) {
                 const data = JSON.parse(saved);
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 if (data.horarioActivo) setHorarioActivo(data.horarioActivo);
                 if (data.horariosPersonales) setHorariosPersonales(data.horariosPersonales);
                 if (data.cursosSeleccionadosPorHorario) {

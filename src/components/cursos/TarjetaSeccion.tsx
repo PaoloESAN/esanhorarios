@@ -8,6 +8,7 @@ export interface TarjetaSeccionProps {
         profesor: string;
         seccion: string;
         horarios: any[];
+        nombreCursoElectivo?: string;
     };
     estaSeleccionado: boolean;
     esBloqueado?: boolean;
@@ -21,15 +22,16 @@ export interface TarjetaSeccionProps {
  * Permite agregar/remover la sección y drag&drop.
  */
 function TarjetaSeccion({ curso, seccionData, estaSeleccionado, esBloqueado = false, onAgregar, onRemover, onDragStart }: TarjetaSeccionProps) {
+    const nombreCursoAMostrar = seccionData.nombreCursoElectivo || curso;
 
     return (
         <div
             draggable={!estaSeleccionado}
             onDragStart={(e) => !estaSeleccionado && onDragStart(e, {
-                curso, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
+                curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
             })}
             onClick={() => estaSeleccionado ? onRemover(seccionData.id) : onAgregar({
-                curso, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
+                curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
             })}
             className={`p-2 border rounded-xl transition-colors ${estaSeleccionado
                 ? 'bg-surface border-divider cursor-pointer hover:bg-overlay'
@@ -38,6 +40,11 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, esBloqueado = fa
                     : 'bg-accent-soft border-accent cursor-move hover:bg-accent-soft'
                 }`}
         >
+            {seccionData.nombreCursoElectivo && (
+                <div className="text-xs font-bold text-accent dark:text-purple-400 mb-1">
+                    {seccionData.nombreCursoElectivo}
+                </div>
+            )}
             <div className={`text-xs font-medium mb-1 ${estaSeleccionado ? 'text-foreground-600' : 'text-foreground'}`}>
                 Sección: {seccionData.seccion} {estaSeleccionado ? '✓ Click para remover' : ''}
             </div>

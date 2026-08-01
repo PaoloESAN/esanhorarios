@@ -61,8 +61,8 @@ function PantallaSubirExcel({ cargandoArchivo, onCargaArchivo, onCargaArchivosDi
             </h3>
             <p className="text-sm md:text-base text-muted mb-6 max-w-xs">
                 {isDragging
-                    ? 'Procesaremos automáticamente el horario y talleres'
-                    : 'Carga los archivos Excel con los horarios. Puedes seleccionar o arrastrar el de cursos y el de talleres a la vez.'}
+                    ? 'Procesaremos automáticamente cursos, talleres y electivos'
+                    : 'Carga los archivos Excel con los horarios. Puedes seleccionar o arrastrar los de cursos, talleres y electivos a la vez.'}
             </p>
             <Button
                 variant="primary"
