@@ -24,13 +24,13 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.12, ease: "easeOut" }}
-                        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-70 sm:max-w-sm lg:max-w-5xl mx-auto w-full"
+                        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-sm sm:max-w-md lg:max-w-5xl mx-auto w-full"
                     >
                         {COLUMNAS.map((col) => {
                             return (
                                 <Card
                                     key={col.facultad}
-                                    className="aspect-square border-none shadow-md hover:shadow-lg hover:-translate-y-1 active:scale-95 transition-all duration-300 relative overflow-hidden"
+                                    className="border-none shadow-md hover:shadow-lg hover:-translate-y-1 active:scale-95 transition-all duration-300 relative overflow-hidden min-h-44 sm:aspect-square"
                                     style={{ backgroundColor: col.color }}
                                 >
                                     <button
@@ -40,12 +40,12 @@ export default function FacultadesCard({ expandedFacultad, setExpandedFacultad }
                                     >
                                         <Card.Content className="flex flex-col items-center justify-center gap-3 md:gap-4 p-4 text-white relative z-10 w-full h-full overflow-hidden">
                                             <div
-                                                className="w-14 h-14 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-2xl md:rounded-3xl flex items-center justify-center border border-white/10 bg-white/10 shrink-0"
+                                                className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-2xl md:rounded-3xl flex items-center justify-center border border-white/10 bg-white/10 shrink-0"
                                             >
-                                                <img src={col.icon} alt={col.facultad} className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain drop-shadow-md" />
+                                                <img src={col.icon} alt={col.facultad} className="w-10 h-10 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain drop-shadow-md" />
                                             </div>
                                             <h2
-                                                className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-center leading-tight px-1 w-full wrap-break-word"
+                                                className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold tracking-tight text-center leading-tight px-1 w-full break-words"
                                             >
                                                 {col.facultad}
                                             </h2>
