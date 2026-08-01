@@ -206,6 +206,16 @@ const app = new Elysia()
     return { success: true, message: 'Suscripción eliminada' };
   })
 
+  // Endpoint de prueba: envía una notificación simple a todos los suscriptores
+  .post('/send-test', async () => {
+    const count = subscriptions.length;
+    if (count === 0) {
+      return { success: false, message: 'No hay suscripciones registradas' };
+    }
+    await sendPushNotification('🔔 Prueba', 'Esta es una notificación de prueba.', TARGET_URL);
+    return { success: true, message: `Notificación de prueba enviada a ${count} suscriptor(es)` };
+  })
+
   // Tarea programada (Polling cada 5 minutos)
   .use(
     cron({
