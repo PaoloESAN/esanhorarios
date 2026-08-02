@@ -75,8 +75,15 @@ export function useCursos({
     const agregarCursoAlHorario = (item: CursoItem) => {
         if (cursosSeleccionados.has(item.id)) return;
 
+        let seccion: any = undefined;
         const cursosData = obtenerHorariosPorCurso(item.curso);
-        const seccion = cursosData.find(s => s.id === item.id);
+        seccion = cursosData?.find((s: any) => s.id === item.id);
+
+        if (!seccion) {
+            const electivosData = obtenerHorariosPorCurso("Electivo");
+            seccion = electivosData?.find((s: any) => s.id === item.id);
+        }
+
         if (!seccion) return;
 
         const conflictos = detectarConflictos(seccion.horarios);

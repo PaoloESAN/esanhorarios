@@ -2,7 +2,7 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { procesarArchivoExcel, aliasCorrecciones, HorariosParseados } from '@/lib/excel';
 import { normalizar } from '@/lib/horario';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { obtenerElectivosPorCarrera } from '@/data';
+import { obtenerElectivosPorCarrera, LISTA_ELECTIVOS } from '@/data';
 
 export interface UseExcelParams {
     limpiarHorarioActual?: () => void;
@@ -91,8 +91,13 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         const alias = mapaAliasNormalizados.get(key);
         if (alias && mapaHorariosNormalizados.has(alias)) return mapaHorariosNormalizados.get(alias);
 
-        // Si es un curso genérico de electivo ("Electivo I", "Electivo de especialidad I", etc.)
-        if (key.includes('ELECTIV')) {
+        // Si es un curso genérico de electivo ("Electivo I", "Electivo de especialidad I", etc.) o un nombre de electivo del catálogo
+        const esNombreElectivoOficial = LISTA_ELECTIVOS.some(e => {
+            const eNorm = normalizar(e.nombre);
+            return eNorm === key || key.includes(eNorm) || eNorm.includes(key);
+        });
+
+        if (key.includes('ELECTIV') || esNombreElectivoOficial) {
             const carreraNorm = normalizar(nombreCarreraActiva || '');
             const electivosValidosObj = obtenerElectivosPorCarrera(slug);
             const seccionesElectivas: any[] = [];
@@ -107,7 +112,6 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
                     const eNorm = normalizar(e.nombre);
                     if (realNorm === eNorm) return true;
                     if (realNorm.includes(eNorm)) return true;
-                    // Si el nombre del Excel es más corto, evitar palabras genéricas simples (ej: "PROGRAMACION")
                     if (eNorm.includes(realNorm)) {
                         if (palabrasGenericas.includes(realNorm)) return false;
                         return realNorm.length >= 8;
@@ -124,6 +128,14 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
                 }
 
                 const nombreCursoElectivo = electivoEncontrado ? capitalizar(electivoEncontrado.nombre) : capitalizar(cursoNombreReal);
+                const electivoNorm = normalizar(nombreCursoElectivo);
+
+                // Si se buscó un electivo específico (ej. "Machine Learning Aplicado a la Banca"), filtrar solo sus secciones
+                if (!key.includes('ELECTIV') && esNombreElectivoOficial) {
+                    if (key !== electivoNorm && !key.includes(electivoNorm) && !electivoNorm.includes(key)) {
+                        continue;
+                    }
+                }
 
                 for (const seccion of secciones) {
                     if (seccion.carrera) {
