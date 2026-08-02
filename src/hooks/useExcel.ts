@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { procesarArchivoExcel, aliasCorrecciones, HorariosParseados } from '@/lib/excel';
 import { normalizar } from '@/lib/horario';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
+import { obtenerElectivosPorCarrera } from '@/data';
 
 export interface UseExcelParams {
     limpiarHorarioActual?: () => void;
@@ -90,13 +91,40 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         const alias = mapaAliasNormalizados.get(key);
         if (alias && mapaHorariosNormalizados.has(alias)) return mapaHorariosNormalizados.get(alias);
 
-        // Si es un curso genérico de electivo ("Electivo I", "Electivo II", etc.)
+        // Si es un curso genérico de electivo ("Electivo I", "Electivo de especialidad I", etc.)
         if (key.includes('ELECTIV')) {
             const carreraNorm = normalizar(nombreCarreraActiva || '');
+            const electivosValidosObj = obtenerElectivosPorCarrera(slug);
             const seccionesElectivas: any[] = [];
-            const origenElectivos = horariosElectivos; // Únicamente los electivos del Excel de electivos
+            const origenElectivos = horariosDisponibles;
+
+            const palabrasGenericas = ['PROGRAMACION', 'FINANZAS', 'MARKETING', 'DERECHO', 'GESTION', 'ECONOMIA', 'TALLER', 'ESTRATEGIA', 'ESTRATEGIAS', 'ANALISIS'];
 
             for (const [cursoNombreReal, secciones] of Object.entries(origenElectivos)) {
+                const realNorm = normalizar(cursoNombreReal);
+
+                let electivoEncontrado = electivosValidosObj.find(e => {
+                    const eNorm = normalizar(e.nombre);
+                    if (realNorm === eNorm) return true;
+                    if (realNorm.includes(eNorm)) return true;
+                    // Si el nombre del Excel es más corto, evitar palabras genéricas simples (ej: "PROGRAMACION")
+                    if (eNorm.includes(realNorm)) {
+                        if (palabrasGenericas.includes(realNorm)) return false;
+                        return realNorm.length >= 8;
+                    }
+                    return false;
+                });
+
+                if (electivosValidosObj.length > 0 && !electivoEncontrado) {
+                    continue;
+                }
+
+                if (electivosValidosObj.length === 0 && !realNorm.includes('ELECTIV')) {
+                    continue;
+                }
+
+                const nombreCursoElectivo = electivoEncontrado ? capitalizar(electivoEncontrado.nombre) : capitalizar(cursoNombreReal);
+
                 for (const seccion of secciones) {
                     if (seccion.carrera) {
                         const secCarreraNorm = normalizar(seccion.carrera);
@@ -106,8 +134,8 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
                     }
                     seccionesElectivas.push({
                         ...seccion,
-                        cursoReal: seccion.carrera ? `${capitalizar(cursoNombreReal)}` : capitalizar(cursoNombreReal),
-                        nombreCursoElectivo: capitalizar(cursoNombreReal),
+                        cursoReal: nombreCursoElectivo,
+                        nombreCursoElectivo: nombreCursoElectivo,
                     });
                 }
             }

@@ -17,6 +17,8 @@ import { psicologia } from './psicologia';
 import { software } from './software';
 import { ti } from './ti';
 
+export * from './electivos';
+
 export interface RequisitoCurso {
     prerequisitos?: string[];
     creditosRequeridos?: number;

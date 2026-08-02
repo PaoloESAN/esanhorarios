@@ -282,43 +282,6 @@ function PanelCursos({
                                                     </>
                                                 )}
                                             </div>
-                                        ) : esElectivo ? (
-                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
-                                                {nombreArchivoElectivos ? (
-                                                    <div className="flex flex-col items-center gap-1">
-                                                        <div className="flex items-center gap-1">
-                                                            <FileText className="w-3 h-3 text-foreground-500" />
-                                                            <span className="text-xs text-foreground-500 truncate max-w-35">
-                                                                {nombreArchivoElectivos}
-                                                            </span>
-                                                        </div>
-                                                        <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
-                                                    </div>
-                                                ) : onCargaElectivos ? (
-                                                    <>
-                                                        <Button
-                                                            variant="tertiary"
-                                                            size="sm"
-                                                            className="cursor-pointer"
-                                                            isPending={cargandoElectivos}
-                                                            onPress={handleOpenElectivosPicker}
-                                                        >
-                                                            {!cargandoElectivos && <CloudUpload size={14} />}
-                                                            {cargandoElectivos ? 'Cargando...' : 'Subir Excel de Electivos'}
-                                                        </Button>
-                                                        <input
-                                                            ref={electivosInputRef}
-                                                            type="file"
-                                                            accept=".xls,.xlsx"
-                                                            onChange={onCargaElectivos}
-                                                            className="hidden"
-                                                            disabled={cargandoElectivos}
-                                                        />
-                                                    </>
-                                                ) : (
-                                                    <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
-                                                )}
-                                            </div>
                                         ) : (
                                             <div className="p-2 bg-overlay border border-divider rounded text-center">
                                                 <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
