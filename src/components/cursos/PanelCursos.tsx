@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo, useState, ChangeEvent, DragEvent } from 're
 import Link from 'next/link';
 import { Button, Select, Label, ListBox, Chip, ScrollShadow, Tooltip } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { Plus, BadgeCheck, CloudUpload, FileText } from 'lucide-react';
+import { Plus, BadgeCheck, CloudUpload, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';
 import { CursoItem } from '@/hooks/useCursos';
@@ -52,6 +52,7 @@ function PanelCursos({
     const talleresInputRef = useRef<HTMLInputElement>(null);
     const electivosInputRef = useRef<HTMLInputElement>(null);
     const [tooltipAbierto, setTooltipAbierto] = useState<string | null>(null);
+    const [cursosExpandidos, setCursosExpandidos] = useState<Record<string, boolean>>({});
 
     // Obtener ciclos que tienen al menos un curso pendiente (no aprobado)
     const ciclosVisibles = useMemo(() => {
@@ -233,28 +234,55 @@ function PanelCursos({
                                     {/* Secciones */}
                                     {secciones.length > 0 ? (
                                         <div className="space-y-2">
-                                            {secciones.map((seccionData, si) => {
-                                                const nombreParaRequisito = seccionData.nombreCursoElectivo || curso;
-                                                const esBloqueadoSeccion = esCursoBloqueado(nombreParaRequisito);
-                                                const { requisitosFaltantes, creditosFaltantes } = esBloqueadoSeccion
-                                                    ? obtenerRequisitosFaltantes(nombreParaRequisito)
-                                                    : { requisitosFaltantes: [], creditosFaltantes: 0 };
-
+                                            {(() => {
+                                                const estaExpandido = Boolean(cursosExpandidos[curso]);
+                                                const seccionesAMostrar = estaExpandido ? secciones : secciones.slice(0, 3);
                                                 return (
-                                                    <TarjetaSeccion
-                                                        key={`${idx}-${si}`}
-                                                        curso={curso}
-                                                        seccionData={seccionData}
-                                                        estaSeleccionado={cursosSeleccionados.has(seccionData.id)}
-                                                        esBloqueado={esBloqueadoSeccion}
-                                                        requisitosFaltantes={requisitosFaltantes}
-                                                        creditosFaltantes={creditosFaltantes}
-                                                        onAgregar={onAgregarCurso}
-                                                        onRemover={onRemoverCurso}
-                                                        onDragStart={onDragStart}
-                                                    />
+                                                    <>
+                                                        {seccionesAMostrar.map((seccionData, si) => {
+                                                            const nombreParaRequisito = seccionData.nombreCursoElectivo || curso;
+                                                            const esBloqueadoSeccion = esCursoBloqueado(nombreParaRequisito);
+                                                            const { requisitosFaltantes, creditosFaltantes } = esBloqueadoSeccion
+                                                                ? obtenerRequisitosFaltantes(nombreParaRequisito)
+                                                                : { requisitosFaltantes: [], creditosFaltantes: 0 };
+
+                                                            return (
+                                                                <TarjetaSeccion
+                                                                    key={`${idx}-${si}`}
+                                                                    curso={curso}
+                                                                    seccionData={seccionData}
+                                                                    estaSeleccionado={cursosSeleccionados.has(seccionData.id)}
+                                                                    esBloqueado={esBloqueadoSeccion}
+                                                                    requisitosFaltantes={requisitosFaltantes}
+                                                                    creditosFaltantes={creditosFaltantes}
+                                                                    onAgregar={onAgregarCurso}
+                                                                    onRemover={onRemoverCurso}
+                                                                    onDragStart={onDragStart}
+                                                                />
+                                                            );
+                                                        })}
+
+                                                        {secciones.length > 3 && (
+                                                            <button
+                                                                onClick={() => setCursosExpandidos(prev => ({ ...prev, [curso]: !prev[curso] }))}
+                                                                className="w-full py-1.5 px-3 mt-1 text-xs font-semibold text-accent hover:text-accent-hover bg-accent-soft/40 hover:bg-accent-soft rounded-lg transition-colors flex items-center justify-center gap-1 border border-accent/20 cursor-pointer"
+                                                            >
+                                                                {estaExpandido ? (
+                                                                    <>
+                                                                        <span>Ver menos</span>
+                                                                        <ChevronUp className="w-3.5 h-3.5" />
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <span>Ver más ({secciones.length - 3} adicionales)</span>
+                                                                        <ChevronDown className="w-3.5 h-3.5" />
+                                                                    </>
+                                                                )}
+                                                            </button>
+                                                        )}
+                                                    </>
                                                 );
-                                            })}
+                                            })()}
                                         </div>
                                     ) : (
                                         cursoEsTaller && !hayAlgunTallerEnExcel ? (

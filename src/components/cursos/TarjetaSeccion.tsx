@@ -36,19 +36,14 @@ function TarjetaSeccion({
     onDragStart,
 }: TarjetaSeccionProps) {
     const nombreCursoAMostrar = seccionData.nombreCursoElectivo || curso;
-    const [tooltipAbierto, setTooltipAbierto] = useState(false);
 
     const tarjetaContenido = (
         <div
-            draggable={!estaSeleccionado && !esBloqueado}
-            onDragStart={(e) => !estaSeleccionado && !esBloqueado && onDragStart(e, {
+            draggable={!estaSeleccionado}
+            onDragStart={(e) => !estaSeleccionado && onDragStart(e, {
                 curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
             })}
             onClick={() => {
-                if (esBloqueado) {
-                    setTooltipAbierto(prev => !prev);
-                    return;
-                }
                 estaSeleccionado ? onRemover(seccionData.id) : onAgregar({
                     curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
                 });
@@ -64,7 +59,9 @@ function TarjetaSeccion({
             <div className="text-xs font-bold text-foreground mb-1 flex items-center justify-between gap-1">
                 <span className="truncate">{nombreCursoAMostrar}</span>
                 {estaSeleccionado && (
-                    <span className="text-[10px] bg-accent/20 text-accent font-semibold px-1.5 py-0.5 rounded shrink-0">
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${
+                        esBloqueado ? 'bg-danger/20 text-danger' : 'bg-accent/20 text-accent'
+                    }`}>
                         ✓ Seleccionado
                     </span>
                 )}
@@ -100,8 +97,6 @@ function TarjetaSeccion({
             <Tooltip
                 delay={0}
                 closeDelay={0}
-                isOpen={tooltipAbierto}
-                onOpenChange={(open) => setTooltipAbierto(open)}
             >
                 <Tooltip.Trigger className="w-full text-left bg-transparent p-0 border-0 cursor-pointer">
                     {tarjetaContenido}
