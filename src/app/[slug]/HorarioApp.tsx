@@ -52,7 +52,6 @@ function HorarioAppInner() {
     const [mensajeModal, setMensajeModal] = useState('');
     const [celdaSeleccionada, setCeldaSeleccionada] = useState<string | null>(null);
 
-    const conflictModal = useOverlayState();
     const successModal = useOverlayState();
     const errorModal = useOverlayState();
     const addCourseModal = useOverlayState();
@@ -81,7 +80,6 @@ function HorarioAppInner() {
         setColoresAsignados: horarios.setColoresAsignados,
         coloresActuales: paleta.coloresActuales,
         obtenerHorariosPorCurso: excel.obtenerHorariosPorCurso,
-        onConflicto: conflictModal.open,
         onExito: successModal.open,
         setMensajeModal,
     });
@@ -181,7 +179,10 @@ function HorarioAppInner() {
                 {/* Layout principal */}
                 <div className="flex flex-col lg:flex-row gap-3 md:gap-6">
                     {/* Tabla de horario */}
-                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-surface rounded-2xl shadow-md p-3 md:p-6">
+                    <div className="order-2 lg:order-2 min-w-0 flex-1 bg-surface rounded-2xl shadow-md p-3 md:p-6 relative">
+                        {cursos.hayConflicto && (
+                            <div className="absolute inset-0 rounded-2xl border-2 border-red-500 animate-glow-pulse pointer-events-none z-10" />
+                        )}
                         <EncabezadoHorario
                             horarioActivo={horarios.horarioActivo}
                             creditosTotales={horarios.creditosTotales}
@@ -190,9 +191,15 @@ function HorarioAppInner() {
                             abrirShareModal={compartir.abrirShareModal}
                             abrirConfigDrawer={configDrawer.open}
                         />
-                        <h3 className="text-sm md:text-base text-muted mb-3 md:mb-4">
-                            Pulsa en un espacio en blanco para agregar un texto al horario.
-                        </h3>
+                        {cursos.hayConflicto ? (
+                            <h3 className="text-base md:text-lg font-bold text-red-500 mb-3 md:mb-4 animate-text-glow">
+                                Hay un conflicto en el horario
+                            </h3>
+                        ) : (
+                            <h3 className="text-base md:text-lg text-muted mb-3 md:mb-4">
+                                Pulsa en un espacio en blanco para agregar un texto al horario.
+                            </h3>
+                        )}
                         <TablaHorario
                             horarioPersonal={horarios.horarioPersonal}
                             coloresAsignados={horarios.coloresAsignados}
@@ -241,11 +248,6 @@ function HorarioAppInner() {
                     </a>
                 </h3>
 
-                <ConflictModal
-                    isOpen={conflictModal.isOpen}
-                    onClose={conflictModal.close}
-                    conflictoInfo={cursos.conflictoInfo}
-                />
                 <SuccessModal
                     isOpen={successModal.isOpen}
                     onClose={successModal.close}

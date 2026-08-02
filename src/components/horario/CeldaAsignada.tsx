@@ -12,13 +12,14 @@ export interface CeldaAsignadaProps {
     clase: CursoItem;
     color: ColorCelda;
     onRemover: () => void;
+    esConflicto?: boolean;
 }
 
 /**
  * Celda del horario que ya tiene un curso asignado.
  * Al hacer click se remueve el curso completo.
  */
-function CeldaAsignada({ clase, color, onRemover }: CeldaAsignadaProps) {
+function CeldaAsignada({ clase, color, onRemover, esConflicto }: CeldaAsignadaProps) {
     const { config } = useConfigHorario();
     const { camposVisibles, nombreCortoProfesor, nombrePrimero, tamanoLetra, alineacion } = config;
 
@@ -30,6 +31,37 @@ function CeldaAsignada({ clase, color, onRemover }: CeldaAsignadaProps) {
     }
 
     const align = ALIGN_CLASSES[alineacion] ?? ALIGN_CLASSES.left;
+
+    if (esConflicto) {
+        return (
+            <div
+                className={`${color.bg} ${color.border} border rounded flex-1 flex flex-col justify-between ${align.items} p-0.5 group relative cursor-pointer overflow-hidden min-w-0 min-h-[20px] shadow-xs`}
+                style={{ fontSize: `${Math.max(tamanoLetra - 2, 8)}px` }}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onRemover();
+                }}
+                title={`Conflicto: Click para remover ${clase.curso}`}
+            >
+                {camposVisibles.curso && (
+                    <div className={`font-semibold ${color.text} leading-tight ${align.text} w-full truncate`}>
+                        {clase.curso}
+                    </div>
+                )}
+                {camposVisibles.seccion && (
+                    <div className={`${color.textSecondary} w-full truncate ${align.text}`} style={{ fontSize: `${Math.max(tamanoLetra - 3, 7)}px` }}>
+                        Sec: {clase.seccion}
+                    </div>
+                )}
+                <div
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-3 h-3 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    style={{ fontSize: '8px' }}
+                >
+                    ×
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div
@@ -59,7 +91,7 @@ function CeldaAsignada({ clase, color, onRemover }: CeldaAsignadaProps) {
                 </div>
             )}
             <div
-                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-3 h-3 md:w-4 md:h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-3 h-3 md:w-4 md:h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 style={{ fontSize: '8px' }}
             >
                 ×

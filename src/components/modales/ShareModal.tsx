@@ -44,7 +44,7 @@ function formatearProfesor(nombre: string, nombreCortoProfesor: boolean, nombreP
 }
 
 function exportarHorarioExcel(
-    horarioPersonal: Record<string, CursoItem>,
+    horarioPersonal: Record<string, CursoItem | CursoItem[]>,
     notasCelda: Record<string, NotaCelda>,
     horarioActivo: number,
     config: any
@@ -56,18 +56,21 @@ function exportarHorarioExcel(
             const fila = [horario];
             for (const dia of diasSemana) {
                 const key = `${dia}-${horario}`;
-                const clase = horarioPersonal[key];
+                const item = horarioPersonal[key];
+                const clases = Array.isArray(item) ? item : (item ? [item] : []);
                 const nota = notasCelda[key];
 
-                if (clase) {
-                    const profesor = formatearProfesor(clase.profesor, nombreCortoProfesor, nombrePrimero);
-                    const partes = [
-                        camposVisibles.curso && clase.curso,
-                        camposVisibles.seccion && clase.seccion,
-                        camposVisibles.profesor && profesor,
-                        camposVisibles.aula && clase.aula,
-                    ].filter(Boolean);
-                    fila.push(partes.join('\n'));
+                if (clases.length > 0) {
+                    const textParts = clases.map(clase => {
+                        const profesor = formatearProfesor(clase.profesor, nombreCortoProfesor, nombrePrimero);
+                        return [
+                            camposVisibles.curso && clase.curso,
+                            camposVisibles.seccion && clase.seccion,
+                            camposVisibles.profesor && profesor,
+                            camposVisibles.aula && clase.aula,
+                        ].filter(Boolean).join('\n');
+                    });
+                    fila.push(textParts.join('\n---\n'));
                 } else if (nota) {
                     fila.push(nota.texto || '');
                 } else {
@@ -128,7 +131,7 @@ export interface ShareModalProps {
     onCopy: () => void;
     onDownload: () => void;
     filename?: string;
-    horarioPersonal: Record<string, CursoItem>;
+    horarioPersonal: Record<string, CursoItem | CursoItem[]>;
     notasCelda: Record<string, NotaCelda>;
     horarioActivo: number;
 }

@@ -10,12 +10,12 @@ import { NotaCelda } from '@/hooks/useNotas';
 const horariosDelDia = generarHorarios();
 
 export interface TablaHorarioProps {
-    horarioPersonal: Record<string, CursoItem>;
+    horarioPersonal: Record<string, CursoItem | CursoItem[]>;
     coloresAsignados: Map<string, ColorCelda>;
     coloresActuales: ColorCelda[];
     notesCelda?: Record<string, NotaCelda>; // keep backwards compatibility if needed
     notasCelda: Record<string, NotaCelda>;
-    onRemover: (dia: string, horario: string) => void;
+    onRemover: (dia: string, horario: string, cursoId?: string) => void;
     onDragOver: (e: DragEvent<HTMLElement>) => void;
     onDrop: (e: DragEvent<HTMLElement>, dia: string, horario: string) => void;
     onAbrirNota: (key: string) => void;
@@ -40,6 +40,13 @@ function TablaHorario({
 }: TablaHorarioProps) {
     const { config } = useConfigHorario();
 
+    const getClases = (key: string): CursoItem[] => {
+        const val = horarioPersonal[key];
+        if (!val) return [];
+        if (Array.isArray(val)) return val;
+        return [val];
+    };
+
     // Determinar qué filas mostrar: si ocultarFilasVacias está activo,
     // recortamos las filas finales que estén completamente vacías.
     let filasVisibles = horariosDelDia;
@@ -49,7 +56,7 @@ function TablaHorario({
             const horario = horariosDelDia[i];
             const tieneAlgo = diasSemana.some((dia) => {
                 const key = `${dia}-${horario}`;
-                return horarioPersonal[key] || notasCelda[key];
+                return getClases(key).length > 0 || notasCelda[key];
             });
             if (tieneAlgo) {
                 ultimaFilaOcupada = i;
@@ -112,7 +119,7 @@ function TablaHorario({
                             </td>
                             {diasSemana.map((dia) => {
                                 const key = `${dia}-${horario}`;
-                                const clase = horarioPersonal[key];
+                                const clases = getClases(key);
                                 const nota = notasCelda[key];
 
                                 return (
@@ -122,12 +129,18 @@ function TablaHorario({
                                         onDragOver={onDragOver}
                                         onDrop={(e) => onDrop(e, dia, horario)}
                                     >
-                                        {clase ? (
-                                            <CeldaAsignada
-                                                clase={clase}
-                                                color={coloresAsignados.get(clase.id) ?? coloresActuales[0]}
-                                                onRemover={() => onRemover(dia, horario)}
-                                            />
+                                        {clases.length > 0 ? (
+                                            <div className={`flex flex-col gap-0.5 h-full w-full justify-stretch ${clases.length > 1 ? 'overflow-y-auto max-h-24 md:max-h-32' : ''}`}>
+                                                {clases.map((clase) => (
+                                                    <CeldaAsignada
+                                                        key={clase.id}
+                                                        clase={clase}
+                                                        color={coloresAsignados.get(clase.id) ?? coloresActuales[0]}
+                                                        onRemover={() => onRemover(dia, horario, clase.id)}
+                                                        esConflicto={clases.length > 1}
+                                                    />
+                                                ))}
+                                            </div>
                                         ) : (
                                             <CeldaVacia
                                                 nota={nota}

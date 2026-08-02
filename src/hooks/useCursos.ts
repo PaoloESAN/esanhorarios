@@ -26,8 +26,8 @@ export interface ConflictoInfo {
 }
 
 export interface UseCursosParams {
-    horarioPersonal: Record<string, CursoItem>;
-    setHorarioPersonal: React.Dispatch<React.SetStateAction<Record<string, CursoItem>>>;
+    horarioPersonal: Record<string, CursoItem | CursoItem[]>;
+    setHorarioPersonal: React.Dispatch<React.SetStateAction<Record<string, any>>>;
     cursosSeleccionados: Set<string>;
     setCursosSeleccionados: React.Dispatch<React.SetStateAction<Set<string>>>;
     coloresAsignados: Map<string, ColorCelda>;
@@ -37,6 +37,15 @@ export interface UseCursosParams {
     onConflicto?: () => void;
     onExito?: () => void;
     setMensajeModal?: (msg: string) => void;
+}
+
+export function detectarHayConflicto(horarioPersonal: Record<string, CursoItem | CursoItem[]>): boolean {
+    if (!horarioPersonal) return false;
+    return Object.values(horarioPersonal).some(val => {
+        if (!val) return false;
+        if (Array.isArray(val)) return val.length > 1;
+        return false;
+    });
 }
 
 export function useCursos({
@@ -53,24 +62,7 @@ export function useCursos({
     const [draggedItem, setDraggedItem] = useState<CursoItem | null>(null);
     const [conflictoInfo, setConflictoInfo] = useState<ConflictoInfo>({ cursoExistente: '', cursoNuevo: '' });
 
-    const detectarConflictos = (horarioItems: any[]): ConflictoDetalle[] => {
-        return horarioItems
-            .filter(({ dia, horario }) => Boolean(horarioPersonal[`${dia}-${horario}`]))
-            .map(({ dia, horario }) => ({
-                dia, horario,
-                cursoExistente: horarioPersonal[`${dia}-${horario}`].curso,
-                seccionExistente: horarioPersonal[`${dia}-${horario}`].seccion,
-            }));
-    };
-
-    const abrirConflicto = (cursoNuevo: string, conflictos: ConflictoDetalle[]) => {
-        setConflictoInfo({
-            cursoNuevo,
-            cursoExistente: `${conflictos[0].cursoExistente} (${conflictos[0].seccionExistente})`,
-            detallesConflicto: conflictos,
-        });
-        onConflicto?.();
-    };
+    const hayConflicto = detectarHayConflicto(horarioPersonal);
 
     const agregarCursoAlHorario = (item: CursoItem) => {
         if (cursosSeleccionados.has(item.id)) return;
@@ -86,12 +78,6 @@ export function useCursos({
 
         if (!seccion) return;
 
-        const conflictos = detectarConflictos(seccion.horarios);
-        if (conflictos.length > 0) {
-            abrirConflicto(`${item.curso} (${item.seccion})`, conflictos);
-            return;
-        }
-
         const color = obtenerColorPorOrden(item.id, coloresAsignados, coloresActuales);
         setColoresAsignados(prev => {
             const next = new Map(prev);
@@ -99,32 +85,37 @@ export function useCursos({
             return next;
         });
 
-        const nuevoHorario = { ...horarioPersonal };
+        const nuevoHorario: Record<string, any> = { ...horarioPersonal };
         seccion.horarios.forEach(({ dia, horario, aula }: any) => {
-            nuevoHorario[`${dia}-${horario}`] = { ...item, aula, diaOriginal: dia, horarioOriginal: horario };
+            const key = `${dia}-${horario}`;
+            const prevVal = nuevoHorario[key];
+            const prevArray: CursoItem[] = Array.isArray(prevVal) ? prevVal : (prevVal ? [prevVal] : []);
+            const nuevoItem: CursoItem = { ...item, aula, diaOriginal: dia, horarioOriginal: horario };
+
+            if (!prevArray.some(c => c.id === item.id)) {
+                const arr = [...prevArray, nuevoItem];
+                nuevoHorario[key] = arr.length === 1 ? arr[0] : arr;
+            }
         });
         setHorarioPersonal(nuevoHorario);
         setCursosSeleccionados(prev => new Set([...prev, item.id]));
     };
 
-    const removerDelHorario = (dia: string, horario: string) => {
-        const clase = horarioPersonal[`${dia}-${horario}`];
-        if (!clase?.id) return;
-
-        const nuevoHorario = Object.fromEntries(
-            Object.entries(horarioPersonal).filter(([, v]) => v.id !== clase.id)
-        );
-        const nuevosCursos = new Set([...cursosSeleccionados].filter(id => id !== clase.id));
-
-        setHorarioPersonal(nuevoHorario);
-        setCursosSeleccionados(nuevosCursos);
-        setColoresAsignados(reasignarColores(nuevosCursos, nuevoHorario, coloresActuales));
-    };
-
     const removerCursoPorId = (id: string) => {
-        const nuevoHorario = Object.fromEntries(
-            Object.entries(horarioPersonal).filter(([, v]) => v.id !== id)
-        );
+        const nuevoHorario: Record<string, any> = {};
+        for (const [key, val] of Object.entries(horarioPersonal)) {
+            if (!val) continue;
+            if (Array.isArray(val)) {
+                const filtrado = val.filter(c => c.id !== id);
+                if (filtrado.length === 1) {
+                    nuevoHorario[key] = filtrado[0];
+                } else if (filtrado.length > 1) {
+                    nuevoHorario[key] = filtrado;
+                }
+            } else if ((val as CursoItem).id !== id) {
+                nuevoHorario[key] = val;
+            }
+        }
         const nuevosCursos = new Set([...cursosSeleccionados].filter(cid => cid !== id));
 
         setHorarioPersonal(nuevoHorario);
@@ -132,13 +123,23 @@ export function useCursos({
         setColoresAsignados(reasignarColores(nuevosCursos, nuevoHorario, coloresActuales));
     };
 
-    const manejarAgregarPersonalizado = (cursoData: any) => {
-        const conflictos = detectarConflictos(cursoData.horarios);
-        if (conflictos.length > 0) {
-            abrirConflicto(`${cursoData.nombre} (${cursoData.seccion})`, conflictos);
-            return { error: 'Conflicto de horarios' };
+    const removerDelHorario = (dia: string, horario: string, cursoId?: string) => {
+        const key = `${dia}-${horario}`;
+        const val = horarioPersonal[key];
+        if (!val) return;
+
+        let targetId = cursoId;
+        if (!targetId) {
+            const arr = Array.isArray(val) ? val : [val];
+            if (arr.length > 0) targetId = arr[0].id;
         }
 
+        if (targetId) {
+            removerCursoPorId(targetId);
+        }
+    };
+
+    const manejarAgregarPersonalizado = (cursoData: any) => {
         const id = `personalizado-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const item: CursoItem = { id, curso: cursoData.nombre, profesor: cursoData.profesor, seccion: cursoData.seccion };
 
@@ -149,12 +150,19 @@ export function useCursos({
             return next;
         });
 
-        const nuevoHorario = { ...horarioPersonal };
+        const nuevoHorario: Record<string, any> = { ...horarioPersonal };
         cursoData.horarios.forEach(({ dia, horario }: any) => {
-            nuevoHorario[`${dia}-${horario}`] = {
+            const key = `${dia}-${horario}`;
+            const prevVal = nuevoHorario[key];
+            const prevArray: CursoItem[] = Array.isArray(prevVal) ? prevVal : (prevVal ? [prevVal] : []);
+            const nuevoItem: CursoItem = {
                 ...item, aula: cursoData.aula, creditos: cursoData.creditos,
                 diaOriginal: dia, horarioOriginal: horario,
             };
+            if (!prevArray.some(c => c.id === id)) {
+                const arr = [...prevArray, nuevoItem];
+                nuevoHorario[key] = arr.length === 1 ? arr[0] : arr;
+            }
         });
         setHorarioPersonal(nuevoHorario);
         setCursosSeleccionados(prev => new Set([...prev, id]));
@@ -185,6 +193,7 @@ export function useCursos({
     return {
         cicloSeleccionado, setCicloSeleccionado,
         conflictoInfo,
+        hayConflicto,
         agregarCursoAlHorario,
         removerDelHorario,
         removerCursoPorId,
