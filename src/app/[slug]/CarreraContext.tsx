@@ -58,8 +58,23 @@ export function CarreraProvider({ carrera, children }: { carrera: Carrera; child
     );
 }
 
+import { carreraInternacional } from "@/data/internacionales";
+
 export function useCarrera(): CarreraContextType {
     const ctx = useContext(CarreraContext);
-    if (!ctx) throw new Error("useCarrera debe usarse dentro de CarreraProvider");
+    if (!ctx) {
+        const fallbackCarrera = carreraInternacional;
+        const creditosMap = buildCreditosMap(fallbackCarrera);
+        return {
+            nombre: fallbackCarrera.nombre,
+            slug: fallbackCarrera.slug,
+            carrera: fallbackCarrera,
+            cursosPorCiclo: getCursosPorCiclo(fallbackCarrera),
+            obtenerCreditos: (n) => creditosMap.get(n) || 3,
+            esCursoBloqueado: () => false,
+            esCursoAprobado: () => false,
+            obtenerRequisitosFaltantes: () => ({ requisitosFaltantes: [], creditosFaltantes: 0 }),
+        };
+    }
     return ctx;
 }

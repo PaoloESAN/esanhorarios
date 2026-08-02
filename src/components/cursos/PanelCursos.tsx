@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo, useState, ChangeEvent, DragEvent } from 're
 import Link from 'next/link';
 import { Button, Select, Label, ListBox, Chip, ScrollShadow, Tooltip } from '@heroui/react';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
-import { Plus, BadgeCheck, CloudUpload, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, BadgeCheck, CloudUpload, FileText, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import TarjetaSeccion from './TarjetaSeccion';
 import PantallaSubirExcel from '@/components/excel/PantallaSubirExcel';
 import { CursoItem } from '@/hooks/useCursos';
@@ -231,99 +231,110 @@ function PanelCursos({
                                         cabeceraCurso
                                     )}
 
-                                    {/* Secciones */}
-                                    {secciones.length > 0 ? (
-                                        <div className="space-y-2">
-                                            {(() => {
-                                                const estaExpandido = Boolean(cursosExpandidos[curso]);
-                                                const seccionesAMostrar = estaExpandido ? secciones : secciones.slice(0, 3);
-                                                return (
-                                                    <>
-                                                        {seccionesAMostrar.map((seccionData, si) => {
-                                                            const nombreParaRequisito = seccionData.nombreCursoElectivo || curso;
-                                                            const esBloqueadoSeccion = esCursoBloqueado(nombreParaRequisito);
-                                                            const { requisitosFaltantes, creditosFaltantes } = esBloqueadoSeccion
-                                                                ? obtenerRequisitosFaltantes(nombreParaRequisito)
-                                                                : { requisitosFaltantes: [], creditosFaltantes: 0 };
-
-                                                            return (
-                                                                <TarjetaSeccion
-                                                                    key={`${idx}-${si}`}
-                                                                    curso={curso}
-                                                                    seccionData={seccionData}
-                                                                    estaSeleccionado={cursosSeleccionados.has(seccionData.id)}
-                                                                    esBloqueado={esBloqueadoSeccion}
-                                                                    requisitosFaltantes={requisitosFaltantes}
-                                                                    creditosFaltantes={creditosFaltantes}
-                                                                    onAgregar={onAgregarCurso}
-                                                                    onRemover={onRemoverCurso}
-                                                                    onDragStart={onDragStart}
-                                                                />
-                                                            );
-                                                        })}
-
-                                                        {secciones.length > 3 && (
-                                                            <button
-                                                                onClick={() => setCursosExpandidos(prev => ({ ...prev, [curso]: !prev[curso] }))}
-                                                                className="w-full py-1.5 px-3 mt-1 text-xs font-semibold text-accent hover:text-accent-hover bg-accent-soft/40 hover:bg-accent-soft rounded-lg transition-colors flex items-center justify-center gap-1 border border-accent/20 cursor-pointer"
-                                                            >
-                                                                {estaExpandido ? (
-                                                                    <>
-                                                                        <span>Ver menos</span>
-                                                                        <ChevronUp className="w-3.5 h-3.5" />
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <span>Ver más ({secciones.length - 3} adicionales)</span>
-                                                                        <ChevronDown className="w-3.5 h-3.5" />
-                                                                    </>
-                                                                )}
-                                                            </button>
-                                                        )}
-                                                    </>
-                                                );
-                                            })()}
+                                    {curso.toLowerCase().includes('internacional') ? (
+                                        <div className="p-3 bg-accent-soft/40 border border-accent/30 rounded-xl flex flex-col items-start gap-2 text-left">
+                                            <span className="text-xs font-medium text-foreground-700">
+                                                Los electivos internacionales cuentan con su propio creador especial de horarios.
+                                            </span>
+                                            <Link
+                                                href={`/internacional?from=${slug}`}
+                                                target="_blank"
+                                                className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-accent hover:bg-accent-hover px-3.5 py-2 rounded-xl transition-all shadow-md cursor-pointer"
+                                            >
+                                                <span>Crear horario internacional</span>
+                                                <ExternalLink className="w-3.5 h-3.5" />
+                                            </Link>
                                         </div>
                                     ) : (
-                                        cursoEsTaller && !hayAlgunTallerEnExcel ? (
-                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
-                                                {nombreArchivoTalleres ? (
-                                                    <div className="flex flex-col items-center gap-1">
-                                                        <div className="flex items-center gap-1">
-                                                            <FileText className="w-3 h-3 text-foreground-500" />
-                                                            <span className="text-xs text-foreground-500 truncate max-w-35">
-                                                                {nombreArchivoTalleres}
-                                                            </span>
-                                                        </div>
-                                                        <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <Button
-                                                            variant="tertiary"
-                                                            size="sm"
-                                                            className="cursor-pointer"
-                                                            isPending={cargandoTalleres}
-                                                            onPress={handleOpenTalleresPicker}
-                                                        >
-                                                            {!cargandoTalleres && <CloudUpload size={14} />}
-                                                            {cargandoTalleres ? 'Cargando...' : 'Subir Excel de Talleres'}
-                                                        </Button>
-                                                        <input
-                                                            ref={talleresInputRef}
-                                                            type="file"
-                                                            accept=".xls,.xlsx"
-                                                            onChange={onCargaTalleres}
-                                                            className="hidden"
-                                                            disabled={cargandoTalleres}
-                                                        />
-                                                    </>
-                                                )}
+                                        /* Secciones de cursos normales */
+                                        secciones.length > 0 ? (
+                                            <div className="space-y-2">
+                                                {(() => {
+                                                    const estaExpandido = Boolean(cursosExpandidos[curso]);
+                                                    const seccionesAMostrar = estaExpandido ? secciones : secciones.slice(0, 3);
+                                                    return (
+                                                        <>
+                                                            {seccionesAMostrar.map((seccionData, si) => {
+                                                                const nombreParaRequisito = seccionData.nombreCursoElectivo || curso;
+                                                                const esBloqueadoSeccion = esCursoBloqueado(nombreParaRequisito);
+                                                                const { requisitosFaltantes, creditosFaltantes } = esBloqueadoSeccion
+                                                                    ? obtenerRequisitosFaltantes(nombreParaRequisito)
+                                                                    : { requisitosFaltantes: [], creditosFaltantes: 0 };
+
+                                                                return (
+                                                                    <TarjetaSeccion
+                                                                        key={`${idx}-${si}`}
+                                                                        curso={curso}
+                                                                        seccionData={seccionData}
+                                                                        estaSeleccionado={cursosSeleccionados.has(seccionData.id)}
+                                                                        esBloqueado={esBloqueadoSeccion}
+                                                                        requisitosFaltantes={requisitosFaltantes}
+                                                                        creditosFaltantes={creditosFaltantes}
+                                                                        onAgregar={onAgregarCurso}
+                                                                        onRemover={onRemoverCurso}
+                                                                        onDragStart={onDragStart}
+                                                                    />
+                                                                );
+                                                            })}
+
+                                                            {secciones.length > 3 && (
+                                                                <button
+                                                                    onClick={() => setCursosExpandidos(prev => ({ ...prev, [curso]: !prev[curso] }))}
+                                                                    className="w-full py-1.5 px-3 mt-1 text-xs font-semibold text-accent hover:text-accent-hover bg-accent-soft/40 hover:bg-accent-soft rounded-lg transition-colors flex items-center justify-center gap-1 border border-accent/20 cursor-pointer"
+                                                                >
+                                                                    {estaExpandido ? (
+                                                                        <>
+                                                                            <span>Ver menos</span>
+                                                                            <ChevronUp className="w-3.5 h-3.5" />
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <span>Ver más ({secciones.length - 3} adicionales)</span>
+                                                                            <ChevronDown className="w-3.5 h-3.5" />
+                                                                        </>
+                                                                    )}
+                                                                </button>
+                                                            )}
+                                                        </>
+                                                    );
+                                                })()}
                                             </div>
                                         ) : (
-                                            <div className="p-2 bg-overlay border border-divider rounded text-center">
-                                                <div className="text-xs text-foreground-500">No hay horarios disponibles</div>
-                                            </div>
+                                            cursoEsTaller && !hayAlgunTallerEnExcel ? (
+                                                <div className="p-2 bg-overlay border border-divider rounded text-center">
+                                                    {nombreArchivoTalleres ? (
+                                                        <div className="flex flex-col items-center gap-1">
+                                                            <div className="flex items-center gap-1">
+                                                                <FileText className="w-3 h-3 text-foreground-500" />
+                                                                <span className="text-xs text-foreground font-medium truncate max-w-[150px]">{nombreArchivoTalleres}</span>
+                                                            </div>
+                                                            <span className="text-[11px] text-danger font-semibold">Taller no encontrado en el Excel subido</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center gap-1">
+                                                            <span className="text-xs text-muted font-medium">Este curso es un taller</span>
+                                                            <button
+                                                                onClick={() => talleresInputRef.current?.click()}
+                                                                className="text-xs font-semibold text-accent hover:underline flex items-center gap-1 cursor-pointer bg-accent-soft/40 hover:bg-accent-soft px-2 py-1 rounded transition-colors"
+                                                            >
+                                                                <CloudUpload className="w-3.5 h-3.5" />
+                                                                Subir Excel de Talleres
+                                                            </button>
+                                                            <input
+                                                                ref={talleresInputRef}
+                                                                type="file"
+                                                                accept=".xlsx,.xls"
+                                                                onChange={onCargaTalleres}
+                                                                className="hidden"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="p-2 bg-overlay border border-divider rounded text-center text-xs text-muted">
+                                                    No hay horarios disponibles en el Excel cargado.
+                                                </div>
+                                            )
                                         )
                                     )}
                                 </div>

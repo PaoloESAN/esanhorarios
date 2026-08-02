@@ -3,6 +3,7 @@ import { procesarArchivoExcel, aliasCorrecciones, HorariosParseados } from '@/li
 import { normalizar } from '@/lib/horario';
 import { useCarrera } from '@/app/[slug]/CarreraContext';
 import { obtenerElectivosPorCarrera, LISTA_ELECTIVOS } from '@/data';
+import { encontrarElectivoInternacional } from '@/data/internacionales';
 
 export interface UseExcelParams {
     limpiarHorarioActual?: () => void;
@@ -27,11 +28,39 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
 
     useEffect(() => {
         try {
-            const saved = localStorage.getItem(storageKey);
+            let saved = localStorage.getItem(storageKey);
+
+            if (typeof window !== 'undefined') {
+                const params = new URLSearchParams(window.location.search);
+                const fromSlug = params.get('from');
+                if (fromSlug) {
+                    const fromSaved = localStorage.getItem(`esan_excel_data_${fromSlug}`);
+                    if (fromSaved) {
+                        saved = fromSaved;
+                    }
+                }
+            }
+
+            if (!saved) {
+                saved = localStorage.getItem('esan_excel_data_latest');
+            }
+
+            if (!saved && slug === 'internacional') {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('esan_excel_data_')) {
+                        const val = localStorage.getItem(key);
+                        if (val) {
+                            saved = val;
+                            break;
+                        }
+                    }
+                }
+            }
+
             if (saved) {
                 const data = JSON.parse(saved);
                 if (data.nombreArchivo && data.horariosBase) {
-                    // eslint-disable-next-line react-hooks/set-state-in-effect
                     setNombreArchivo(data.nombreArchivo || '');
                     setNombreArchivoTalleres(data.nombreArchivoTalleres || '');
                     setNombreArchivoElectivos(data.nombreArchivoElectivos || '');
@@ -43,7 +72,7 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         } catch (e) {
             console.error('Error al restaurar Excel desde localStorage:', e);
         }
-    }, [storageKey]);
+    }, [storageKey, slug]);
 
     const guardarEnStorage = (
         base: HorariosParseados, nBase: string,
@@ -51,14 +80,16 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         electivos: HorariosParseados = horariosElectivos, nElectivos: string = nombreArchivoElectivos
     ) => {
         try {
-            localStorage.setItem(storageKey, JSON.stringify({
+            const dataToSave = JSON.stringify({
                 nombreArchivo: nBase,
                 nombreArchivoTalleres: nTalleres,
                 nombreArchivoElectivos: nElectivos,
                 horariosBase: base,
                 horariosTalleres: talleres,
                 horariosElectivos: electivos,
-            }));
+            });
+            localStorage.setItem(storageKey, dataToSave);
+            localStorage.setItem('esan_excel_data_latest', dataToSave);
         } catch (e) {
             console.error('Error al guardar Excel en localStorage:', e);
         }
@@ -66,18 +97,27 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
 
     const horariosDisponibles: HorariosParseados = { ...horariosBase, ...horariosTalleres, ...horariosElectivos };
 
-    const mapaHorariosNormalizados = (() => {
-        const map = new Map<string, any>();
-        for (const [clave, valor] of Object.entries(horariosDisponibles)) {
-            map.set(normalizar(clave), valor);
+    const mapaAliasNormalizados = (() => {
+        const map = new Map<string, string>();
+        for (const [k, v] of Object.entries(aliasCorrecciones)) {
+            const kn = normalizar(k);
+            const vn = normalizar(v);
+            map.set(kn, vn);
+            map.set(vn, kn);
         }
         return map;
     })();
 
-    const mapaAliasNormalizados = (() => {
-        const map = new Map<string, string>();
-        for (const [k, v] of Object.entries(aliasCorrecciones)) {
-            map.set(normalizar(k), normalizar(v));
+    const mapaHorariosNormalizados = (() => {
+        const map = new Map<string, any>();
+        for (const [clave, valor] of Object.entries(horariosDisponibles)) {
+            const keyNorm = normalizar(clave);
+            map.set(keyNorm, valor);
+
+            const alias = mapaAliasNormalizados.get(keyNorm);
+            if (alias) {
+                map.set(alias, valor);
+            }
         }
         return map;
     })();
@@ -86,10 +126,49 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         texto.replace(/\S+/g, (p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase());
 
     const obtenerHorariosPorCurso = (nombreCurso: string): any[] => {
+        if (!nombreCurso) return [];
         const key = normalizar(nombreCurso);
         if (mapaHorariosNormalizados.has(key)) return mapaHorariosNormalizados.get(key);
         const alias = mapaAliasNormalizados.get(key);
         if (alias && mapaHorariosNormalizados.has(alias)) return mapaHorariosNormalizados.get(alias);
+
+        // Coincidencia difusa por palabras clave ignorando conectores
+        const palabrasStop = new Set(['Y', 'DE', 'DEL', 'LA', 'EL', 'LOS', 'LAS', 'EN', 'CON', 'PARA', 'POR', 'UN', 'UNA', 'E', 'O', 'I', 'II', 'III', 'IV', 'V']);
+        const keyPalabras = key.split(' ').filter(p => p.length >= 3 && !palabrasStop.has(p));
+
+        for (const [claveReal, secciones] of Object.entries(horariosDisponibles)) {
+            const realNorm = normalizar(claveReal);
+            if (realNorm === key) return secciones;
+
+            const realPalabras = realNorm.split(' ').filter(p => p.length >= 3 && !palabrasStop.has(p));
+
+            if (keyPalabras.length > 0 && realPalabras.length > 0) {
+                const todasKeyEnReal = keyPalabras.every(p => realPalabras.includes(p));
+                const todasRealEnKey = realPalabras.every(p => keyPalabras.includes(p));
+
+                if (todasKeyEnReal || todasRealEnKey) {
+                    return secciones;
+                }
+            }
+        }
+        // Comprobar si es un electivo internacional
+        const electivoInter = encontrarElectivoInternacional(nombreCurso);
+        if (electivoInter) {
+            const seccionesInternacionales: any[] = [];
+            for (const [cursoNombreReal, secciones] of Object.entries(horariosDisponibles)) {
+                const coincidencia = encontrarElectivoInternacional(cursoNombreReal);
+                if (coincidencia === electivoInter) {
+                    for (const seccion of secciones) {
+                        seccionesInternacionales.push({
+                            ...seccion,
+                            cursoReal: electivoInter,
+                            nombreCursoElectivo: electivoInter,
+                        });
+                    }
+                }
+            }
+            if (seccionesInternacionales.length > 0) return seccionesInternacionales;
+        }
 
         // Si es un curso genérico de electivo ("Electivo I", "Electivo de especialidad I", etc.) o un nombre de electivo del catálogo
         const esNombreElectivoOficial = LISTA_ELECTIVOS.some(e => {
