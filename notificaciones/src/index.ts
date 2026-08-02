@@ -98,29 +98,17 @@ async function checkSchedule(): Promise<{ allFiles: string[]; newFiles: string[]
       saveData();
       console.log(`¡Se encontraron ${newFiles.length} archivo(s) .xlsx nuevo(s)!`);
 
-      // Detecta si algún archivo nuevo contiene "horario" o "electivo" en su nombre
+      // Detecta si algún archivo nuevo contiene "horario" en su nombre
       const fileName = (fileUrl: string) =>
         decodeURIComponent(new URL(fileUrl).pathname.split('/').pop() || fileUrl);
-      const tieneHorarios = newFiles.some((fileUrl) => /horari/i.test(fileName(fileUrl)));
-      const tieneElectivos = newFiles.some((fileUrl) => /electiv/i.test(fileName(fileUrl)));
+      const archivoHorario = newFiles.find((fileUrl) => /horari/i.test(fileName(fileUrl)));
 
-      let title: string;
-      let body: string;
-      if (tieneHorarios) {
-        title = '¡Nuevo Horario Detectado!';
-        body = 'Se han subido los horarios.';
-      } else if (tieneElectivos) {
-        title = '¡Nuevos Electivos Disponibles!';
-        body = 'Se han subido los electivos.';
-      } else {
-        title = '¡Nuevo Archivo Publicado!';
-        body = `Se ha publicado: ${newFiles.map(fileName).join(', ')}.`;
+      if (archivoHorario) {
+        const versionMatch = fileName(archivoHorario).match(/v[-._\s]*(\d+)/i);
+        const version = versionMatch ? versionMatch[1] : '?';
+        console.log(`Nueva Versión V${version} del horario`);
+        await sendPushNotification('¡Nuevo Horario Detectado!', `Nueva Versión V${version} del horario`, TARGET_URL);
       }
-
-      console.log(`${body} (${newFiles.length} archivo(s))`);
-      await sendPushNotification(title, body, TARGET_URL);
-    } else {
-      console.log('Sin cambios. No hay archivos .xlsx nuevos.');
     }
 
     console.log(`Total de archivos .xlsx en la página: ${allFiles.length}`);
