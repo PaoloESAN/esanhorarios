@@ -13,6 +13,7 @@ export interface TarjetaSeccionProps {
     };
     estaSeleccionado: boolean;
     esBloqueado?: boolean;
+    esElectivo?: boolean;
     requisitosFaltantes?: string[];
     creditosFaltantes?: number;
     onAgregar: (item: any) => void;
@@ -29,6 +30,7 @@ function TarjetaSeccion({
     seccionData,
     estaSeleccionado,
     esBloqueado = false,
+    esElectivo,
     requisitosFaltantes = [],
     creditosFaltantes = 0,
     onAgregar,
@@ -36,6 +38,7 @@ function TarjetaSeccion({
     onDragStart,
 }: TarjetaSeccionProps) {
     const nombreCursoAMostrar = seccionData.nombreCursoElectivo || curso;
+    const esElectivoFinal = esElectivo ?? Boolean(seccionData.nombreCursoElectivo || curso.toLowerCase().includes('electivo'));
 
     const tarjetaContenido = (
         <div
@@ -59,9 +62,8 @@ function TarjetaSeccion({
             <div className="text-xs font-bold text-foreground mb-1 flex items-center justify-between gap-1">
                 <span className="truncate">{nombreCursoAMostrar}</span>
                 {estaSeleccionado && (
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${
-                        esBloqueado ? 'bg-danger/20 text-danger' : 'bg-accent/20 text-accent'
-                    }`}>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${esBloqueado ? 'bg-danger/20 text-danger' : 'bg-accent/20 text-accent'
+                        }`}>
                         ✓ Seleccionado
                     </span>
                 )}
@@ -81,7 +83,7 @@ function TarjetaSeccion({
                     >
                         <Search className={`w-3 h-3 text-foreground-500 ${esBloqueado ? 'hover:text-danger' : 'hover:text-accent'}`} />
                     </button>
-                    <span className="truncate max-w-[150px]">Prof: {seccionData.profesor}</span>
+                    <span className="truncate max-w-37.5">Prof: {seccionData.profesor}</span>
                 </div>
             </div>
 
@@ -92,7 +94,7 @@ function TarjetaSeccion({
         </div>
     );
 
-    if (esBloqueado) {
+    if (esBloqueado && esElectivoFinal) {
         return (
             <Tooltip
                 delay={0}
