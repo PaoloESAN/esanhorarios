@@ -45,7 +45,8 @@ export const aliasCorrecciones: Record<string, string> = {
     "ETHICAL HACKING": "ETHICAL HACKING Y CIBERSEGURIDAD",
     "ETHICAL HACKING & CIBERSEGURIDAD": "ETHICAL HACKING Y CIBERSEGURIDAD",
     "ETHICAL HACKING CIBERSEGURIDAD": "ETHICAL HACKING Y CIBERSEGURIDAD",
-    "ETHICAL HACKING Y CIBERSEGURIDAD": "ETHICAL HACKING Y CIBERSEGURIDAD",
+    "ETHICAL HACKING Y CIBERSEGURIDAD": "ETHICAL HACKING Y SEGURIDAD",
+    "ETHICAL HACKING Y SEGURIDAD": "ETHICAL HACKING Y CIBERSEGURIDAD",
 };
 
 export const extraerHorarios = (textoHorario: string): HorarioExtraido[] => {
@@ -205,10 +206,14 @@ export const parsearDatosExcel = (datos: any[][]): HorariosParseados => {
                 horariosParseados[cursoNormalizado] = [];
             }
 
+            const seccionTexto = seccion ? seccion.toString().trim() : 'S-001';
+            const seccionSlug = seccionTexto.toLowerCase().replace(/\s+/g, '-');
+            const idDeterminista = `${cursoNormalizado.toLowerCase().replace(/\s+/g, '-')}-${seccionSlug}`;
+
             horariosParseados[cursoNormalizado].push({
-                id: `${cursoNormalizado.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                id: idDeterminista,
                 profesor: capitalizarNombre(profesor.toString().trim()),
-                seccion: seccion ? seccion.toString().trim() : 'S-001',
+                seccion: seccionTexto,
                 carrera: carreraVal ? carreraVal.toString().trim() : undefined,
                 horarios: horarios
             });

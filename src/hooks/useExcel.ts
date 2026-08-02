@@ -131,26 +131,6 @@ export function useExcel({ limpiarHorarioActual, setMensajeModal, onExito, onErr
         if (mapaHorariosNormalizados.has(key)) return mapaHorariosNormalizados.get(key);
         const alias = mapaAliasNormalizados.get(key);
         if (alias && mapaHorariosNormalizados.has(alias)) return mapaHorariosNormalizados.get(alias);
-
-        // Coincidencia difusa por palabras clave ignorando conectores
-        const palabrasStop = new Set(['Y', 'DE', 'DEL', 'LA', 'EL', 'LOS', 'LAS', 'EN', 'CON', 'PARA', 'POR', 'UN', 'UNA', 'E', 'O', 'I', 'II', 'III', 'IV', 'V']);
-        const keyPalabras = key.split(' ').filter(p => p.length >= 3 && !palabrasStop.has(p));
-
-        for (const [claveReal, secciones] of Object.entries(horariosDisponibles)) {
-            const realNorm = normalizar(claveReal);
-            if (realNorm === key) return secciones;
-
-            const realPalabras = realNorm.split(' ').filter(p => p.length >= 3 && !palabrasStop.has(p));
-
-            if (keyPalabras.length > 0 && realPalabras.length > 0) {
-                const todasKeyEnReal = keyPalabras.every(p => realPalabras.includes(p));
-                const todasRealEnKey = realPalabras.every(p => keyPalabras.includes(p));
-
-                if (todasKeyEnReal || todasRealEnKey) {
-                    return secciones;
-                }
-            }
-        }
         // Comprobar si es un electivo internacional
         const electivoInter = encontrarElectivoInternacional(nombreCurso);
         if (electivoInter) {
