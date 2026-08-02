@@ -721,6 +721,18 @@ export const LISTA_ELECTIVOS: CursoElectivo[] = [
         creditos: 3,
         requisitos: "Instrumentos Financieros",
         carreras: ["adm_finanzas", "economia_finanzas"]
+    },
+    {
+        nombre: "ETHICAL HACKING Y CIBERSEGURIDAD",
+        creditos: 3,
+        requisitos: "Redes de Comunicaciones",
+        carreras: ["software", "ti"]
+    },
+    {
+        nombre: "SOFTWARE FACTORY & GESTIÓN DE PROYECTOS ÁGILES",
+        creditos: 3,
+        requisitos: "Ingeniería de Software I",
+        carreras: ["software", "ti"]
     }
 ];
 

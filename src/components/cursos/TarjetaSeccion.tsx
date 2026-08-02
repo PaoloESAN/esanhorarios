@@ -1,5 +1,6 @@
-import { DragEvent, MouseEvent } from 'react';
+import { DragEvent, MouseEvent, useState } from 'react';
 import { Search } from 'lucide-react';
+import { Tooltip } from '@heroui/react';
 
 export interface TarjetaSeccionProps {
     curso: string;
@@ -12,6 +13,8 @@ export interface TarjetaSeccionProps {
     };
     estaSeleccionado: boolean;
     esBloqueado?: boolean;
+    requisitosFaltantes?: string[];
+    creditosFaltantes?: number;
     onAgregar: (item: any) => void;
     onRemover: (id: string) => void;
     onDragStart: (e: DragEvent<HTMLElement>, item: any) => void;
@@ -21,22 +24,39 @@ export interface TarjetaSeccionProps {
  * Tarjeta individual de una sección de curso.
  * Permite agregar/remover la sección y drag&drop.
  */
-function TarjetaSeccion({ curso, seccionData, estaSeleccionado, esBloqueado = false, onAgregar, onRemover, onDragStart }: TarjetaSeccionProps) {
+function TarjetaSeccion({
+    curso,
+    seccionData,
+    estaSeleccionado,
+    esBloqueado = false,
+    requisitosFaltantes = [],
+    creditosFaltantes = 0,
+    onAgregar,
+    onRemover,
+    onDragStart,
+}: TarjetaSeccionProps) {
     const nombreCursoAMostrar = seccionData.nombreCursoElectivo || curso;
+    const [tooltipAbierto, setTooltipAbierto] = useState(false);
 
-    return (
+    const tarjetaContenido = (
         <div
-            draggable={!estaSeleccionado}
-            onDragStart={(e) => !estaSeleccionado && onDragStart(e, {
+            draggable={!estaSeleccionado && !esBloqueado}
+            onDragStart={(e) => !estaSeleccionado && !esBloqueado && onDragStart(e, {
                 curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
             })}
-            onClick={() => estaSeleccionado ? onRemover(seccionData.id) : onAgregar({
-                curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
-            })}
+            onClick={() => {
+                if (esBloqueado) {
+                    setTooltipAbierto(prev => !prev);
+                    return;
+                }
+                estaSeleccionado ? onRemover(seccionData.id) : onAgregar({
+                    curso: nombreCursoAMostrar, profesor: seccionData.profesor, seccion: seccionData.seccion, id: seccionData.id,
+                });
+            }}
             className={`p-2.5 border rounded-xl transition-all ${estaSeleccionado
                 ? 'bg-surface border-divider cursor-pointer hover:bg-overlay'
                 : esBloqueado
-                    ? 'bg-danger-soft border-danger cursor-move hover:bg-danger-soft'
+                    ? 'bg-danger-soft border-danger cursor-pointer hover:bg-danger-soft'
                     : 'bg-accent-soft/60 border-accent cursor-move hover:bg-accent-soft'
                 }`}
         >
@@ -74,6 +94,43 @@ function TarjetaSeccion({ curso, seccionData, estaSeleccionado, esBloqueado = fa
             </div>
         </div>
     );
+
+    if (esBloqueado) {
+        return (
+            <Tooltip
+                delay={0}
+                closeDelay={0}
+                isOpen={tooltipAbierto}
+                onOpenChange={(open) => setTooltipAbierto(open)}
+            >
+                <Tooltip.Trigger className="w-full text-left bg-transparent p-0 border-0 cursor-pointer">
+                    {tarjetaContenido}
+                </Tooltip.Trigger>
+                <Tooltip.Content placement="top" className="max-w-64 p-3">
+                    <Tooltip.Arrow />
+                    <div className="text-xs space-y-1">
+                        <div className="font-bold text-danger">
+                            Requisitos no cumplidos
+                        </div>
+                        {creditosFaltantes > 0 && (
+                            <p className="text-danger font-semibold">• Faltan {creditosFaltantes} créditos</p>
+                        )}
+                        {requisitosFaltantes.map((req) => (
+                            <p key={req} className="flex items-start gap-1 text-foreground">
+                                <span className="text-danger font-bold shrink-0">•</span>
+                                <span>{req}</span>
+                            </p>
+                        ))}
+                        {creditosFaltantes === 0 && requisitosFaltantes.length === 0 && (
+                            <p className="italic text-muted">Prerrequisito del curso electivo pendiente</p>
+                        )}
+                    </div>
+                </Tooltip.Content>
+            </Tooltip>
+        );
+    }
+
+    return tarjetaContenido;
 }
 
 export default TarjetaSeccion;

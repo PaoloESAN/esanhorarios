@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useSyncExternalStore } from "react";
 import { Carrera } from "@/data";
+import { LISTA_ELECTIVOS } from "@/data/electivos";
 
 const normalizarTexto = (str: string): string => {
     return str
@@ -9,6 +10,87 @@ const normalizarTexto = (str: string): string => {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim();
+};
+
+const sonCursosPrerrequisitoEquivalentes = (normPre: string, aprobadosSet: Set<string>): boolean => {
+    if (aprobadosSet.has(normPre)) return true;
+
+    const numRomanos = ['i', 'ii', 'iii', 'iv', 'v'];
+    const tokensPre = normPre.split(/\s+/);
+    const preNum = numRomanos.find(n => tokensPre[tokensPre.length - 1] === n);
+
+    for (const ap of Array.from(aprobadosSet)) {
+        if (ap === normPre) return true;
+
+        // Comprobar coincidencia de subcadena
+        if (ap.includes(normPre) || normPre.includes(ap)) {
+            const tokensAp = ap.split(/\s+/);
+            const apNum = numRomanos.find(n => tokensAp[tokensAp.length - 1] === n);
+
+            // Si ambos cursos tienen número romano al final (ej: I vs II), exigir que coincidan
+            if (preNum && apNum && preNum !== apNum) {
+                continue;
+            }
+
+            // Exigir una longitud mínima significativa si se busca por subcadena
+            if (normPre.length >= 8 && ap.length >= 8) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
+
+const obtenerInfoRequisito = (nombreCurso: string, prerreqMap: Record<string, any>) => {
+    const normNombre = normalizarTexto(nombreCurso);
+
+    let reqInfo =
+        prerreqMap[nombreCurso] ||
+        prerreqMap[
+            Object.keys(prerreqMap).find((k) => normalizarTexto(k) === normNombre) || ""
+        ];
+
+    if (!reqInfo || reqInfo.segunElectivo) {
+        const electivo = LISTA_ELECTIVOS.find(e => {
+            const eNorm = normalizarTexto(e.nombre);
+            return eNorm === normNombre || normNombre.includes(eNorm) || eNorm.includes(normNombre);
+        });
+
+        if (electivo && electivo.requisitos) {
+            const reqTexto = electivo.requisitos.trim();
+            if (reqTexto && !reqTexto.toLowerCase().includes('no tiene') && reqTexto !== '—') {
+                let creditosRequeridos: number | undefined = undefined;
+                const matchCred = reqTexto.match(/(\d+)\s*créditos/i);
+                if (matchCred) {
+                    creditosRequeridos = parseInt(matchCred[1], 10);
+                }
+
+                let prerequisitos: string[] = [];
+                let prerequisitosOpciones: string[][] = [];
+
+                if (!creditosRequeridos) {
+                    if (reqTexto.includes('/')) {
+                        // Requisito de opciones alternativas (OR)
+                        const opciones = reqTexto.split('/').map(p => p.replace(/\([^)]*\)/g, '').trim()).filter(Boolean);
+                        prerequisitosOpciones.push(opciones);
+                    } else {
+                        // Requisito AND (separado por comas)
+                        const partes = reqTexto.split(',').map(p => p.replace(/\([^)]*\)/g, '').trim()).filter(Boolean);
+                        prerequisitos.push(...partes);
+                    }
+                }
+
+                reqInfo = {
+                    creditosRequeridos,
+                    prerequisitos,
+                    prerequisitosOpciones,
+                };
+            }
+        }
+    }
+
+    return reqInfo;
 };
 
 const emptySubscribe = () => () => { };
@@ -85,14 +167,8 @@ export function useMallaRequisitos(carrera: Carrera) {
         return (nombreCurso: string): boolean => {
             if (!aprobadosData.tieneMalla || aprobadosData.aprobados.size === 0) return false;
 
-            const normNombre = normalizarTexto(nombreCurso);
             const prerreqMap = carrera.prerrequisitos || {};
-
-            const reqInfo =
-                prerreqMap[nombreCurso] ||
-                prerreqMap[
-                    Object.keys(prerreqMap).find((k) => normalizarTexto(k) === normNombre) || ""
-                ];
+            const reqInfo = obtenerInfoRequisito(nombreCurso, prerreqMap);
 
             if (!reqInfo) return false;
 
@@ -106,7 +182,19 @@ export function useMallaRequisitos(carrera: Carrera) {
             if (reqInfo.prerequisitos && reqInfo.prerequisitos.length > 0) {
                 for (const pre of reqInfo.prerequisitos) {
                     const normPre = normalizarTexto(pre);
-                    if (!aprobadosData.aprobados.has(normPre)) {
+                    if (!sonCursosPrerrequisitoEquivalentes(normPre, aprobadosData.aprobados)) {
+                        return true;
+                    }
+                }
+            }
+
+            if (reqInfo.prerequisitosOpciones && reqInfo.prerequisitosOpciones.length > 0) {
+                for (const grupoOpciones of reqInfo.prerequisitosOpciones) {
+                    const algunAprobado = grupoOpciones.some(pre => {
+                        const normPre = normalizarTexto(pre);
+                        return sonCursosPrerrequisitoEquivalentes(normPre, aprobadosData.aprobados);
+                    });
+                    if (!algunAprobado) {
                         return true;
                     }
                 }
@@ -130,14 +218,8 @@ export function useMallaRequisitos(carrera: Carrera) {
                 return { requisitosFaltantes: [], creditosFaltantes: 0 };
             }
 
-            const normNombre = normalizarTexto(nombreCurso);
             const prerreqMap = carrera.prerrequisitos || {};
-
-            const reqInfo =
-                prerreqMap[nombreCurso] ||
-                prerreqMap[
-                    Object.keys(prerreqMap).find((k) => normalizarTexto(k) === normNombre) || ""
-                ];
+            const reqInfo = obtenerInfoRequisito(nombreCurso, prerreqMap);
 
             if (!reqInfo) {
                 return { requisitosFaltantes: [], creditosFaltantes: 0 };
@@ -155,8 +237,20 @@ export function useMallaRequisitos(carrera: Carrera) {
             if (reqInfo.prerequisitos && reqInfo.prerequisitos.length > 0) {
                 for (const pre of reqInfo.prerequisitos) {
                     const normPre = normalizarTexto(pre);
-                    if (!aprobadosData.aprobados.has(normPre)) {
+                    if (!sonCursosPrerrequisitoEquivalentes(normPre, aprobadosData.aprobados)) {
                         requisitosFaltantes.push(pre);
+                    }
+                }
+            }
+
+            if (reqInfo.prerequisitosOpciones && reqInfo.prerequisitosOpciones.length > 0) {
+                for (const grupoOpciones of reqInfo.prerequisitosOpciones) {
+                    const algunAprobado = grupoOpciones.some(pre => {
+                        const normPre = normalizarTexto(pre);
+                        return sonCursosPrerrequisitoEquivalentes(normPre, aprobadosData.aprobados);
+                    });
+                    if (!algunAprobado) {
+                        requisitosFaltantes.push(grupoOpciones.join(" o "));
                     }
                 }
             }

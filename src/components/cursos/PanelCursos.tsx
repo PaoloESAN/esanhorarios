@@ -233,18 +233,28 @@ function PanelCursos({
                                     {/* Secciones */}
                                     {secciones.length > 0 ? (
                                         <div className="space-y-2">
-                                            {secciones.map((seccionData, si) => (
-                                                <TarjetaSeccion
-                                                    key={`${idx}-${si}`}
-                                                    curso={curso}
-                                                    seccionData={seccionData}
-                                                    estaSeleccionado={cursosSeleccionados.has(seccionData.id)}
-                                                    esBloqueado={esBloqueado}
-                                                    onAgregar={onAgregarCurso}
-                                                    onRemover={onRemoverCurso}
-                                                    onDragStart={onDragStart}
-                                                />
-                                            ))}
+                                            {secciones.map((seccionData, si) => {
+                                                const nombreParaRequisito = seccionData.nombreCursoElectivo || curso;
+                                                const esBloqueadoSeccion = esCursoBloqueado(nombreParaRequisito);
+                                                const { requisitosFaltantes, creditosFaltantes } = esBloqueadoSeccion
+                                                    ? obtenerRequisitosFaltantes(nombreParaRequisito)
+                                                    : { requisitosFaltantes: [], creditosFaltantes: 0 };
+
+                                                return (
+                                                    <TarjetaSeccion
+                                                        key={`${idx}-${si}`}
+                                                        curso={curso}
+                                                        seccionData={seccionData}
+                                                        estaSeleccionado={cursosSeleccionados.has(seccionData.id)}
+                                                        esBloqueado={esBloqueadoSeccion}
+                                                        requisitosFaltantes={requisitosFaltantes}
+                                                        creditosFaltantes={creditosFaltantes}
+                                                        onAgregar={onAgregarCurso}
+                                                        onRemover={onRemoverCurso}
+                                                        onDragStart={onDragStart}
+                                                    />
+                                                );
+                                            })}
                                         </div>
                                     ) : (
                                         cursoEsTaller && !hayAlgunTallerEnExcel ? (
