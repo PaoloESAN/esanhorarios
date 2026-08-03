@@ -79,12 +79,21 @@ async function checkSchedule(): Promise<{ allFiles: string[]; newFiles: string[]
     const allFiles: string[] = [];
     const newFiles: string[] = [];
 
-    // Parseo de enlaces .xlsx
+    // Ignora los archivos de talleres
+    const isNormalSchedule = (fileUrl: string) => {
+      const fileName = decodeURIComponent(new URL(fileUrl).pathname.split('/').pop() || fileUrl);
+      return !/taller/i.test(fileName);
+    };
+
+    // Parseo de enlaces .xlsx (solo horarios normales, se ignoran talleres)
     $('a[href*=".xlsx"], a[href*=".XLSX"]').each((_, el) => {
       const href = $(el).attr('href');
       if (href) {
         // Convertir URL relativa a absoluta
         const fullUrl = new URL(href, TARGET_URL).href;
+
+        if (!isNormalSchedule(fullUrl)) return;
+
         allFiles.push(fullUrl);
 
         if (!processedFiles.has(fullUrl)) {
